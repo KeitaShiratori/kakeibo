@@ -159,8 +159,6 @@ public class CostDetailShowActivity extends BaseNormalActivity {
             // Intentから情報を取得
             CostDetail v = (CostDetail) ($.getActionResult().get("new_cost_detail"));
 
-            // UIに表示
-            tv2.text("たった今新規登録されました。").visible();
         }
     }
 

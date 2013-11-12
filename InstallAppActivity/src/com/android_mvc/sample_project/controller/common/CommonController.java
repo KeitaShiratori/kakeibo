@@ -10,10 +10,13 @@ import com.android_mvc.framework.controller.routing.Router;
 import com.android_mvc.framework.controller.routing.RoutingTable;
 import com.android_mvc.framework.controller.validation.ValidationExecutor;
 import com.android_mvc.framework.controller.validation.ValidationResult;
+import com.android_mvc.sample_project.activities.accountbook.AccountBookShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.BudgetShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.SettleShowActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
 import com.android_mvc.sample_project.controller.FuncDBValidation;
 import com.android_mvc.sample_project.domain.CostDetailEditAction;
@@ -31,199 +34,14 @@ public class CommonController extends BaseController
     /**
      * DB登録画面からの遷移時
      */
-    public static void submit(final Activity activity)
+    public static void submit(final Activity activity, String button_type)
     {
-        new ControlFlowDetail<CostDetailEditActivity>(activity)
-                .setValidation(new ValidationExecutor() {
-                    @Override
-                    public ValidationResult doValidate()
-                    {
-                        // バリデーション処理
-                        return new FuncDBValidation().validate(activity);
-                    }
-
-                    @Override
-                    public void onValidationFailed()
-                    {
-                        showErrMessages();
-
-                        // バリデーション失敗時の遷移先
-                        // goOnValidationFailed( CostDetailEditActivity.class );
-                        stayInThisPage();
-                    }
-                })
-                .setBL(new BLExecutor() {
-                    @Override
-                    public ActionResult doAction()
-                    {
-                        // BL
-                        return new CostDetailEditAction(activity).exec();
-                    }
-                })
-                .onBLExecuted(
-                        // BL実行後の遷移先の一覧
-                        new RoutingTable().map("success", CostDetailShowActivity.class)
-
-                // onBLExecutedにこれを渡せば，BLの実行結果にかかわらず画面遷移を常に抑止。
-                // STAY_THIS_PAGE_ALWAYS
-
-                // BL実行結果が特定の状況のときのみ，画面遷移を抑止することも可能。
-                // new RoutingTable().map("success", STAY_THIS_PAGE )
-
-                )
-                .setDialogText("お待ちください")
-                .startControl();
-        ;
-
-    }
-
-    public static void submit(final IncomeDetailEditActivity activity)
-    {
-        new ControlFlowDetail<IncomeDetailEditActivity>(activity)
-                .setValidation(new ValidationExecutor() {
-                    @Override
-                    public ValidationResult doValidate()
-                    {
-                        // バリデーション処理
-                        return new FuncDBValidation().validate(activity);
-                    }
-
-                    @Override
-                    public void onValidationFailed()
-                    {
-                        showErrMessages();
-
-                        // バリデーション失敗時の遷移先
-                        // goOnValidationFailed( CostDetailEditActivity.class );
-                        stayInThisPage();
-                    }
-                })
-                .setBL(new BLExecutor() {
-                    @Override
-                    public ActionResult doAction()
-                    {
-                        // BL
-                        return new IncomeDetailEditAction(activity).exec();
-                    }
-                })
-                .onBLExecuted(
-                        // BL実行後の遷移先の一覧
-                        new RoutingTable().map("success", IncomeDetailShowActivity.class)
-
-                // onBLExecutedにこれを渡せば，BLの実行結果にかかわらず画面遷移を常に抑止。
-                // STAY_THIS_PAGE_ALWAYS
-
-                // BL実行結果が特定の状況のときのみ，画面遷移を抑止することも可能。
-                // new RoutingTable().map("success", STAY_THIS_PAGE )
-
-                )
-                .setDialogText("お待ちください")
-                .startControl();
-        ;
-
-    }
-
-    /**
-     * DB参照画面からの遷移時
-     */
-    public static void submit(final CostDetailShowActivity activity, String action_type, final Long cost_detail_id)
-    {
-        if ("BACK_TO_TOP".equals(action_type))
-        {
-            // TOPに戻る
-            Router.go(activity, TopActivity.class);
-        } else if ("EDIT_COST_DETAIL".equals(action_type)) {
-            // 変動費明細登録画面に遷移する。
-            Router.go(activity, CostDetailEditActivity.class);
-        }
-        // else
-        // if( "UPDATE_FAVORITE_FLAG".equals(action_type) )
-        // {
-        // // DB更新
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBUpdateAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
-        // else
-        // if( "DELETE_FRIEND".equals(action_type) )
-        // {
-        // // DBから削除
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBDeleteAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
-
-    }
-
-    /**
-     * DB参照画面からの遷移時
-     */
-    public static void submit(final IncomeDetailShowActivity activity, String action_type, final Long income_detail_id)
-    {
-        if ("BACK_TO_TOP".equals(action_type))
-        {
-            // TOPに戻る
-            Router.go(activity, TopActivity.class);
-        } else if ("EDIT_VRIALBEL_INCOME_DETAIL".equals(action_type)) {
-            // 変動費明細登録画面に遷移する。
-            Router.go(activity, IncomeDetailEditActivity.class);
-        }
-        // else
-        // if( "UPDATE_FAVORITE_FLAG".equals(action_type) )
-        // {
-        // // DB更新
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBUpdateAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
-        // else
-        // if( "DELETE_FRIEND".equals(action_type) )
-        // {
-        // // DBから削除
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBDeleteAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
+        Router.goByRoutingTable(activity, button_type,
+                new RoutingTable()
+                    .map("SHOW_ACCOUNT_BOOK", AccountBookShowActivity.class, "目標金額照会へ")
+                    .map("SHOW_BUDGET_SHOW", BudgetShowActivity.class, "予定表示へ")
+                    .map("SHOW_SETTLE_SHOW", SettleShowActivity.class, "実績表示へ")
+            );
 
     }
 

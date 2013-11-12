@@ -19,6 +19,7 @@ import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R.drawable;
+import com.android_mvc.sample_project.activities.common.HooterMenu;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.AccountBookShowController;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
@@ -36,6 +37,7 @@ public class AccountBookShowActivity extends BaseNormalActivity {
 
     MLinearLayout layout1;
     MLinearLayout layout2;
+    HooterMenu hooterMenu;
     MTextView tv1;
     MTextView tv2;
 
@@ -236,6 +238,8 @@ public class AccountBookShowActivity extends BaseNormalActivity {
                                 }
                             })
                           )
+                          ,
+                          hooterMenu = new HooterMenu(context).getHooterMenu(context, activity)
                 );
 
         // 描画
