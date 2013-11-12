@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="button_style" format="integer|reference" />
+    <attr name="button_style_a1" format="integer|reference" />
+    <attr name="text_view_style" format="integer|reference" />
+    <attr name="text_view_style_h1" format="integer|reference" />
+
+    <style name="MyApplicationStyle" parent="android:Theme">
+        <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
+        <item name="button_style">@style/button_style</item>
+        <item name="button_style_a1">@style/button_style_a1</item>
+        <item name="text_view_style">@style/text_view_style</item>
+        <item name="text_view_style_h1">@style/text_view_style_h1</item>
+        <item name="android:windowBackground">@color/paleturquoise</item>
+        <item name="android:textColorPrimary">@color/darkslategray</item>
+        <item name="android:textColorSecondary">@color/darkgreen</item>
+    </style>
+
+</resources>
