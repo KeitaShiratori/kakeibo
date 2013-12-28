@@ -10,6 +10,7 @@ import com.android_mvc.framework.db.DBHelper;
 import com.android_mvc.framework.db.dao.BaseDAO;
 import com.android_mvc.framework.db.dao.Finder;
 import com.android_mvc.sample_project.db.entity.AccountBook;
+import com.android_mvc.sample_project.db.entity.IncomeDetail;
 
 /**
  * 変動費明細を読み書きするクラス。
@@ -78,6 +79,13 @@ public class AccountBookDAO extends BaseDAO<AccountBook>
     // findAllやfindByIdの実装を参照。
 
     // ------------ U --------------
+
+    public AccountBook update(AccountBook a) {
+        if (findById(helper, AccountBook.class, a.getId()) != null) {
+            a.save(helper);
+        }
+        return a;
+    }
 
     // ------------ D --------------
 

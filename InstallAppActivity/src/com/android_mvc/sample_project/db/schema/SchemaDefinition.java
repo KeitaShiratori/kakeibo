@@ -1,7 +1,5 @@
 package com.android_mvc.sample_project.db.schema;
 
-import java.util.Calendar;
-
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 

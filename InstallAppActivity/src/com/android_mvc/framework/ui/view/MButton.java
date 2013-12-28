@@ -67,7 +67,7 @@ public class MButton extends Button implements IFWView {
         setViewParam("layout_width", ViewGroup.LayoutParams.WRAP_CONTENT);
         return this;
     }
-    
+
     public MButton backgroundResource(int resource) {
         setBackgroundResource(resource);
         return this;
@@ -77,10 +77,19 @@ public class MButton extends Button implements IFWView {
         setBackgroundDrawable(getResources().getDrawable(resource));
         return this;
     }
-    
-    public MButton gravity(int g){
+
+    public MButton gravity(int g) {
         setGravity(g);
         return this;
     }
+    public MButton touch(OnTouchListener l){
+        setOnTouchListener(l);
+        return this;
+    }
     
+    
+    public MButton hint(String s){
+        setHint(s);
+        return this;
+    }
 }

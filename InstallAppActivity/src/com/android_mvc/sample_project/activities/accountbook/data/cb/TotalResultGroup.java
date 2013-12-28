@@ -1,7 +1,6 @@
 package com.android_mvc.sample_project.activities.accountbook.data.cb;
 
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  * {@link com.android_mvc.sample_project.activities.accountbook.data.cb.ControlBreakBuilder} の build() の戻り値となるオブジェクトの、合計付きの実装クラス。これを ControlBreakBuilder#setResultClass() で指定した場合、toString() で表示する時に子要素を合計して階層の最後に総計行として出力する例である。toString() 時に合計するので、効率は良くない。{@link com.android_mvc.sample_project.activities.accountbook.data.cb.TotalControlBreakBuilder} でこれを指定すべきであり、対象クラスとしては、{@link com.android_mvc.sample_project.activities.accountbook.data.cb.ControlBreakKeyAndValue} 用に書かれている。

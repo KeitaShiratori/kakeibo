@@ -3,17 +3,16 @@ package com.android_mvc.framework.ui.view;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.android_mvc.framework.annotations.SuppressDebugLog;
-import com.android_mvc.framework.ui.view.etc.LayoutUtil;
-import com.android_mvc.sample_project.R.drawable;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.android_mvc.framework.annotations.SuppressDebugLog;
+import com.android_mvc.framework.ui.view.etc.LayoutUtil;
+import com.android_mvc.sample_project.activities.common.HooterMenu;
+import com.android_mvc.sample_project.common.Util;
 
 /**
  * LinearLayoutのラッパークラス。
@@ -194,6 +193,11 @@ public class MLinearLayout extends LinearLayout implements IFWView, IFWLayoutVie
         setPadding(px, px, px, px);
         return this;
     }
+    
+    public MLinearLayout paddingLeftPx(int px) {
+        setPadding(px, 0, 0, 0);
+        return this;
+    }
 
     public MLinearLayout weight( int w){
     	if(w != 0){
@@ -215,6 +219,21 @@ public class MLinearLayout extends LinearLayout implements IFWView, IFWLayoutVie
     
     public MLinearLayout gravity(int g){
         setGravity(g);
+        return this;
+    }
+    
+    public MLinearLayout widthRegularInterval(Context context){
+        Util.setWidthRegularInterval(this, context);
+        return this;
+    }
+    
+    public MLinearLayout widthRegularInterval(HooterMenu hm, Context context){
+        Util.setWidthRegularInterval(hm, context);
+        return hm;
+    }
+    
+    public MLinearLayout click(OnClickListener l){
+        setOnClickListener(l);
         return this;
     }
 }

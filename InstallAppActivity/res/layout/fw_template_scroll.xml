@@ -1,22 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- 注意：フレームワーク側でテンプレートとして使うファイル。書き換えないこと。 -->
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:scrollbarAlwaysDrawVerticalTrack="true"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent" >
 
-<com.android_mvc.framework.ui.view.MLinearLayout
-    android:id="@+id/_FWRootLayout"
-    android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    <com.android_mvc.framework.ui.view.MLinearLayout
+        android:id="@+id/header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal" >
+    </com.android_mvc.framework.ui.view.MLinearLayout>
 
+    <com.android_mvc.framework.ui.view.MLinearLayout
+        android:id="@+id/footer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
+    </com.android_mvc.framework.ui.view.MLinearLayout>
 
-    <!-- ここに，UIBuilderでViewが構築される。 -->
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/footer"
+        android:layout_below="@id/header"
+        android:scrollbarAlwaysDrawVerticalTrack="true" >
 
+        <com.android_mvc.framework.ui.view.MLinearLayout
+            android:id="@+id/_FWRootLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-</com.android_mvc.framework.ui.view.MLinearLayout>
-</ScrollView>
+            <!-- ここに，UIBuilderでViewが構築される。 -->
+
+        </com.android_mvc.framework.ui.view.MLinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

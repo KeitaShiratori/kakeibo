@@ -78,7 +78,16 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
     {
     }
 
+    @Override
+    public void onPause(){
+        
+        super.onPause();
+    }
 
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+    }
     // ------ メニュー関連 ------
 
 

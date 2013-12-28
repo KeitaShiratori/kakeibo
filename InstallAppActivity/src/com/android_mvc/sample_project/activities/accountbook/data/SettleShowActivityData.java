@@ -48,16 +48,12 @@ public class SettleShowActivityData {
         incomeDetails = new IncomeDetailDAO(activity).findByOrder();
 
         settleRecordData = new ArrayList<SettleRecordData>();
-        for (AccountBookDetail a : accountBookDetails) {
+        for (int i = accountBookDetails.size() - 1; i >= 0; i--) {
+            AccountBookDetail a = accountBookDetails.get(i);
             SettleRecordData tmp = new SettleRecordData();
             tmp.setYoteiYYYYMM(a.getMokuhyouMonth());
+            tmp.setMokuhyouKingaku(a.getMokuhyouMonthKingaku());
             settleRecordData.add(tmp);
-        }
-
-        try {
-            ResultGroup res = new ControlBreakBuilder().build(settleRecordData);
-
-        } catch (Exception e) {
         }
 
         this.controllBreak();
@@ -184,6 +180,7 @@ public class SettleShowActivityData {
         boolean iContinueFlag = false;
         boolean cContinueFlag = false;
         Calendar ymd = Calendar.getInstance();
+        Integer mokuhyouKingaku;
         Integer iSum = 0;
         Integer cSum = 0;
         String procFlag = NOTHING; // COST or INCOME or NOTHING
@@ -215,15 +212,16 @@ public class SettleShowActivityData {
         // コントロールブレイク
         while (bContinueFlag) {
             ymd = this.accountBookDetails.get(bPos).getMokuhyouMonth();
+            mokuhyouKingaku = this.accountBookDetails.get(bPos).getMokuhyouMonthKingaku();
             cSum = 0;
             iSum = 0;
 
             while (cContinueFlag && procFlag.equals(COST)) {
-                //ymdを基準として、有効日付の大小をチェックする。
+                // ymdを基準として、有効日付の大小をチェックする。
                 int cChkYMDResult = chkYMD(ymd, this.costDetails.get(cPos).getSettleYmd());
 
-                //ymdと有効日付の年月が同じ場合
-                if ( cChkYMDResult == 0) {
+                // ymdと有効日付の年月が同じ場合
+                if (cChkYMDResult == 0) {
                     cSum += this.costDetails.get(cPos).getEffectiveSettleCost();
                     if (cPos + 1 < this.costDetails.size()) {
                         cPos++;
@@ -231,17 +229,20 @@ public class SettleShowActivityData {
                         cContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, cChkYMDResult);
                     }
-                } else if (cChkYMDResult < 0){
-                    //集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
+                } else if (cChkYMDResult < 0) {
+                    // 集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
                     if (cPos + 1 < this.costDetails.size()) {
                         cPos++;
                     } else {
                         cContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, cChkYMDResult);
                     }
-                }else if (cChkYMDResult > 0){
-                    //集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
+                } else if (cChkYMDResult > 0) {
+                    // 集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
                     procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, cChkYMDResult);
+                    if (procFlag == COST) {
+                        break;
+                    }
                 }
             }
             this.settleRecordData.get(bPos).setCostSum(cSum);
@@ -249,7 +250,7 @@ public class SettleShowActivityData {
             while (iContinueFlag && procFlag.equals(INCOME)) {
                 int iChkYMDResult = chkYMD(ymd, this.incomeDetails.get(iPos).getSettleYmd());
                 if (iChkYMDResult == 0) {
-                    //集計対象の年月と有効日付の年月が同じ場合
+                    // 集計対象の年月と有効日付の年月が同じ場合
                     iSum += this.incomeDetails.get(iPos).getEffectiveSettleIncome();
                     if (iPos + 1 < this.incomeDetails.size()) {
                         iPos++;
@@ -257,25 +258,27 @@ public class SettleShowActivityData {
                         iContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, iChkYMDResult);
                     }
-                } else if(iChkYMDResult < 0){
-                    //集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
+                } else if (iChkYMDResult < 0) {
+                    // 集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
                     if (iPos + 1 < this.incomeDetails.size()) {
                         iPos++;
                     } else {
                         iContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, iChkYMDResult);
                     }
-                }else if (iChkYMDResult > 0){
-                    //集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
+                } else if (iChkYMDResult > 0) {
+                    // 集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
                     procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, iChkYMDResult);
+                    if (procFlag == INCOME) {
+                        break;
+                    }
                 }
             }
             this.settleRecordData.get(bPos).setIncomeSum(iSum);
 
             // bPosの更新、bContinueFlagの設定、可処分所得の設定
-            this.settleRecordData.get(bPos).setDisposablencome(iSum - cSum);
+            this.settleRecordData.get(bPos).setDisposablencome(iSum - cSum - mokuhyouKingaku);
             this.settleRecordData.get(bPos).setYoteiYYYYMM(ymd);
-            // bContinueFlag = (!procFlag.equals(NOTHING)) ? true : false;
             if (bPos + 1 < this.accountBookDetails.size()) {
                 bPos++;
             } else {
@@ -294,32 +297,32 @@ public class SettleShowActivityData {
      * @return
      */
     private String setProcFlag(boolean iContinueFlag, boolean cContinueFlag, String procFlag, int chkResult) {
-        if(procFlag == NOTHING){
+        if (procFlag == NOTHING) {
             return NOTHING;
         }
-        if(!iContinueFlag && !cContinueFlag){
+        if (!iContinueFlag && !cContinueFlag) {
             return NOTHING;
         }
-        if(iContinueFlag){
-            if(cContinueFlag && procFlag.equals(INCOME) && chkResult == 0){
+        if (iContinueFlag) {
+            if (cContinueFlag && procFlag.equals(COST) && chkResult == 0) {
                 return COST;
-            }else if(cContinueFlag && procFlag.equals(INCOME) && chkResult == 1){
+            } else if (cContinueFlag && procFlag.equals(INCOME) && chkResult == 1) {
                 return COST;
-            }else if(cContinueFlag && procFlag.equals(COST) && chkResult == -1){
+            } else if (cContinueFlag && procFlag.equals(COST) && chkResult == -1) {
                 return COST;
-            }else{
+            } else {
                 return INCOME;
             }
         }
-        if(cContinueFlag){
+        if (cContinueFlag) {
             return COST;
         }
         return NOTHING;
     }
 
     private int chkYMD(Calendar baseYMD, Calendar comparedYMD) {
-        //実績日がnullの場合、集計対象から除外する。
-        if(comparedYMD == null){
+        // 実績日がnullの場合、集計対象から除外する。
+        if (comparedYMD == null) {
             return -1;
         }
 

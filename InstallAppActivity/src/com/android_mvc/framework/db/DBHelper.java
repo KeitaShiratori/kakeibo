@@ -17,10 +17,10 @@ public class DBHelper extends SQLiteOpenHelper
 {
 
     // データベース名
-    public static String DB_NAME = ""; // AP側から初期化される
+    public static String DB_NAME = "kakeiboDB"; // AP側から初期化される
 
     // データベースファイル名
-    private static String DB_FULL_PATH = "";
+    private static String DB_FULL_PATH ="/data/data/com/android_mvc/framework/db/kakeiboDB";
 
     // データベースバージョン
     private static final int DB_VERSION = 1; // TODO:

@@ -11,6 +11,7 @@ import android.widget.Spinner;
 
 import com.android_mvc.framework.common.FWUtil;
 import com.android_mvc.framework.db.dao.Finder;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.db.dao.CategoryTypeDAO;
 import com.android_mvc.sample_project.db.entity.lib.LogicalEntity;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CategoryTypeCol;
@@ -59,6 +60,7 @@ public class CategoryType extends LogicalEntity<CategoryType> {
 
     public Spinner getSpinner(Context context) {
         Spinner ret = new Spinner(context);
+        ret.setBackgroundResource(R.drawable.button_design_1);
         List<CategoryType> categoryList = new CategoryTypeDAO(context).findAll();
         List<CharSequence> list = new ArrayList<CharSequence>();
         for (CategoryType c : categoryList) {

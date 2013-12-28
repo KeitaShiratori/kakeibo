@@ -1,9 +1,8 @@
 package com.android_mvc.sample_project.activities.accountbook.data.cb;
 
 import java.util.List;
-import java.util.RandomAccess;
-import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.RandomAccess;
 
 /** PeekableIterator を構築するクラス。PeekableIterator のprivateな実装例を含む。
  * 対象リストがマーカーの java.util.RandomAccess を実装しているかどうかによって、実装クラスが変わるので、効率がいいはず。今回は Generics を使わないが、Generics 対応である。

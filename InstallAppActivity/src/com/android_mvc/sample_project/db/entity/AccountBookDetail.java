@@ -2,13 +2,16 @@ package com.android_mvc.sample_project.db.entity;
 
 import java.util.Calendar;
 
-import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
-import android.widget.LinearLayout;
+import android.view.Gravity;
+import android.view.View.OnClickListener;
 
+import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.db.entity.lib.LPUtil;
 import com.android_mvc.sample_project.db.entity.lib.LogicalEntity;
 
@@ -64,22 +67,68 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
     // カスタムG&S
 
     /**
+     * 家計簿レコードのヘッダを返却する
+     */
+    public MLinearLayout getHeader(Context context) {
+        MLinearLayout ret = new MLinearLayout(context)
+                .orientationHorizontal()
+                .heightWrapContent()
+                .paddingLeftPx(10);
+
+        MTextView tv1 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("月別目標")
+                .backgroundDrawable(R.drawable.header_design);
+        MTextView tv2 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("目標金額")
+                .backgroundDrawable(R.drawable.header_design);
+        MTextView tv3 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("自動入力")
+                .backgroundDrawable(R.drawable.header_design);
+
+        ret.add(tv1, tv2, tv3);
+
+        return ret;
+    }
+
+    /**
      * 家計簿のレコードを表示する
      */
-    public String getDescription() {
-        String account_book_detail_description = // ※forループ中で呼ばれるので，本当はStringBuilderを（略
-        getMokuhyouMonth().get(Calendar.YEAR) + "/"
-                + (getMokuhyouMonth().get(Calendar.MONTH) + 1) + ": "
-                + getMokuhyouMonthKingaku() + "円, " + "自動入力：";
+    public MLinearLayout getDescription(Context context, OnClickListener l) {
+        MLinearLayout ret = new MLinearLayout(context)
+                .orientationHorizontal()
+                .heightWrapContent()
+                .paddingLeftPx(10);
+
+        MTextView tv1 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text(getMokuhyouMonth().get(Calendar.YEAR) + "年"
+                        + (getMokuhyouMonth().get(Calendar.MONTH) + 1) + "月")
+                .backgroundDrawable(R.drawable.record_design);
+
+        MTextView tv2 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text(getMokuhyouMonthKingaku() + "円")
+                .backgroundDrawable(R.drawable.record_design);
+
+        MTextView bt3 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .click(l);
 
         // 自動入力フラグがtrueならON、falseならOFF
         if (getAutoInputFlag()) {
-            account_book_detail_description += "ON";
+            bt3.text("ON")
+                    .backgroundDrawable(R.drawable.button_design_1);
         } else {
-            account_book_detail_description += "OFF";
+            bt3.text("OFF")
+                    .backgroundDrawable(R.drawable.button_design_2);
+
         }
 
-        return account_book_detail_description;
+        ret.add(tv1, tv2, bt3);
+        return ret;
     }
 
     // ----- LP変換(Logical <-> Physical) -----

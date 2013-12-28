@@ -11,8 +11,10 @@ import com.android_mvc.sample_project.activities.accountbook.BudgetShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailShowActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
+import com.android_mvc.sample_project.db.entity.AccountBook;
 import com.android_mvc.sample_project.db.entity.AccountBookDetail;
 import com.android_mvc.sample_project.domain.AccountBookShowAction;
+import com.android_mvc.sample_project.domain.AccountBookUpdateAction;
 
 /**
  * 家計簿表示画面のコントローラ。
@@ -68,6 +70,28 @@ public class AccountBookShowController extends BaseController
                         .map("SHOW_COST_DETAIL", CostDetailShowActivity.class, "変動費一覧画面へ")
                         .map("SHOW_BUDGET_SHOW", BudgetShowActivity.class, "予定表示へ")
                 );
+    }
+
+    // 最終目標金額の更新処理
+    public static void submit(final AccountBookShowActivity activity, String action_type, final AccountBook account_book)
+    {
+        if ("UPDATE_ACCOUNT_BOOK".equals(action_type))
+        {
+            // DB更新
+            new ControlFlowDetail<AccountBookShowActivity>(activity)
+                    .setBL(new BLExecutor() {
+                        @Override
+                        public ActionResult doAction()
+                        {
+                            return new AccountBookUpdateAction(activity, account_book).exec();
+                        }
+                    })
+                    .onBLExecuted(
+                            new RoutingTable().map("success", AccountBookShowActivity.class)
+                    )
+                    .startControl();
+            ;
+        }
     }
 
 }

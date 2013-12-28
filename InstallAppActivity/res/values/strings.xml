@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello World, Android-MVC !</string>
-    <string name="app_name">Android-MVC Sample</string>
+    <string name="app_name">家計簿</string>
     <string name="activity_animation_duration">300</string>
 
     <!-- ■■フレームワークで使用する文字列リソース ここから■■ -->

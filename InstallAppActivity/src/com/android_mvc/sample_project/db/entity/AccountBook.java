@@ -2,13 +2,14 @@ package com.android_mvc.sample_project.db.entity;
 
 import java.util.Calendar;
 
-import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
-import android.widget.LinearLayout;
+import android.view.Gravity;
 
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.db.entity.lib.LPUtil;
 import com.android_mvc.sample_project.db.entity.lib.LogicalEntity;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookCol;
@@ -24,8 +25,10 @@ public class AccountBook extends LogicalEntity<AccountBook> {
 
     @Override
     public final String[] columns() {
-        return new String[] { AccountBookCol.ID,
-                AccountBookCol.MOKUHYOU_KINGAKU, AccountBookCol.MOKUHYOU_KIKAN,
+        return new String[] {
+                AccountBookCol.ID,
+                AccountBookCol.MOKUHYOU_KINGAKU,
+                AccountBookCol.MOKUHYOU_KIKAN,
                 AccountBookCol.START_DATE };
     }
 
@@ -63,15 +66,68 @@ public class AccountBook extends LogicalEntity<AccountBook> {
     // カスタムG&S
 
     /**
+     * 家計簿のヘッダーを返す
+     * 
+     * @param context
+     * @return
+     */
+    public MLinearLayout getHeader(Context context) {
+
+        MLinearLayout ret = new MLinearLayout(context)
+                .orientationHorizontal()
+                .widthFillParent()
+                .heightWrapContent()
+                .paddingLeftPx(10);
+
+        MTextView tv1 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("最終目標")
+                .backgroundDrawable(R.drawable.header_design);
+
+        MTextView tv2 = new MTextView(context)
+                .text("期間")
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundDrawable(R.drawable.header_design);
+
+        MTextView tv3 = new MTextView(context)
+                .text("開始日")
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundDrawable(R.drawable.header_design);
+
+        ret.add(tv1, tv2, tv3);
+
+        return ret;
+    }
+
+    /**
      * 家計簿のレコードを表示する
      */
-    public String getDescription() {
-        String account_book_description = // ※forループ中で呼ばれるので，本当はStringBuilderを（略
-        "目標金額: " + getMokuhyouKingaku() + "円, " + "目標期間: " + getMokuhyouKikan()
-                + "ヶ月, " + "開始日: "
-                + LPUtil.encodeCalendarToTextYMD(getStartDate());
+    public MLinearLayout getDescription(Context context) {
 
-        return account_book_description;
+        MLinearLayout ret = new MLinearLayout(context)
+                .orientationHorizontal()
+                .widthFillParent()
+                .heightWrapContent()
+                .paddingLeftPx(10);
+
+        MTextView tv1 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text(getMokuhyouKingaku() + "円")
+                .backgroundDrawable(R.drawable.record_design);
+
+        MTextView tv2 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text(getMokuhyouKikan() + "ヶ月")
+                .backgroundDrawable(R.drawable.record_design);
+
+        MTextView tv3 = new MTextView(context)
+                .text(LPUtil.encodeCalendarToTextYMD(getStartDate()))
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundDrawable(R.drawable.record_design);
+
+        ret.add(tv1, tv2, tv3);
+
+        return ret;
     }
 
     // ----- LP変換(Logical <-> Physical) -----

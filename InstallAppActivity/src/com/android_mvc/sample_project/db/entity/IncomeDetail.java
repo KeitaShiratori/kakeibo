@@ -4,12 +4,15 @@ import java.util.Calendar;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.view.Gravity;
-import android.widget.LinearLayout;
+import android.view.View.OnClickListener;
 
+import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.db.dao.CategoryTypeDAO;
 import com.android_mvc.sample_project.db.dao.PayTypeDAO;
@@ -139,7 +142,7 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     /**
      * 変動費明細のレコードを表示する
      */
-    public MLinearLayout getDescription(Activity activity) {
+    public MLinearLayout getDescription(Activity activity, Context context, OnClickListener l1, OnClickListener l2) {
         String budgetIncome = (getBudgetIncome() == null) ? "未入力" : getBudgetIncome() + "円";
         String settleIncome = (getSettleIncome() == null) ? "未入力" : getSettleIncome() + "円";
         String categoryType = (getCategoryType() == null) ? "未入力" : new CategoryTypeDAO(activity).findById(Long.parseLong(getCategoryType().toString())).getCategoryTypeName();
@@ -149,25 +152,31 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                 .orientationVertical()
                 .widthWrapContent()
                 .heightWrapContent()
-                .paddingPx(10)
+                .paddingLeftPx(10)
+                .backgroundDrawable(R.drawable.border)
                 .add(
                         new MLinearLayout(activity)
                                 .orientationHorizontal()
                                 .widthFillParent()
                                 .heightWrapContent()
-                                .paddingPx(10)
                                 .add(
                                         new MTextView(activity)
+                                                .gravity(Gravity.CENTER_VERTICAL)
                                                 .text(categoryType)
-                                                .backgroundDrawable(drawable.border)
+                                                .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
-                                                .paddingPx(10)
                                         ,
                                         new MTextView(activity)
+                                                .gravity(Gravity.CENTER_VERTICAL)
                                                 .text("予定: " + budgetIncome)
-                                                .backgroundDrawable(drawable.border)
+                                                .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
-                                                .paddingPx(10)
+                                        ,
+                                        new MTextView(activity)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .text("変更")
+                                                .backgroundDrawable(R.drawable.button_design_1)
+                                                .click(l1)
                                 )
                         ,
 
@@ -175,20 +184,26 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                 .orientationHorizontal()
                                 .widthFillParent()
                                 .heightWrapContent()
-                                .paddingPx(10)
                                 .add(
 
                                         new MTextView(activity)
                                                 .text(payType)
-                                                .backgroundDrawable(drawable.border)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
-                                                .paddingPx(10)
                                         ,
                                         new MTextView(activity)
                                                 .text("実績: " + settleIncome)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
-                                                .backgroundDrawable(drawable.border)
-                                                .paddingPx(10)
+                                        ,
+                                        new MTextView(activity)
+                                                .text("削除")
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(R.drawable.button_design_1)
+                                                .click(l2)
+
                                 )
                 );
 

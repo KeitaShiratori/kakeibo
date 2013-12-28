@@ -1,6 +1,5 @@
 package com.android_mvc.sample_project.activities.accountbook.data.cb;
 
-import java.util.List;
 import java.util.Stack;
 
 /** コントロールブレーク＋合計を行うビルダ。<br/>

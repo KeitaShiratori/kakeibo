@@ -1,3 +1,4 @@
+
 package com.android_mvc.sample_project.bat;
 
 import android.content.Context;

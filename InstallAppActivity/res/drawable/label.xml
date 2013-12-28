@@ -4,16 +4,14 @@
     <solid android:color="@color/whitesmoke" />
 
     <stroke
-        android:width="3px"
+        android:width="2dp"
         android:color="@color/goldenrod" />
 
     <padding
-        android:bottom="2px"
-        android:left="4px"
-        android:right="4px"
-        android:top="2px" />
+        android:left="7dp"
+        android:right="7dp"/>
 
-    <corners android:radius="4px" />
+    <corners android:radius="4dp" />
     
     <gradient
         android:startColor="@color/white"

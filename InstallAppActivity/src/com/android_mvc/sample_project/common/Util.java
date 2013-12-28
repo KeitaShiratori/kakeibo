@@ -3,6 +3,12 @@ package com.android_mvc.sample_project.common;
 import java.util.Calendar;
 import java.util.StringTokenizer;
 
+import android.content.Context;
+import android.view.Display;
+import android.view.WindowManager;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.LinearLayout;
+
 import com.android_mvc.framework.common.BaseUtil;
 
 /**
@@ -221,4 +227,29 @@ public class Util extends BaseUtil
         return buffer.toString().substring(0, len);
     }
 
+    /**
+     * HORIZONTALなLinearLayoutの子Viewを画面サイズに対して等間隔に配置する
+     * @param ml
+     * @return
+     */
+    public static LinearLayout setWidthRegularInterval(LinearLayout l, Context context){
+
+        if (LinearLayout.HORIZONTAL != l.getOrientation()){
+            return l;
+        }
+        
+        if (l.getChildCount() > 0){
+            //画面サイズを取得
+            WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+            Display disp = wm.getDefaultDisplay();
+            int width = disp.getWidth();
+
+            for(int i = 0 ; i < l.getChildCount(); i++){
+                //子Viewのwidthを画面サイズに対して等間隔に設定
+                l.getChildAt(i).setLayoutParams(new LayoutParams(width/l.getChildCount(), LayoutParams.FILL_PARENT));
+            }
+        }
+
+        return l;
+    }
 }

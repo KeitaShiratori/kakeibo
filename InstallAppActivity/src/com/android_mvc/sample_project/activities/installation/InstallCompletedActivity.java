@@ -3,6 +3,7 @@ package com.android_mvc.sample_project.activities.installation;
 import java.util.Calendar;
 
 import android.app.DatePickerDialog;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.DatePicker;
@@ -14,19 +15,21 @@ import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.MainController;
 
 /**
  * サンプルのインストール完了画面。
+ * 
  * @author id:language_and_engineering
- *
+ * 
  */
 public class InstallCompletedActivity extends BaseNormalActivity
 {
     MButton button0;
     MTextView tv0;
-    
+
     MLinearLayout layout1;
 
     MTextView tv1_1;
@@ -41,7 +44,7 @@ public class InstallCompletedActivity extends BaseNormalActivity
     MTextView tv3_2;
     MButton b3;
     DatePickerDialog dpd3;
-    
+
     MLinearLayout layout2;
 
     final Calendar calendar = Calendar.getInstance();
@@ -55,110 +58,121 @@ public class InstallCompletedActivity extends BaseNormalActivity
 
         // ここに，画面上のUI部品の定義を記述する。
         new UIBuilder(context)
-            .add(
-               tv0 = new MTextView(context)
-                   .text("目標金額と目標期間を設定してください。" )
-                   .widthWrapContent()
-               ,
+                .setDisplayHeaderText("目標金額設定")
+                .add(
+                        tv0 = new MTextView(context)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text("目標金額と目標期間を設定してください。")
+                                .widthWrapContent()
+                        ,
 
-               layout1 = new MLinearLayout(context)
-               .orientationHorizontal()
-               .widthFillParent()
-               .add(
+                        layout1 = new MLinearLayout(context)
+                                .orientationHorizontal()
+                                .widthFillParent()
+                                .add(
 
-                 tv3_1 = new MTextView(context)
-                   .text("開始日:" )
-                   .widthWrapContent()
-                 ,
-                 
-                 tv3_2 = new MTextView(context)
-                   .text(year + "/" + (month + 1) + "/" + day)
-                   .widthWrapContent()
-                   ,
+                                        tv3_1 = new MTextView(context)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(R.drawable.header_design)
+                                                .text("開始日:")
+                                                .widthWrapContent()
+                                        ,
 
-                   b3 = new MButton(context)
-                     .text("入力")
-                     .click(new OnClickListener(){
+                                        tv3_2 = new MTextView(context)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(R.drawable.record_design_1)
+                                                .text(year + "/" + (month + 1) + "/" + day)
+                                                .widthWrapContent()
+                                        ,
 
-                         @Override
-                         public void onClick(View v) {
-                             dpd3 = new DatePickerDialog(
-                                     context,
-                                     new DatePickerDialog.OnDateSetListener() {
-                                         @Override
-                                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                         	tv3_2.setText(
-                                                 String.valueOf(year) + "/" +
-                                                 String.valueOf(monthOfYear + 1) + "/" +
-                                                 String.valueOf(dayOfMonth));
-                                         }
-                                     },
-                                     year, month, day);
-                             dpd3.show();
-                         }
+                                        b3 = new MButton(context)
+                                                .text("入力")
+                                                .click(new OnClickListener() {
 
-                     })
-               ),
+                                                    @Override
+                                                    public void onClick(View v) {
+                                                        dpd3 = new DatePickerDialog(
+                                                                context,
+                                                                new DatePickerDialog.OnDateSetListener() {
+                                                                    @Override
+                                                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                                                        tv3_2.setText(
+                                                                                String.valueOf(year) + "/" +
+                                                                                        String.valueOf(monthOfYear + 1) + "/" +
+                                                                                        String.valueOf(dayOfMonth));
+                                                                    }
+                                                                },
+                                                                year, month, day);
+                                                        dpd3.show();
+                                                    }
 
-               layout1 = new MLinearLayout(context)
-               .orientationHorizontal()
-               .widthFillParent()
-               .add(
-            	   tv1_1 = new MTextView(context)
-            	   	   .text("目標金額")
-                       .widthWrapContent()
-                   ,
+                                                })
+                                ),
 
-                   et1 = new MEditText(context)
-                       .widthPx(300)
-                   ,
+                        layout1 = new MLinearLayout(context)
+                                .orientationHorizontal()
+                                .widthFillParent()
+                                .add(
+                                        tv1_1 = new MTextView(context)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(R.drawable.header_design)
+                                                .text("目標金額")
+                                                .widthWrapContent()
+                                        ,
 
-                   tv1_2 = new MTextView(context)
-        	   	   .text("円")
-                   .widthWrapContent()
-                   ),
+                                        et1 = new MEditText(context)
+                                                .widthPx(300)
+                                        ,
 
-                   layout2 = new MLinearLayout(context)
-                   .orientationHorizontal()
-                   .widthFillParent()
-                   .add(
-                	   tv2_1 = new MTextView(context)
-                	   	   .text("目標期間")
-                           .widthWrapContent()
-                       ,
+                                        tv1_2 = new MTextView(context)
+                                                .text("円")
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .widthWrapContent()
+                                ),
 
-                       et2 = new MEditText(context)
-                           .widthPx(300)
-                       ,
+                        layout2 = new MLinearLayout(context)
+                                .orientationHorizontal()
+                                .widthFillParent()
+                                .add(
+                                        tv2_1 = new MTextView(context)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .text("目標期間")
+                                                .backgroundDrawable(R.drawable.header_design)
+                                                .widthWrapContent()
+                                        ,
 
-                       tv2_2 = new MTextView(context)
-            	   	   .text("ヶ月")
-                       .widthWrapContent()
-                       ),
-               button0 = new MButton(context)
-                   .widthFillParent()
-                   .text("目標を設定してトップ画面へ" )
-                   .click(new OnClickListener(){
-                       @Override
-                       public void onClick(View v) {
-                           MainController.submit(activity);
-                       }
-                   })
-            )
-        .display();
+                                        et2 = new MEditText(context)
+                                                .widthPx(300)
+                                        ,
+
+                                        tv2_2 = new MTextView(context)
+                                                .text("ヶ月")
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .widthWrapContent()
+                                ),
+                        button0 = new MButton(context)
+                                .widthFillParent()
+                                .text("目標を設定してトップ画面へ")
+                                .backgroundDrawable(R.drawable.button_design_2)
+                                .click(new OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        MainController.submit(activity);
+                                    }
+                                })
+                )
+                .displayWithoutHooter();
 
     }
 
     @Override
     public ActivityParams toParams() {
         // 入力された値をすべて回収
-    	return new ActivityParams()
-            .add("目標金額", "mokuhyou_kingaku", et1.text() )
-            .add("目標期間", "mokuhyou_kikan", et2.text() )
-            .add("使用年月日", "start_date", Util.toCalendar(tv3_2.getText().toString()) )
-            ;
+        return new ActivityParams()
+                .add("目標金額", "mokuhyou_kingaku", et1.text())
+                .add("目標期間", "mokuhyou_kikan", et2.text())
+                .add("使用年月日", "start_date", Util.toCalendar(tv3_2.getText().toString()));
     }
-
 
     @Override
     public void onBackPressed()

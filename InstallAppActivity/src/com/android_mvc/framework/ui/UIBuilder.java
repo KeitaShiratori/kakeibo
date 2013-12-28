@@ -1,43 +1,45 @@
 package com.android_mvc.framework.ui;
 
-import com.android_mvc.sample_project.R;
-import com.android_mvc.framework.annotations.SuppressDebugLog;
-import com.android_mvc.framework.common.FWUtil;
-import com.android_mvc.framework.ui.view.MLinearLayout;
-import com.android_mvc.framework.ui.view.etc.BaseJSAPI;
-
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebView;
 
+import com.android_mvc.framework.annotations.SuppressDebugLog;
+import com.android_mvc.framework.common.FWUtil;
+import com.android_mvc.framework.ui.view.MLinearLayout;
+import com.android_mvc.framework.ui.view.MTextView;
+import com.android_mvc.framework.ui.view.etc.BaseJSAPI;
+import com.android_mvc.sample_project.R;
+import com.android_mvc.sample_project.activities.common.HooterMenu;
+
 /**
  * XMLを使わずに，メソッドチェインによって全レイアウトを構築するためのビルダー。
+ * 
  * @author id:language_and_engineering
- *
+ * 
  */
 @SuppressDebugLog
 public class UIBuilder
 {
 
     protected Activity context = null;
-        // NOTE: Activityだけど，変数名はcontextにしておいたほうが
-        // Activity側のコーディング時に自動補完しやすく読みやすいので定石破り。
-        // あくまでも，FWを利用するAP側での生産性をアップさせるために。
-        // FWの内部にこだわるせいでAP側が読みづらいコードになったら本末転倒ではないか。
-
+    // NOTE: Activityだけど，変数名はcontextにしておいたほうが
+    // Activity側のコーディング時に自動補完しやすく読みやすいので定石破り。
+    // あくまでも，FWを利用するAP側での生産性をアップさせるために。
+    // FWの内部にこだわるせいでAP側が読みづらいコードになったら本末転倒ではないか。
 
     // 最上位のレイアウト
     MLinearLayout rootLayout;
-
+    MLinearLayout hooter;
+    MLinearLayout header;
+    MTextView displayHeaderText;
 
     // HTMLで画面描画する場合
     WebView wv_for_html = null;
 
-
     /**
-     * 初期化。
-     * このクラスで全レイアウトを描画する場合，レイアウトXMLは作らないでおくこと。rootLayoutが見つからずヌルポになるから。
+     * 初期化。 このクラスで全レイアウトを描画する場合，レイアウトXMLは作らないでおくこと。rootLayoutが見つからずヌルポになるから。
      */
     public UIBuilder(Activity context)
     {
@@ -45,32 +47,41 @@ public class UIBuilder
 
         // ひな型XMLを使い，その中に各Viewを次々に放り込んでゆく。
         context.setContentView(R.layout.fw_template_scroll); // テンプレートとして空っぽのXMLを使う。
-        this.rootLayout = (MLinearLayout)context.findViewById(R.id._FWRootLayout);
+        this.rootLayout = (MLinearLayout) context.findViewById(R.id._FWRootLayout);
+        this.hooter = (MLinearLayout) context.findViewById(R.id.footer);
+        hooter.add(new HooterMenu(context).getHooterMenu(context));
+
+        displayHeaderText = new MTextView(context, null, R.attr.text_view_style_h1)
+                .widthWrapContent()
+                .paddingPx(10);
+
+        this.header = (MLinearLayout) context.findViewById(R.id.header);
+        header.add(
+                displayHeaderText
+                );
 
         FWUtil.d("ビルダーの初期化が完了。");
     }
 
-
     /**
      * １つ以上の描画したい要素を追加。
-     *
-     * @param v 可変個のView
+     * 
+     * @param v
+     *            可変個のView
      */
-    public UIBuilder add(View...v)
+    public UIBuilder add(View... v)
     {
-        for( int i = 0; i < v.length; i ++ )
+        for (int i = 0; i < v.length; i++)
         {
-            //FWUtil.d("追加対象のViewは" + v.toString() );
-            this.rootLayout.add( v[i] );
+            // FWUtil.d("追加対象のViewは" + v.toString() );
+            this.rootLayout.add(v[i]);
         }
 
         return this;
     }
 
-
     /**
-     * 画面の描画に使用したいHTMLを指定する。
-     * ファイルパスはassets/内から書き始める。
+     * 画面の描画に使用したいHTMLを指定する。 ファイルパスはassets/内から書き始める。
      */
     public UIBuilder renderLocalHTML(String file_path) {
 
@@ -78,7 +89,7 @@ public class UIBuilder
 
         wv_for_html = new WebView(this.context);
         wv_for_html.setLayoutParams(new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-            // http://stackoverflow.com/questions/11281094/programmatically-displaying-a-webview-with-a-textview-below-it
+        // http://stackoverflow.com/questions/11281094/programmatically-displaying-a-webview-with-a-textview-below-it
 
         // WebView内でJavaScriptを有効化
         wv_for_html.getSettings().setJavaScriptEnabled(true);
@@ -94,7 +105,6 @@ public class UIBuilder
         return this;
     }
 
-
     /**
      * HTMLで画面描画する場合，JavaScriptからJavaのオブジェクトを参照可能にする。
      */
@@ -108,7 +118,6 @@ public class UIBuilder
         return this;
     }
 
-
     /**
      * 定義し終えたレイアウトを，実際に描画する。
      */
@@ -118,11 +127,28 @@ public class UIBuilder
 
         // 最上位のレイアウトから再帰的に動的登録
         rootLayout.inflateInside();
+        hooter.inflateInside();
+        header.inflateInside();
 
         FWUtil.d("描画処理を終了。");
         return this;
     }
 
+    public UIBuilder displayWithoutHooter() {
+        FWUtil.d("描画処理を開始。");
+
+        // 最上位のレイアウトから再帰的に動的登録
+        rootLayout.inflateInside();
+        header.inflateInside();
+
+        FWUtil.d("描画処理を終了。");
+        return this;
+    }
+
+    public UIBuilder setDisplayHeaderText(String s) {
+        this.displayHeaderText.text(s);
+        return this;
+    }
 
     // TODO: toXML() がほしいな…。UIがある程度複雑になってきたら，XMLに移行するはずだから。
 

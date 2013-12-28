@@ -1,8 +1,6 @@
 package com.android_mvc.sample_project.activities.accountbook.data.cb;
 
-import java.util.List;
 import java.util.Iterator;
-import java.util.ListIterator;
 
 /** peek() を持つ Iterator。
  * Meyer の言うことは正しい。Iterator は OOP 的にはあまり良くない設計だ。

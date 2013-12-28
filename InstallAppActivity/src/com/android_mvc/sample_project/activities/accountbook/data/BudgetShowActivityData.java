@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.android_mvc.sample_project.activities.accountbook.BudgetShowActivity;
-import com.android_mvc.sample_project.activities.accountbook.data.cb.ControlBreakBuilder;
-import com.android_mvc.sample_project.activities.accountbook.data.cb.ResultGroup;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
@@ -48,16 +46,12 @@ public class BudgetShowActivityData {
         incomeDetails = new IncomeDetailDAO(activity).findByOrder();
 
         budgetRecordData = new ArrayList<BudgetRecordData>();
-        for (AccountBookDetail a : accountBookDetails) {
+        for (int i = accountBookDetails.size() - 1; i >= 0; i--){
+            AccountBookDetail a = accountBookDetails.get(i);
             BudgetRecordData tmp = new BudgetRecordData();
             tmp.setYoteiYYYYMM(a.getMokuhyouMonth());
+            tmp.setMokuhyouKingaku(a.getMokuhyouMonthKingaku());
             budgetRecordData.add(tmp);
-        }
-
-        try {
-            ResultGroup res = new ControlBreakBuilder().build(budgetRecordData);
-
-        } catch (Exception e) {
         }
 
         this.controllBreak();
@@ -184,6 +178,7 @@ public class BudgetShowActivityData {
         boolean iContinueFlag = false;
         boolean cContinueFlag = false;
         Calendar ymd = Calendar.getInstance();
+        Integer mokuhyouKingaku;
         Integer iSum = 0;
         Integer cSum = 0;
         String procFlag = NOTHING; // COST or INCOME or NOTHING
@@ -215,15 +210,16 @@ public class BudgetShowActivityData {
         // コントロールブレイク
         while (bContinueFlag) {
             ymd = this.accountBookDetails.get(bPos).getMokuhyouMonth();
+            mokuhyouKingaku = this.accountBookDetails.get(bPos).getMokuhyouMonthKingaku();
             cSum = 0;
             iSum = 0;
 
             while (cContinueFlag && procFlag.equals(COST)) {
-                //ymdを基準として、有効日付の大小をチェックする。
+                // ymdを基準として、有効日付の大小をチェックする。
                 int cChkYMDResult = chkYMD(ymd, this.costDetails.get(cPos).getEffectiveYMD());
 
-                //ymdと有効日付の年月が同じ場合
-                if ( cChkYMDResult == 0) {
+                // ymdと有効日付の年月が同じ場合
+                if (cChkYMDResult == 0) {
                     cSum += this.costDetails.get(cPos).getEffectiveCost();
                     if (cPos + 1 < this.costDetails.size()) {
                         cPos++;
@@ -231,17 +227,20 @@ public class BudgetShowActivityData {
                         cContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, cChkYMDResult);
                     }
-                } else if (cChkYMDResult < 0){
-                    //集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
+                } else if (cChkYMDResult < 0) {
+                    // 集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
                     if (cPos + 1 < this.costDetails.size()) {
                         cPos++;
                     } else {
                         cContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, cChkYMDResult);
                     }
-                }else if (cChkYMDResult > 0){
-                    //集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
+                } else if (cChkYMDResult > 0) {
+                    // 集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
                     procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, cChkYMDResult);
+                    if(procFlag == COST){
+                        break;
+                    }
                 }
             }
             this.budgetRecordData.get(bPos).setCostSum(cSum);
@@ -249,7 +248,7 @@ public class BudgetShowActivityData {
             while (iContinueFlag && procFlag.equals(INCOME)) {
                 int iChkYMDResult = chkYMD(ymd, this.incomeDetails.get(iPos).getEffectiveYMD());
                 if (iChkYMDResult == 0) {
-                    //集計対象の年月と有効日付の年月が同じ場合
+                    // 集計対象の年月と有効日付の年月が同じ場合
                     iSum += this.incomeDetails.get(iPos).getEffectiveIncome();
                     if (iPos + 1 < this.incomeDetails.size()) {
                         iPos++;
@@ -257,25 +256,27 @@ public class BudgetShowActivityData {
                         iContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, iChkYMDResult);
                     }
-                } else if(iChkYMDResult < 0){
-                    //集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
+                } else if (iChkYMDResult < 0) {
+                    // 集計対象の年月（ymd）より有効日付が過去日の場合、次のレコードを読み込む
                     if (iPos + 1 < this.incomeDetails.size()) {
                         iPos++;
                     } else {
                         iContinueFlag = false;
                         procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, iChkYMDResult);
                     }
-                }else if (iChkYMDResult > 0){
-                    //集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
+                } else if (iChkYMDResult > 0) {
+                    // 集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
                     procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, iChkYMDResult);
+                    if (procFlag == INCOME){
+                        break;
+                    }
                 }
             }
             this.budgetRecordData.get(bPos).setIncomeSum(iSum);
 
             // bPosの更新、bContinueFlagの設定、可処分所得の設定
-            this.budgetRecordData.get(bPos).setDisposablencome(iSum - cSum);
+            this.budgetRecordData.get(bPos).setDisposablencome(iSum - cSum - mokuhyouKingaku);
             this.budgetRecordData.get(bPos).setYoteiYYYYMM(ymd);
-            // bContinueFlag = (!procFlag.equals(NOTHING)) ? true : false;
             if (bPos + 1 < this.accountBookDetails.size()) {
                 bPos++;
             } else {
@@ -294,24 +295,24 @@ public class BudgetShowActivityData {
      * @return
      */
     private String setProcFlag(boolean iContinueFlag, boolean cContinueFlag, String procFlag, int chkResult) {
-        if(procFlag == NOTHING){
+        if (procFlag == NOTHING) {
             return NOTHING;
         }
-        if(!iContinueFlag && !cContinueFlag){
+        if (!iContinueFlag && !cContinueFlag) {
             return NOTHING;
         }
-        if(iContinueFlag){
-            if(cContinueFlag && procFlag.equals(INCOME) && chkResult == 0){
+        if (iContinueFlag) {
+            if (cContinueFlag && procFlag.equals(COST) && chkResult == 0) {
                 return COST;
-            }else if(cContinueFlag && procFlag.equals(INCOME) && chkResult == 1){
+            } else if (cContinueFlag && procFlag.equals(INCOME) && chkResult == 1) {
                 return COST;
-            }else if(cContinueFlag && procFlag.equals(COST) && chkResult == -1){
+            } else if (cContinueFlag && procFlag.equals(COST) && chkResult == -1) {
                 return COST;
-            }else{
+            } else {
                 return INCOME;
             }
         }
-        if(cContinueFlag){
+        if (cContinueFlag) {
             return COST;
         }
         return NOTHING;

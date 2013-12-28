@@ -4,7 +4,9 @@ import java.util.HashMap;
 
 
 
+
 import android.content.Context;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
 /**
@@ -43,6 +45,26 @@ public class MEditText extends EditText implements IFWView
         return this;
     }
 
+    public MEditText widthWrapContent() {
+        setViewParam("layout_width", ViewGroup.LayoutParams.WRAP_CONTENT);
+        return this;
+    }
+
+    public MEditText widthMatchParent() {
+        setViewParam("layout_width", ViewGroup.LayoutParams.MATCH_PARENT);
+        return this;
+    }
+
+    public MEditText widthFillParent() {
+        setViewParam("layout_width", ViewGroup.LayoutParams.FILL_PARENT);
+        return this;
+    }
+
+    public MEditText heightWrapContent() {
+        setViewParam("layout_height", ViewGroup.LayoutParams.WRAP_CONTENT);
+        return this;
+    }
+
     public MEditText text(String s) {
         setText(s);
         return this;
@@ -53,4 +75,9 @@ public class MEditText extends EditText implements IFWView
             // http://stackoverflow.com/questions/2785907/what-does-an-edittext-gettext-in-android-return-if-it-is-empty
     }
 
+    
+    public MEditText hint(String s){
+        setHint(s);
+        return this;
+    }
 }
