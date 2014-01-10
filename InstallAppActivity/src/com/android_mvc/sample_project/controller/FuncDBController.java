@@ -6,13 +6,18 @@ import com.android_mvc.framework.controller.action.ActionResult;
 import com.android_mvc.framework.controller.action.BLExecutor;
 import com.android_mvc.framework.controller.routing.Router;
 import com.android_mvc.framework.controller.routing.RoutingTable;
+import com.android_mvc.framework.controller.routing.TabContentMapping;
 import com.android_mvc.framework.controller.validation.ValidationExecutor;
 import com.android_mvc.framework.controller.validation.ValidationResult;
-import com.android_mvc.sample_project.activities.accountbook.AccountBookShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.AnalysisTabHostActivity;
+import com.android_mvc.sample_project.activities.accountbook.BudgetShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.EditTabHostActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.SettleShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.ShowTabHostActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
 import com.android_mvc.sample_project.domain.CostDetailEditAction;
 import com.android_mvc.sample_project.domain.IncomeDetailEditAction;
@@ -134,42 +139,6 @@ public class FuncDBController extends BaseController
             // 変動費明細登録画面に遷移する。
             Router.go(activity, CostDetailEditActivity.class);
         }
-        // else
-        // if( "UPDATE_FAVORITE_FLAG".equals(action_type) )
-        // {
-        // // DB更新
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBUpdateAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
-        // else
-        // if( "DELETE_FRIEND".equals(action_type) )
-        // {
-        // // DBから削除
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBDeleteAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
 
     }
 
@@ -186,44 +155,42 @@ public class FuncDBController extends BaseController
             // 変動費明細登録画面に遷移する。
             Router.go(activity, IncomeDetailEditActivity.class);
         }
-        // else
-        // if( "UPDATE_FAVORITE_FLAG".equals(action_type) )
-        // {
-        // // DB更新
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBUpdateAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
-        // else
-        // if( "DELETE_FRIEND".equals(action_type) )
-        // {
-        // // DBから削除
-        // new ControlFlowDetail<DBListActivity>( activity )
-        // .setBL( new BLExecutor(){
-        // @Override
-        // public ActionResult doAction()
-        // {
-        // return new DBDeleteAction( activity, friend_id ).exec();
-        // }
-        // })
-        // .onBLExecuted(
-        // new RoutingTable().map("success", DBListActivity.class )
-        // )
-        // .startControl();
-        // ;
-        // }
 
     }
 
+    /**
+     * タブ親登録画面から呼び出される子画面のリスト
+     */
+    public static TabContentMapping getChildActivities(EditTabHostActivity activity)
+    {
+        // タブのタグ文字列に対応するアクティビティを指定する。
+        return new TabContentMapping()
+            .add( "EDIT_COST_DETAIL", CostDetailEditActivity.class )
+            .add( "EDIT_INCOME_DETAIL", IncomeDetailEditActivity.class )
+        ;
+    }
+
+    /**
+     * タブ親照会画面から呼び出される子画面のリスト
+     */
+    public static TabContentMapping getChildActivities(ShowTabHostActivity activity)
+    {
+        // タブのタグ文字列に対応するアクティビティを指定する。
+        return new TabContentMapping()
+            .add( "SHOW_COST_DETAIL", CostDetailShowActivity.class )
+            .add( "SHOW_INCOME_DETAIL", IncomeDetailShowActivity.class )
+        ;
+    }
+    /**
+     * タブ親分析画面から呼び出される子画面のリスト
+     */
+    public static TabContentMapping getChildActivities(AnalysisTabHostActivity activity)
+    {
+        // タブのタグ文字列に対応するアクティビティを指定する。
+        return new TabContentMapping()
+            .add( "SHOW_BUDGET_SHOW", BudgetShowActivity.class )
+            .add( "SHOW_SETTLE_SHOW", SettleShowActivity.class )
+        ;
+    }
 
 }

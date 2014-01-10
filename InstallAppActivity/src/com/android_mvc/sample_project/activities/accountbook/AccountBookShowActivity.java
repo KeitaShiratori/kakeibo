@@ -38,7 +38,6 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
     MTextView tv1;
     MTextView tv2;
 
-    // 全友達のリスト
     AccountBook accountBook;
     List<AccountBookDetail> accountBookDetails;
 
@@ -79,11 +78,12 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                 // 最終目標
                 accountBook.getHeader(context),
                 accountBook.getDescription(context),
-//                new MButton(context)
-//                        .backgroundResource(R.drawable.button_design_3)
-//                        .widthFillParent()
-//                        .click(updateMokuhyouKingaku(accountBook))
-//                ,
+                new MButton(context)
+                        .text("目標金額変更")
+                        .backgroundDrawable(R.drawable.button_design_1)
+                        .widthMatchParent()
+                        .click(updateMokuhyouKingaku(accountBook))
+                ,
                 // 空行
                 new MTextView(context).paddingPx(15)
                 ,
@@ -117,7 +117,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .setTitle(c.get(Calendar.YEAR) + "年" + (c.get(Calendar.MONTH) + 1) + "月の目標金額")
                 .setView(et)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                .setPositiveButton("決定", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         try {
                             Integer mokuhyouKingaku = Integer.parseInt(et.getText().toString());
@@ -130,7 +130,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                     }
 
                 })
-                .setNegativeButton("自動入力ON",
+                .setNegativeButton("自動入力をON",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 a.setAutoInputFlag(true);

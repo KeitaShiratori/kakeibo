@@ -2,6 +2,9 @@ package com.android_mvc.sample_project.activities.main;
 
 import com.android_mvc.framework.activities.base.BaseNormalActivity;
 import com.android_mvc.framework.ui.UIBuilder;
+import com.android_mvc.framework.ui.view.MLinearLayout;
+import com.android_mvc.framework.ui.view.MTextView;
+import com.android_mvc.sample_project.R;
 
 /**
  * サンプルのトップ画面。
@@ -20,6 +23,15 @@ public class TopActivity extends BaseNormalActivity
 
         new UIBuilder(context)
                 .setDisplayHeaderText("TOP")
+                .add(
+                        new MLinearLayout(activity)
+                                .orientationVertical()
+                                .widthFillParent()
+                                .heightFillParent()
+                                .add(
+
+                                )
+                )
                 .display();
     }
 

@@ -92,7 +92,7 @@ public class SettleRecordData implements ControlBreakKeyAndValue {
                                         ,
                                         new MTextView(context)
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                .text("可処分所得: " + disposablencome + "円")
+                                                .text("残り: " + disposablencome + "円")
                                                 .backgroundDrawable(R.drawable.record_design)
                                                 .textsize(18)
                                                 .widthFillParent()

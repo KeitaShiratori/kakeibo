@@ -28,8 +28,6 @@ public class FuncDBValidation extends ValidationsUtil
 
         assertNotEmpty("budget_cost");
         assertValidInteger("budget_cost");
-        assertNumberOperation("budget_cost", greaterThan(0));
-
         assertValidInteger("settle_cost");
 
         return getValidationResult();
@@ -60,7 +58,6 @@ public class FuncDBValidation extends ValidationsUtil
 
         assertNotEmpty("budget_income");
         assertValidInteger("budget_income");
-        assertNumberOperation("budget_income", greaterThan(0));
 
         assertValidInteger("settle_income");
 

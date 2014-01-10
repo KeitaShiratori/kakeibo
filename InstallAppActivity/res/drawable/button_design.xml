@@ -3,24 +3,24 @@
 
     <!-- ボタンが押されたときの定義 -->
     <item android:state_pressed="true"><shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-            <solid android:color="@color/chocolate" />
+            <solid android:color="@color/lightgrey" />
 
-            <stroke android:width="2dp" android:color="@color/tan" />
+            <stroke android:width="2dp" android:color="@color/aquamarine" />
 
             <padding android:bottom="3dp" android:left="7dp" android:right="7dp" android:top="3dp" />
 
-            <size android:height="100dp" android:width="115dp" />
+            <size android:height="60dp" android:width="69dp" />
         </shape></item>
 
     <!-- ボタンが押されていないときの定義 -->
     <item android:state_pressed="false"><shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-            <solid android:color="@color/tomato" />
+            <solid android:color="@color/gray" />
 
             <stroke android:width="2dp" android:color="@color/cornsilk" />
 
             <padding android:bottom="3dp" android:left="7dp" android:right="7dp" android:top="3dp" />
 
-            <size android:height="100dp" android:width="115dp" />
+            <size android:height="60dp" android:width="69dp" />
         </shape></item>
 
 </selector>

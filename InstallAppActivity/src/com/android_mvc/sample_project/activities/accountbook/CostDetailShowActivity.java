@@ -14,13 +14,13 @@ import android.widget.LinearLayout;
 
 import com.android_mvc.framework.ui.UIBuilder;
 import com.android_mvc.framework.ui.UIUtil;
-import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
+import com.android_mvc.sample_project.activities.common.AccordionUtil;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.CostDetailController;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
@@ -82,8 +82,9 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         }
 
         // レイアウト内に動的に全変動費明細の情報を表示。
-        for (final CostDetail c : CostDetails)
-        {
+        for (int i = 0; i < CostDetails.size(); i++) {
+            CostDetail c = CostDetails.get(i);
+
             // 予定日が変わったら、空白行を挟んで、新しいヘッダ行を追加する。LabelYMDを更新する。
             if (!LabelYMD.equals(c.getBudgetYmd())) {
                 layout1.add(
@@ -97,6 +98,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
             layout1.add(
                     c.getDescription(activity, context, update(this, c), delete(this, c))
                     );
+
         }
 
         // 描画

@@ -37,6 +37,12 @@
         <activity android:name=".activities.installation.InstallCompletedActivity" >
         </activity>
 
+        <!-- 入力親タブ画面 -->
+        <activity
+            android:name=".activities.accountbook.EditTabHostActivity"
+            android:theme="@style/MyApplicationStyle" >
+        </activity>
+
         <!-- 変動費入力画面 -->
         <activity
             android:name=".activities.accountbook.CostDetailEditActivity"
@@ -45,6 +51,12 @@
 
         <!-- 収入入力画面 -->
         <activity android:name=".activities.accountbook.IncomeDetailEditActivity" >
+        </activity>
+
+        <!-- 照会親タブ画面 -->
+        <activity
+            android:name=".activities.accountbook.ShowTabHostActivity"
+            android:theme="@style/MyApplicationStyle" >
         </activity>
 
         <!-- 変動費照会画面 -->
@@ -57,6 +69,10 @@
 
         <!-- 家計簿照会画面 -->
         <activity android:name=".activities.accountbook.AccountBookShowActivity" >
+        </activity>
+
+        <!-- 予定画面 -->
+        <activity android:name=".activities.accountbook.AnalysisTabHostActivity" >
         </activity>
 
         <!-- 予定画面 -->
