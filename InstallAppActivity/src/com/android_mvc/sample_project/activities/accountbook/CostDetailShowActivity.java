@@ -1,5 +1,6 @@
 package com.android_mvc.sample_project.activities.accountbook;
 
+import java.security.acl.LastOwnerException;
 import java.util.Calendar;
 import java.util.List;
 
@@ -93,6 +94,16 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         Util.d("表示モード: " + mode);
         Util.d("startDate: " + startDate);
 
+        defineModeButtons();
+
+        // まず親レイアウトを定義
+        new UIBuilder(context)
+                .setDisplayHeader(modeButtons)
+                .add(
+                        layout1
+                )
+                .display();
+
         // 新規登録直後
         if (mode.equals(NEW_RECORD_MODE)) {
             CostDetails = ShowTabHostActivity.costDetails;
@@ -140,21 +151,24 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
             CostDetails = new CostDetailDAO(this).findWhereIn(CostDetailCol.BUDGET_YMD, days);
         }
 
-        defineModeButtons();
-
-        // まず親レイアウトを定義
-        new UIBuilder(context)
-                .setDisplayHeader(modeButtons)
-                .add(
-                        layout1
-                )
-                .display();
-
-        // 変動費明細レコードが取得できた場合、ヘッダ行を表示する
-        if (!CostDetails.isEmpty()) {
-            LabelYMD = CostDetails.get(0).getBudgetYmd();
-            layout1.add(getLabelYMD(CostDetails.get(0).getBudgetYmd(), CostDetails));
+        // 変動費明細レコードが取得できなかった場合、処理終了
+        if (CostDetails.isEmpty()) {
+            return;
         }
+
+        // 週モードか月モードの場合、合計ラベルを表示する。
+        if (mode.equals(s(R.string.WEEK_MODE))
+                || mode.equals(s(R.string.MONTH_MODE))) {
+            layout1.add(samaryLabgel(CostDetails)
+                    ,
+                    new MTextView(context)
+                            .paddingPx(5)
+                    );
+        }
+
+        // 小計ラベルを表示する。
+        LabelYMD = CostDetails.get(0).getBudgetYmd();
+        layout1.add(getLabelYMD(CostDetails.get(0).getBudgetYmd(), CostDetails));
 
         // レイアウト内に動的に全変動費明細の情報を表示。
         for (int i = 0; i < CostDetails.size(); i++) {
@@ -184,6 +198,56 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         {
             showRegisteredNewCostDetail();
         }
+    }
+
+    private View samaryLabgel(List<CostDetail> selectedCostDetails) {
+        Calendar startYmd = selectedCostDetails.get(0).getBudgetYmd();
+        Calendar endYmd = selectedCostDetails.get(selectedCostDetails.size() - 1).getBudgetYmd();
+
+        Integer budgetCostSum = 0;
+        Integer settleCostSum = 0;
+
+        for (CostDetail c : selectedCostDetails) {
+            budgetCostSum += c.getBudgetCost();
+            settleCostSum += c.getEffectiveSettleCost();
+        }
+
+        return new MLinearLayout(this)
+                .orientationHorizontal()
+                .widthFillParent()
+                .heightWrapContent()
+                .paddingLeftPx(10)
+                .add(
+
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text(startYmd.get(Calendar.YEAR) + "/"
+                                        + (startYmd.get(Calendar.MONTH) + 1) + "/"
+                                        + startYmd.get(Calendar.DAY_OF_MONTH)
+                                        + "\n"
+                                        + "～"
+                                        + endYmd.get(Calendar.YEAR) + "/"
+                                        + (endYmd.get(Calendar.MONTH) + 1) + "/"
+                                        + endYmd.get(Calendar.DAY_OF_MONTH)
+                                )
+                                .backgroundDrawable(R.drawable.header_design)
+                                .click(homeru(budgetCostSum, settleCostSum))
+                        ,
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text("予定合計"
+                                        + "\n"
+                                        + budgetCostSum + "円")
+                                .backgroundDrawable(R.drawable.header_design)
+                        ,
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text("実績合計"
+                                        + "\n"
+                                        + settleCostSum + "円")
+                                .backgroundDrawable(R.drawable.header_design)
+
+                );
     }
 
     private void defineModeButtons() {
@@ -305,6 +369,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
 
         Integer budgetCostSum = 0;
         Integer settleCostSum = 0;
+        String KEI = mode.equals(s(R.string.DAY_MODE)) ? "合計" : "小計";
 
         for (CostDetail c : costDetails) {
             if (c.getBudgetYmd().equals(budgetYmd)) {
@@ -330,12 +395,12 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                         ,
                         new MTextView(this)
                                 .gravity(Gravity.CENTER_VERTICAL)
-                                .text("予定合計\n" + budgetCostSum + "円")
+                                .text("予定" + KEI + "\n" + budgetCostSum + "円")
                                 .backgroundDrawable(R.drawable.header_design)
                         ,
                         new MTextView(this)
                                 .gravity(Gravity.CENTER_VERTICAL)
-                                .text("実績合計\n" + settleCostSum + "円")
+                                .text("実績" + KEI + "\n" + settleCostSum + "円")
                                 .backgroundDrawable(R.drawable.header_design)
 
                 );
