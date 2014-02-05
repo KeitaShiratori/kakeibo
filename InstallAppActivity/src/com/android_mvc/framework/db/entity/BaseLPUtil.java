@@ -62,12 +62,19 @@ public class BaseLPUtil
     }
 
     /**
-     * 物理textから論理Calendatへ
+     * 物理textから論理Calendarへ(YYYY/MM/DD hh:mm:ss)
      */
     public static Calendar decodeTextToCalendar( String s )
     {
         return DateTimeUtil.string2calendar(s, FWDateTimeFormat);
     }
 
+    /**
+     * 物理textから論理Calendarへ(YYYY/MM/DD)
+     */
+    public static Calendar decodeTextToCalendarYMD( String s )
+    {
+        return DateTimeUtil.string2calendar(s, FWDateFormat);
+    }
 
 }

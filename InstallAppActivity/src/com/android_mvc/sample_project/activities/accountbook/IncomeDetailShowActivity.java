@@ -53,7 +53,7 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
         Util.d("UI構築前に実行される処理です。");
 
         // 全IncomeDetailをDBからロード
-        IncomeDetails = new IncomeDetailDAO(this).findAll();
+        IncomeDetails = new IncomeDetailDAO(this).findByOrder();
     }
 
     @Override

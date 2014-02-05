@@ -11,12 +11,14 @@ import com.android_mvc.sample_project.db.entity.AccountBookDetail;
 import com.android_mvc.sample_project.db.entity.CategoryType;
 import com.android_mvc.sample_project.db.entity.CostDetail;
 import com.android_mvc.sample_project.db.entity.IncomeDetail;
+import com.android_mvc.sample_project.db.entity.MyWallet;
 import com.android_mvc.sample_project.db.entity.PayType;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookCol;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookDetailCol;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CategoryTypeCol;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.IncomeDetailCol;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.MyWalletCol;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.PayTypeCol;
 
 /**
@@ -61,6 +63,19 @@ public class SchemaDefinition extends AbstractSchemaDefinition
                 new RDBColumn().nameIs(IncomeDetailCol.BUDGET_INCOME).comment("予算収入").typeIs("text").notNull(),
                 new RDBColumn().nameIs(IncomeDetailCol.SETTLE_YMD).comment("決算年月日").typeIs("text"),
                 new RDBColumn().nameIs(IncomeDetailCol.SETTLE_INCOME).comment("決算収入").typeIs("text"),
+            })
+            .create()
+        ;
+
+        // 財布の中身テーブル
+        new RDBTable(this)
+            .nameIs( new MyWallet().tableName() )
+            .columns(new RDBColumn[]{
+                new RDBColumn().nameIs(MyWalletCol.ID).primaryKey(),
+                new RDBColumn().nameIs(MyWalletCol.YMD).comment("年月日").typeIs("text").notNull(),
+                new RDBColumn().nameIs(MyWalletCol.KINGAKU).comment("金額").typeIs("text"),
+                new RDBColumn().nameIs(MyWalletCol.ZANDAKA).comment("残高").typeIs("text"),
+                new RDBColumn().nameIs(MyWalletCol.HIKIDASHI).comment("引き出し").typeIs("text")
             })
             .create()
         ;

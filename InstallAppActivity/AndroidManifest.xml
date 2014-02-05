@@ -67,6 +67,10 @@
         <activity android:name=".activities.accountbook.IncomeDetailShowActivity" >
         </activity>
 
+        <!-- 収入照会画面 -->
+        <activity android:name=".activities.accountbook.MyWalletShowActivity" >
+        </activity>
+        
         <!-- 家計簿照会画面 -->
         <activity android:name=".activities.accountbook.AccountBookShowActivity" >
         </activity>

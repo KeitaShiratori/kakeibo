@@ -1,6 +1,8 @@
 package com.android_mvc.sample_project.activities.accountbook;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -8,6 +10,7 @@ import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 
@@ -22,7 +25,8 @@ import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.common.Util;
-import com.android_mvc.sample_project.controller.FuncDBController;
+import com.android_mvc.sample_project.controller.CostDetailController;
+import com.android_mvc.sample_project.db.dao.PayTypeDAO;
 import com.android_mvc.sample_project.db.entity.CategoryType;
 import com.android_mvc.sample_project.db.entity.PayType;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
@@ -61,6 +65,11 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
     MTextView tv6;
     Spinner sp6;
 
+    // 繰り返し区分
+    MLinearLayout layout7;
+    MTextView tv7;
+    Spinner sp7;
+
     MButton button1;
 
     final Calendar calendar = Calendar.getInstance();
@@ -86,6 +95,7 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         layout4,
                         layout5,
                         layout6,
+                        layout7,
                         button1 = new MButton(context)
                                 .backgroundDrawable(R.drawable.button_design_3)
                                 .text("登録")
@@ -93,7 +103,7 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
 
                                     @Override
                                     public void onClick(View v) {
-                                        FuncDBController.submit(activity);
+                                        CostDetailController.submit(activity);
                                     }
 
                                 })
@@ -330,6 +340,35 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         sp6 = new PayType().getSpinner(context)
                 );
 
+        layout7 = new MLinearLayout(context)
+                .orientationHorizontal()
+                .widthFillParent()
+                .add(
+
+                        tv7 = new MTextView(context)
+                                .text("繰り返し区分")
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .backgroundDrawable(R.drawable.header_design)
+                                .widthWrapContent()
+                        ,
+
+                        sp7 = getSpinner()
+                );
+
+    }
+
+    private Spinner getSpinner() {
+        Spinner ret = new Spinner(context);
+        ret.setBackgroundResource(R.drawable.button_design_1);
+        List<CharSequence> list = new ArrayList<CharSequence>();
+        list.add("繰り返しなし");
+        list.add("平日のみ");
+        list.add("土日のみ");
+        list.add("毎日");
+        ArrayAdapter<CharSequence> Adapter = new ArrayAdapter<CharSequence>(context, android.R.layout.simple_spinner_item, list);
+
+        ret.setAdapter(Adapter);
+        return ret;
     }
 
     @Override
@@ -347,15 +386,16 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
         // 入力された値をすべて回収
         String settleYmd = null;
         if (settleYmdInputedFlag) {
-            settleYmd = sYMD.getText().toString();
+            settleYmd = sYMD.text();
         }
         return new ActivityParams()
-                .add("予定年月日", "budget_ymd", Util.toCalendar(bYMD.getText().toString()))
+                .add("予定年月日", "budget_ymd", Util.toCalendar(bYMD.text()))
                 .add("予算費用", "budget_cost", et2.text())
                 .add("カテゴリ名", CostDetailCol.CATEGORY_TYPE, (sp3.getSelectedItemPosition() + 1))
                 .add("使用年月日", "settle_ymd", Util.toCalendar(settleYmd))
                 .add("実績費用", "settle_cost", et5.text())
-                .add("支払方法", CostDetailCol.PAY_TYPE, (sp6.getSelectedItemPosition()) + 1);
+                .add("支払方法", CostDetailCol.PAY_TYPE, (sp6.getSelectedItemPosition()) + 1)
+                .add("繰り返し区分", "repeat_dvn", sp7.getSelectedItem());
     }
 
 }

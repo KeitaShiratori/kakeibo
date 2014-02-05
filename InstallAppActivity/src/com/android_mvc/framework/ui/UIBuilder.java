@@ -52,8 +52,7 @@ public class UIBuilder
         hooter.add(new HooterMenu(context).getHooterMenu(context));
 
         displayHeaderText = new MTextView(context, null, R.attr.text_view_style_h1)
-                .widthWrapContent()
-                .paddingPx(10);
+                .widthWrapContent();
 
         this.header = (MLinearLayout) context.findViewById(R.id.header);
         header.add(
@@ -146,10 +145,14 @@ public class UIBuilder
     }
 
     public UIBuilder setDisplayHeaderText(String s) {
-        this.displayHeaderText.text(s);
+        this.displayHeaderText.text(s)
+                .paddingPx(10);
         return this;
     }
 
-    // TODO: toXML() がほしいな…。UIがある程度複雑になってきたら，XMLに移行するはずだから。
-
+    public UIBuilder setDisplayHeader(MLinearLayout l) {
+        this.header.add(l);
+        return this;
+        // TODO: toXML() がほしいな…。UIがある程度複雑になってきたら，XMLに移行するはずだから。
+    }
 }

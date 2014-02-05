@@ -20,6 +20,7 @@ import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActiv
 import com.android_mvc.sample_project.activities.accountbook.CostDetailShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.MyWalletShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.SettleShowActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
 import com.android_mvc.sample_project.controller.common.CommonController;
@@ -80,6 +81,15 @@ public class HooterMenu extends MLinearLayout {
                 .heightWrapContent()
                 .paddingPx(10)
                 .add(
+                        button5.click(new OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                // TODO 自動生成されたメソッド・スタブ
+                                CommonController.submit(activity, "TOP");
+                            }
+                        })
+                        ,
                         button1.click(new OnClickListener() {
 
                             @Override
@@ -119,15 +129,6 @@ public class HooterMenu extends MLinearLayout {
 
                         })
 
-                        ,
-                        button5.click(new OnClickListener() {
-
-                            @Override
-                            public void onClick(View v) {
-                                // TODO 自動生成されたメソッド・スタブ
-                                CommonController.submit(activity, "TOP");
-                            }
-                        })
                 );
 
         return this.hooterMenu;
@@ -153,7 +154,8 @@ public class HooterMenu extends MLinearLayout {
                 || activity.getClass().equals(IncomeDetailEditActivity.class)) {
             button2.backgroundResource(R.drawable.button_design_pressed);
         } else if (activity.getClass().equals(CostDetailShowActivity.class)
-                || activity.getClass().equals(IncomeDetailShowActivity.class)) {
+                || activity.getClass().equals(IncomeDetailShowActivity.class)
+                || activity.getClass().equals(MyWalletShowActivity.class)) {
             button3.backgroundResource(R.drawable.button_design_pressed);
         } else if (activity.getClass().equals(BudgetShowActivity.class)
                 || activity.getClass().equals(SettleShowActivity.class)) {

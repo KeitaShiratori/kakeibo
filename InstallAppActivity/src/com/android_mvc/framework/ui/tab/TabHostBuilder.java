@@ -13,8 +13,9 @@ import android.widget.TabHost.TabSpec;
 
 /**
  * XMLを使わずに，メソッドチェインによってタブ構造を構築するためのビルダー。
+ * 
  * @author id:language_and_engineering
- *
+ * 
  */
 public class TabHostBuilder
 {
@@ -26,16 +27,14 @@ public class TabHostBuilder
     private TabContentMapping map;
     private ArrayList<TabDescription> descriptions = new ArrayList<TabDescription>();
 
-
     /**
      * 初期化。
      */
     public TabHostBuilder(Activity context)
     {
-        this.activity = (TabActivity)context;
+        this.activity = (TabActivity) context;
         this.tabhost = activity.getTabHost();
     }
-
 
     /**
      * コントローラから，タブのタグ文字列とアクティビティのマッピング情報を受け取って登録する。
@@ -46,20 +45,17 @@ public class TabHostBuilder
         return this;
     }
 
-
     /**
-     * 各タブの詳細情報を登録する。
-     * 任意個をいっぺんに登録可能。
+     * 各タブの詳細情報を登録する。 任意個をいっぺんに登録可能。
      */
     public TabHostBuilder add(TabDescription... descs)
     {
-        for( int i = 0; i < descs.length; i ++ )
+        for (int i = 0; i < descs.length; i++)
         {
             this.descriptions.add(descs[i]);
         }
         return this;
     }
-
 
     /**
      * 登録済みのタブ詳細情報を使って，タブ構造全体の描画処理を行なう。
@@ -67,12 +63,24 @@ public class TabHostBuilder
     public void display()
     {
         // 全タブをHostに登録
-        for( int i = 0; i < descriptions.size(); i ++ )
+        for (int i = 0; i < descriptions.size(); i++)
         {
-            registerOneTabSpec( descriptions.get(i) );
+            registerOneTabSpec(descriptions.get(i));
         }
     }
 
+    /**
+     * 登録済みのタブ詳細情報を使って，タブ構造全体の描画処理を行なう。
+     */
+    public void display(String firstTab) {
+        // タブ構造全体の描画
+        display();
+
+        // 最初に表示したいタブを選択する
+        if (firstTab != null && !firstTab.isEmpty()) {
+            tabhost.setCurrentTabByTag(firstTab);
+        }
+    }
 
     /**
      * １つのタブつまみの詳細情報を使って，タブのオブジェクトを生成する。
@@ -86,29 +94,28 @@ public class TabHostBuilder
 
         // 1タブでホストする画面
         Class<? extends Activity> target_activity_class = map.getByTag(tabTag);
-        if( target_activity_class == null )
+        if (target_activity_class == null)
         {
             FWUtil.e(
-                "タブ画面の構築中にエラーが発生しました。タグ「"
-                    + tabTag
-                    + "」に対応するActivityがマッピング情報内に登録されていません。"
-            );
+                    "タブ画面の構築中にエラーが発生しました。タグ「"
+                            + tabTag
+                            + "」に対応するActivityがマッピング情報内に登録されていません。"
+                    );
             return;
         }
 
         // specとして再構築
         TabSpec tabspec = tabhost
-            .newTabSpec( tabTag )
-            .setContent(
-                new Intent(activity, target_activity_class)
-                    .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            )
-        ;
+                .newTabSpec(tabTag)
+                .setContent(
+                        new Intent(activity, target_activity_class)
+                                .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                );
 
         // アイコン画像の有無で場合分け
-        if( icon_resource_id != 0 )
+        if (icon_resource_id != 0)
         {
-            tabspec.setIndicator(displayText, activity.getResources().getDrawable( icon_resource_id ));
+            tabspec.setIndicator(displayText, activity.getResources().getDrawable(icon_resource_id));
         }
         else
         {
@@ -116,7 +123,8 @@ public class TabHostBuilder
         }
 
         // タブにホストさせる
-        tabhost.addTab( tabspec );
+        tabhost.addTab(tabspec);
+
     }
 
 }

@@ -22,7 +22,7 @@ import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.common.Util;
-import com.android_mvc.sample_project.controller.FuncDBController;
+import com.android_mvc.sample_project.controller.IncomeDetailController;
 import com.android_mvc.sample_project.db.entity.CategoryType;
 import com.android_mvc.sample_project.db.entity.PayType;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.IncomeDetailCol;
@@ -94,7 +94,7 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
                                     @Override
                                     public void onClick(View v) {
-                                        FuncDBController.submit(activity);
+                                        IncomeDetailController.submit(activity);
                                     }
 
                                 })

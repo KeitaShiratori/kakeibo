@@ -14,17 +14,18 @@ import android.widget.LinearLayout;
 
 import com.android_mvc.framework.ui.UIBuilder;
 import com.android_mvc.framework.ui.UIUtil;
+import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
-import com.android_mvc.sample_project.activities.common.AccordionUtil;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.CostDetailController;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.entity.CostDetail;
+import com.android_mvc.sample_project.db.entity.lib.LPUtil;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
 
 /**
@@ -35,10 +36,28 @@ import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
  */
 public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
 
-    MLinearLayout layout1;
-    MTextView tv1;
-    MTextView tv2;
+    private MLinearLayout layout1;
+    private MTextView tv1;
+    private MTextView tv2;
     private Calendar LabelYMD;
+    private String mode;
+    private Calendar startDate;
+    private MLinearLayout modeButtons;
+    private MButton btnDayMode;
+    private MButton btnWeekMode;
+    private MButton btnMonthMode;
+    private MButton btnAfter;
+    private MButton btnBefore;
+
+    // モード定義
+    public static String NEW_RECORD_MODE = "NEW_RECORD_MODE";
+    public static String DAY_MODE = "DAY_MODE";
+    public static String WEEK_MODE = "WEEK_MODE";
+    public static String MONTH_MODE = "MONTH_MODE";
+    public static String ALL_MODE = "ALL_MODE";
+    // 前後
+    public static String BEFORE = "BEFORE";
+    public static String AFTER = "AFTER";
 
     // 変動費明細のリスト
     List<CostDetail> CostDetails;
@@ -61,17 +80,73 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
     public void defineContentView() {
         final CostDetailShowActivity activity = this;
 
-        // 全CostDetailをDBからロード
-        CostDetails = new CostDetailDAO(this).findOrderBy(CostDetailCol.BUDGET_YMD);
+        // 初期処理
+        layout1 = new MLinearLayout(context)
+                .orientationVertical()
+                .widthMatchParent()
+                .heightWrapContent();
+
+        // モード判定
+        mode = ShowTabHostActivity.mode;
+        startDate = ShowTabHostActivity.startDate;
+
+        Util.d("表示モード: " + mode);
+        Util.d("startDate: " + startDate);
+
+        // 新規登録直後
+        if (mode.equals(NEW_RECORD_MODE)) {
+            CostDetails = ShowTabHostActivity.costDetails;
+            ShowTabHostActivity.costDetails = null;
+            tv1 = new MTextView(activity)
+                    .text("支出が登録されました")
+                    .textColor(R.color.red);
+            layout1.add(tv1);
+        }
+        // 全件モード
+        else if (mode.equals(ALL_MODE)) {
+            CostDetails = new CostDetailDAO(this).findOrderBy(CostDetailCol.BUDGET_YMD);
+        }
+        // 日、週、月のいずれかのモード
+        else {
+            String[] days = null;
+
+            // モードにしたがい、DBの検索範囲を設定
+            if (mode.equals(DAY_MODE)) {
+                days = new String[1];
+                days[0] = LPUtil.encodeCalendarToText(startDate);
+            }
+            else if (mode.equals(WEEK_MODE)) {
+                days = new String[7];
+                days[0] = LPUtil.encodeCalendarToText(startDate);
+                Calendar tmp = (Calendar) startDate.clone();
+                for (int i = 1; i < days.length; i++) {
+                    tmp.add(Calendar.DATE, 1);
+                    days[i] = LPUtil.encodeCalendarToText(tmp);
+                }
+                tmp = null;
+            }
+            else if (mode.equals(MONTH_MODE)) {
+                days = new String[startDate.getActualMaximum(Calendar.DAY_OF_MONTH)];
+                Calendar tmp = (Calendar) startDate.clone();
+                tmp.set(Calendar.DAY_OF_MONTH, 1);
+                for (int i = 1; i < days.length; i++) {
+                    tmp.add(Calendar.DATE, 1);
+                    days[i] = LPUtil.encodeCalendarToText(tmp);
+                }
+                tmp = null;
+            }
+
+            // 全CostDetailをDBからロード
+            CostDetails = new CostDetailDAO(this).findWhereIn(CostDetailCol.BUDGET_YMD, days);
+        }
+
+        defineModeButtons();
 
         // まず親レイアウトを定義
         new UIBuilder(context)
-                .setDisplayHeaderText("変動費明細照会")
+                .setDisplayHeader(modeButtons)
                 .add(
-                        layout1 = new MLinearLayout(context)
-                                .orientationVertical()
-                                .widthMatchParent()
-                                .heightWrapContent()
+                        layout1
                 )
                 .display();
 
@@ -111,6 +186,111 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         }
     }
 
+    private void defineModeButtons() {
+
+        btnBefore = new MButton(context)
+                .backgroundDrawable(R.drawable.button_design)
+                .text("<<")
+                .click(submit(BEFORE));
+
+        btnDayMode = new MButton(context)
+                .backgroundResource(R.drawable.button_design)
+                .text("日")
+                .click(submit(DAY_MODE));
+        if (mode.equals(DAY_MODE)) {
+            btnDayMode.backgroundResource(R.drawable.button_design_pressed);
+        }
+
+        btnWeekMode = new MButton(context)
+                .backgroundResource(R.drawable.button_design)
+                .text("週")
+                .click(submit(WEEK_MODE));
+        if (mode.equals(WEEK_MODE)) {
+            btnWeekMode.backgroundResource(R.drawable.button_design_pressed);
+        }
+
+        btnMonthMode = new MButton(context)
+                .backgroundResource(R.drawable.button_design)
+                .text("月")
+                .click(submit(MONTH_MODE));
+        if (mode.equals(MONTH_MODE)) {
+            btnMonthMode.backgroundResource(R.drawable.button_design_pressed);
+        }
+
+        btnAfter = new MButton(context)
+                .backgroundResource(R.drawable.button_design)
+                .text(">>")
+                .click(submit(AFTER));
+
+        modeButtons = new MLinearLayout(context)
+                .orientationHorizontal()
+                .widthFillParent()
+                .heightWrapContent()
+                .add(
+                        btnBefore
+                        ,
+                        btnDayMode
+                        ,
+                        btnWeekMode
+                        ,
+                        btnMonthMode
+                        ,
+                        btnAfter
+                );
+
+    }
+
+    private OnClickListener submit(final String modeBtn) {
+        final CostDetailShowActivity activity = this;
+        final Calendar offset = (Calendar) startDate.clone();
+
+        if (modeBtn.equals(BEFORE)) {
+            if (mode.equals(DAY_MODE)) {
+                offset.add(Calendar.DAY_OF_MONTH, -1);
+            }
+            else if (mode.equals(WEEK_MODE)) {
+                offset.add(Calendar.DAY_OF_MONTH, -7);
+            }
+            else if (mode.equals(MONTH_MODE)) {
+                offset.add(Calendar.MONTH, -1);
+            }
+            return new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    CostDetailController.submit(activity, mode, offset);
+                }
+            };
+
+        }
+        else if (modeBtn.equals(AFTER)) {
+            if (mode.equals(DAY_MODE)) {
+                offset.add(Calendar.DAY_OF_MONTH, 1);
+            }
+            else if (mode.equals(WEEK_MODE)) {
+                offset.add(Calendar.DAY_OF_MONTH, 7);
+            }
+            else if (mode.equals(MONTH_MODE)) {
+                offset.add(Calendar.MONTH, 1);
+            }
+            return new OnClickListener() {
+
+                @Override
+                public void onClick(View v) {
+                    CostDetailController.submit(activity, mode, offset);
+                }
+            };
+        }
+
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                CostDetailController.submit(activity, modeBtn, startDate);
+            }
+        };
+    }
+
     // 新規登録されたばかりの新しい友達情報を表示
     private void showRegisteredNewCostDetail() {
         if ($.actionResultHasKey("new_cost_detail"))
@@ -146,6 +326,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                                         + (budgetYmd.get(Calendar.MONTH) + 1) + "/"
                                         + budgetYmd.get(Calendar.DAY_OF_MONTH) + "\n")
                                 .backgroundDrawable(R.drawable.header_design)
+                                .click(homeru(budgetCostSum, settleCostSum))
                         ,
                         new MTextView(this)
                                 .gravity(Gravity.CENTER_VERTICAL)
@@ -158,6 +339,22 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                                 .backgroundDrawable(R.drawable.header_design)
 
                 );
+    }
+
+    private OnClickListener homeru(final Integer budgetCostSum, final Integer settleCostSum) {
+        final CostDetailShowActivity activity = this;
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (budgetCostSum > settleCostSum) {
+                    UIUtil.longToast(activity, "おめでとう！予定金額を守りました！");
+                }
+                else {
+                    UIUtil.longToast(activity, "残念。予定金額より使いすぎています。\n明日は頑張ろう！");
+                }
+            }
+        };
     }
 
     public OnClickListener delete(final CostDetailShowActivity activity, final CostDetail c) {

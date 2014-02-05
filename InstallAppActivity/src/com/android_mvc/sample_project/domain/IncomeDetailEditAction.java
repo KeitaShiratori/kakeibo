@@ -55,6 +55,7 @@ public class IncomeDetailEditAction extends BaseAction
         return new DBEDitActionResult()
             .setRouteId("success")
             .add("new_income_detail", v)
+            .add("FIRST_TAB", "SHOW_INCOME_DETAIL")
         ;
     }
 
@@ -67,7 +68,7 @@ public class IncomeDetailEditAction extends BaseAction
         @Override
         public void onNextActivityStarted(final Activity activity)
         {
-            UIUtil.longToast(activity, "変動費明細を登録しました。");
+            UIUtil.longToast(activity, "収入明細を登録しました。");
         }
     }
     // NOTE: この内部クラスは，execメソッド中で匿名クラスとして定義することができない。

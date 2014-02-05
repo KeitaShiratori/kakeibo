@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <attr name="text_view_style" format="integer|reference" />
     <attr name="text_view_style_h1" format="integer|reference" />
 
     <style name="MyApplicationStyle" parent="android:Theme">
         <item name="android:windowAnimationStyle">@style/Animation.Activity</item>
-        <item name="text_view_style">@style/text_view_style</item>
         <item name="text_view_style_h1">@style/text_view_style_h1</item>
         <item name="android:windowBackground">@color/lightgrey</item>
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:textColorSecondary">@color/black</item>
         <item name="android:textColorHint">@color/lightgrey</item>
     </style>
+
 
 </resources>

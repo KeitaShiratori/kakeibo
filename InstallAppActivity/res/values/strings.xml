@@ -19,4 +19,42 @@
 
     <!-- ■■フレームワークで使用する文字列リソース ここまで■■ -->
 
+
+    <!-- ■■アプリで使用する文字列リソース ここから■■ -->
+
+
+    <!-- ■■アプリ制御用文字列リソース ここから■■ -->
+    <string name="NEW_RECORD_MODE">NEW_RECORD_MODE</string>
+    <string name="DAY_MODE">DAY_MODE</string>
+    <string name="WEEK_MODE">WEEK_MODE</string>
+    <string name="MONTH_MODE">MONTH_MODE</string>
+    <string name="ALL_MODE">ALL_MODE</string>
+    <string name="BEFORE">BEFORE</string>
+    <string name="AFTER">AFTER</string>
+    <string name="MYWALLET_RECORD_ADD">MYWALLET_RECORD_ADD</string>
+    <string name="MYWALLET_RECORD_UPDATE">MYWALLET_RECORD_UPDATE</string>
+    <string name="FIRST_TAB">FIRST_TAB</string>
+    <string name="MYWALLET">MYWALLET</string>
+    <string name="SHOW_COST_DETAIL">SHOW_COST_DETAIL</string>
+    <string name="MODE">MODE</string>
+    <string name="START_DATE">START_DATE</string>
+
+    <!-- ■■画面表示用文字列リソース ここから■■ -->
+    <string name="NEN_GAPPI">年月日</string>
+    <string name="KINGAKU">金額</string>
+    <string name="ZANDAKA">残高</string>
+    <string name="HIKIDASHI">引き出し</string>
+    <string name="SAGAKU">差額</string>
+    <string name="SISYUTU_GOUKEI">支出合計</string>
+    <string name="ENN">円</string>
+    <string name="MI_NYUURYOKU">未入力</string>
+    <string name="TUIKA">追加</string>
+    <string name="KOUSIN">更新</string>
+
+    <!-- ■■メッセージリソース ここから■■ -->
+    <string name="MSG_00001">本日の財布の中身を入力してください。</string>
+    <string name="MSG_00002">財布の中身を入力してください。</string>
+
+    <!-- ■■アプリで使用する文字列リソース ここまで■■ -->
+
 </resources>
