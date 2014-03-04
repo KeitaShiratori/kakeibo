@@ -1,6 +1,5 @@
 package com.android_mvc.sample_project.db.dao;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class CostDetailDAO extends BaseDAO<CostDetail>
     /**
      * 1件の変動費明細を保存。
      */
-    public CostDetail create(Integer categoryType, Integer payType, Calendar budgetYMD, Integer budgetCost, Calendar settleYMD, Integer settleCost)
+    public CostDetail create(Integer categoryType, Integer payType, Calendar budgetYMD, Integer budgetCost, Integer settleCost, Integer divideNum)
     {
         // 論理エンティティを構築
         CostDetail v = new CostDetail();
@@ -38,8 +37,8 @@ public class CostDetailDAO extends BaseDAO<CostDetail>
         v.setPayType(payType);
         v.setBudgetYmd(budgetYMD);
         v.setBudgetCost(budgetCost);
-        v.setSettleYmd(settleYMD);
         v.setSettleCost(settleCost);
+        v.setDivideNum(divideNum);
 
         Util.d(v.getBudgetYmd().toString());
 
@@ -50,7 +49,7 @@ public class CostDetailDAO extends BaseDAO<CostDetail>
     }
 
     public CostDetail create(CostDetail c) {
-        return create(c.getCategoryType(), c.getPayType(), c.getBudgetYmd(), c.getBudgetCost(), c.getSettleYmd(), c.getSettleCost());
+        return create(c.getCategoryType(), c.getPayType(), c.getBudgetYmd(), c.getBudgetCost(), c.getSettleCost(), c.getDivideNum());
     }
 
     // ------------ R --------------

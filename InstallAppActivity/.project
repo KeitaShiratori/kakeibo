@@ -3,6 +3,8 @@
 	<name>kakeibo</name>
 	<comment></comment>
 	<projects>
+		<project>CalendarView</project>
+		<project>library</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

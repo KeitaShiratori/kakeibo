@@ -153,7 +153,7 @@ public class InstallCompletedActivity extends BaseNormalActivity
                         button0 = new MButton(context)
                                 .widthFillParent()
                                 .text("目標を設定してトップ画面へ")
-                                .backgroundDrawable(R.drawable.button_design_2)
+                                .backgroundDrawable(R.drawable.button_design_1)
                                 .click(new OnClickListener() {
                                     @Override
                                     public void onClick(View v) {

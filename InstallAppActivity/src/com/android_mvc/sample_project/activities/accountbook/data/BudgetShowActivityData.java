@@ -9,10 +9,12 @@ import com.android_mvc.sample_project.activities.accountbook.BudgetShowActivity;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
+import com.android_mvc.sample_project.db.dao.CreditCardSettingDAO;
 import com.android_mvc.sample_project.db.dao.IncomeDetailDAO;
 import com.android_mvc.sample_project.db.entity.AccountBook;
 import com.android_mvc.sample_project.db.entity.AccountBookDetail;
 import com.android_mvc.sample_project.db.entity.CostDetail;
+import com.android_mvc.sample_project.db.entity.CreditCardSetting;
 import com.android_mvc.sample_project.db.entity.IncomeDetail;
 import com.android_mvc.sample_project.db.entity.lib.AccountBookDetailComparator;
 import com.android_mvc.sample_project.db.entity.lib.CostDetailComparator;
@@ -32,6 +34,7 @@ public class BudgetShowActivityData {
     Integer effectiveCost;
     Integer effectiveIncome;
     List<BudgetRecordData> budgetRecordData;
+    CreditCardSetting creditCardSetting;
 
     // 処理フラグ
     private static String COST = "C";
@@ -44,9 +47,10 @@ public class BudgetShowActivityData {
         accountBookDetails = new AccountBookDetailDAO(activity).findAll();
         costDetails = new CostDetailDAO(activity).findByOrder();
         incomeDetails = new IncomeDetailDAO(activity).findByOrder();
+        creditCardSetting = new CreditCardSettingDAO(activity).findNewestOne();
 
         budgetRecordData = new ArrayList<BudgetRecordData>();
-        for (int i = accountBookDetails.size() - 1; i >= 0; i--){
+        for (int i = accountBookDetails.size() - 1; i >= 0; i--) {
             AccountBookDetail a = accountBookDetails.get(i);
             BudgetRecordData tmp = new BudgetRecordData();
             tmp.setYoteiYYYYMM(a.getMokuhyouMonth());
@@ -181,6 +185,10 @@ public class BudgetShowActivityData {
         Integer mokuhyouKingaku;
         Integer iSum = 0;
         Integer cSum = 0;
+        Integer[] creditSum = new Integer[accountBookDetails.size()];
+        for (int i = 0; i < accountBookDetails.size(); i++) {
+            creditSum[i] = 0;
+        }
         String procFlag = NOTHING; // COST or INCOME or NOTHING
         int cPos = 0;
         int iPos = 0;
@@ -220,7 +228,17 @@ public class BudgetShowActivityData {
 
                 // ymdと有効日付の年月が同じ場合
                 if (cChkYMDResult == 0) {
-                    cSum += this.costDetails.get(cPos).getEffectiveCost();
+                    // 支払方法がクレジットの場合、creditSumに支払金額を計上する。
+                    if (this.costDetails.get(cPos).getPayType() == 2) {
+                        for (int divide = 0; divide < this.costDetails.get(cPos).getDivideNum(); divide++) {
+                            if (bPos + 1 + divide < this.accountBookDetails.size()) {
+                                creditSum[bPos + 1 + divide] += costDetails.get(cPos).getEffectiveCost() / costDetails.get(cPos).getDivideNum();
+                            }
+                        }
+                    }
+                    else {
+                        cSum += this.costDetails.get(cPos).getEffectiveCost();
+                    }
                     if (cPos + 1 < this.costDetails.size()) {
                         cPos++;
                     } else {
@@ -238,11 +256,12 @@ public class BudgetShowActivityData {
                 } else if (cChkYMDResult > 0) {
                     // 集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
                     procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, cChkYMDResult);
-                    if(procFlag == COST){
+                    if (procFlag == COST) {
                         break;
                     }
                 }
             }
+            cSum += creditSum[bPos];
             this.budgetRecordData.get(bPos).setCostSum(cSum);
 
             while (iContinueFlag && procFlag.equals(INCOME)) {
@@ -267,7 +286,7 @@ public class BudgetShowActivityData {
                 } else if (iChkYMDResult > 0) {
                     // 集計対象の年月（ymd）より有効日付が未来日の場合、処理フラグを変更する。
                     procFlag = setProcFlag(iContinueFlag, cContinueFlag, procFlag, iChkYMDResult);
-                    if (procFlag == INCOME){
+                    if (procFlag == INCOME) {
                         break;
                     }
                 }

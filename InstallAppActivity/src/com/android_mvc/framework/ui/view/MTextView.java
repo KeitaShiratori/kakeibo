@@ -136,5 +136,10 @@ public class MTextView extends TextView implements IFWView
         setTextSize(size);
         return this;
     }
-    
+
+    public MTextView drawableLeft(int resource) {
+        setCompoundDrawablesWithIntrinsicBounds(resource, 0, 0, 0);
+        return this;
+    }
+
 }

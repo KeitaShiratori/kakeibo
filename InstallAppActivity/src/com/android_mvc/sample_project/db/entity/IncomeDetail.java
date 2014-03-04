@@ -37,7 +37,6 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                 IncomeDetailCol.PAY_TYPE,
                 IncomeDetailCol.BUDGET_YMD,
                 IncomeDetailCol.BUDGET_INCOME,
-                IncomeDetailCol.SETTLE_YMD,
                 IncomeDetailCol.SETTLE_INCOME
         };
     }
@@ -47,7 +46,6 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     private Integer pay_type = null;
     private Calendar budget_ymd = null;
     private Integer budget_income = null;
-    private Calendar settle_ymd = null;
     private Integer settle_income = null;
 
     // IDEが自動生成したG&S
@@ -84,14 +82,6 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
         this.budget_income = budget_income;
     }
 
-    public Calendar getSettleYmd() {
-        return settle_ymd;
-    }
-
-    public void setSettleYmd(Calendar settle_ymd) {
-        this.settle_ymd = settle_ymd;
-    }
-
     public Integer getSettleIncome() {
         return settle_income;
     }
@@ -106,10 +96,7 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     public Calendar getEffectiveYMD() {
         Calendar ret = null;
 
-        if (this.settle_ymd != null) {
-            ret = this.settle_ymd;
-        }
-        else if (this.budget_ymd != null) {
+        if (this.budget_ymd != null) {
             ret = this.budget_ymd;
         }
 
@@ -223,14 +210,9 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
         setBudgetYmd(LPUtil.decodeTextToCalendar(c.getString(3)));
         setBudgetIncome(c.getInt(4));
         String tmp = c.getString(5);
+        tmp = c.getString(5);
         if (!tmp.isEmpty()) {
-            setSettleYmd(LPUtil.decodeTextToCalendar(c.getString(5)));
-        } else {
-            setSettleYmd(null);
-        }
-        tmp = c.getString(6);
-        if (!tmp.isEmpty()) {
-            setSettleIncome(Integer.parseInt(c.getString(6)));
+            setSettleIncome(Integer.parseInt(tmp));
         } else {
             setSettleIncome(null);
         }
@@ -265,12 +247,6 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
 
         if (getBudgetIncome() != null) {
             values.put("budget_income", getBudgetIncome());
-        }
-
-        if (getSettleYmd() != null) {
-            values.put("settle_ymd", LPUtil.encodeCalendarToText(getSettleYmd()));
-        } else {
-            values.put("settle_ymd", "");
         }
 
         if (getSettleIncome() != null) {

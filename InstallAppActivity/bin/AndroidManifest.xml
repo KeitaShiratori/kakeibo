@@ -2,10 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android_mvc.sample_project"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0">
 
     <!-- SDKのバージョン -->
-    <uses-sdk android:minSdkVersion="10" />
+    <uses-sdk android:minSdkVersion="11" />
     <!--
             Platform Version（OSのバージョン）とAPI Level（SDKのバージョン番号）の対応一覧表：
             http://developer.android.com/intl/ja/guide/topics/manifest/uses-sdk-element.html#ApiLevels
@@ -70,9 +70,17 @@
         <!-- 収入照会画面 -->
         <activity android:name=".activities.accountbook.MyWalletShowActivity" >
         </activity>
-        
+
         <!-- 家計簿照会画面 -->
         <activity android:name=".activities.accountbook.AccountBookShowActivity" >
+        </activity>
+
+        <!-- クレジットカード設定画面 -->
+        <activity android:name=".activities.accountbook.CreditCardActivity" >
+        </activity>
+
+        <!-- 貯金シート画面 -->
+        <activity android:name=".activities.accountsheet.AccountSheetActivity" >
         </activity>
 
         <!-- 予定画面 -->

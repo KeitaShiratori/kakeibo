@@ -48,11 +48,6 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
     MTextView tv3;
     Spinner sp3;
 
-    MLinearLayout layout4;
-    MTextView tv4;
-    MTextView sYMD;
-    DatePickerDialog dpd4;
-
     MLinearLayout layout5;
     MTextView tv5;
     MTextView et5;
@@ -67,7 +62,6 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
     final int year = calendar.get(Calendar.YEAR);
     final int month = calendar.get(Calendar.MONTH);
     final int day = calendar.get(Calendar.DAY_OF_MONTH);
-    private boolean settleYmdInputedFlag = false;
 
     @Override
     public void defineContentView() {
@@ -83,7 +77,6 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                         layout1,
                         layout2,
                         layout3,
-                        layout4,
                         layout5,
                         layout6,
                         button1 = new MButton(context)
@@ -103,43 +96,25 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
     }
 
     private void setContentValue() {
+        tv1 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("予定年月日")
+                .backgroundDrawable(R.drawable.header_design)
+                .widthWrapContent();
+
+        bYMD = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                .backgroundDrawable(drawable.button_design_1)
+                .text(year + "/" + (month + 1) + "/" + day)
+                .drawableLeft(android.R.drawable.ic_menu_month);
+
         layout1 = new MLinearLayout(context)
                 .orientationHorizontal()
                 .widthFillParent()
                 .add(
-
-                        tv1 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
-                                .text("予定年月日")
-                                .backgroundDrawable(R.drawable.header_design)
-                                .widthWrapContent()
+                        tv1
                         ,
-
-                        bYMD = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
-                                .backgroundDrawable(drawable.button_design_1)
-                                .text(year + "/" + (month + 1) + "/" + day)
-
-                                .click(new OnClickListener() {
-
-                                    @Override
-                                    public void onClick(View v) {
-                                        dpd1 = new DatePickerDialog(
-                                                context,
-                                                new DatePickerDialog.OnDateSetListener() {
-                                                    @Override
-                                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                                        bYMD.setText(
-                                                                String.valueOf(year) + "/" +
-                                                                        String.valueOf(monthOfYear + 1) + "/" +
-                                                                        String.valueOf(dayOfMonth));
-                                                    }
-                                                },
-                                                year, month, day);
-                                        dpd1.show();
-                                    }
-
-                                })
+                        bYMD.click(Util.createDatePickerDialog(context, bYMD, calendar))
                 );
 
         layout2 = new MLinearLayout(context)
@@ -149,7 +124,7 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
                         tv2 = new MTextView(context)
                                 .gravity(Gravity.CENTER_VERTICAL)
-                                .text("予算費用")
+                                .text("予定金額")
                                 .backgroundDrawable(R.drawable.header_design)
                                 .widthWrapContent()
                         ,
@@ -167,7 +142,7 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
                                         new AlertDialog.Builder(IncomeDetailEditActivity.this)
                                                 .setIcon(android.R.drawable.ic_dialog_info)
-                                                .setTitle("予定収入を入力してください")
+                                                .setTitle("予定金額を入力してください")
                                                 .setView(temp)
                                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -208,59 +183,6 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                         sp3 = new CategoryType().getSpinner(context)
                 );
 
-        layout4 = new MLinearLayout(context)
-                .orientationHorizontal()
-                .widthFillParent()
-                .add(
-
-                        tv4 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
-                                .text("収入年月日")
-                                .backgroundDrawable(R.drawable.header_design)
-                                .widthWrapContent()
-                        ,
-
-                        sYMD = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
-                                .hint("未入力")
-                                .backgroundDrawable(drawable.button_design_1)
-                                .click(new OnClickListener() {
-
-                                    @Override
-                                    public void onClick(View v) {
-                                        dpd4 = new DatePickerDialog(
-                                                context,
-                                                new DatePickerDialog.OnDateSetListener() {
-                                                    @Override
-                                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                                        sYMD.setText(
-                                                                String.valueOf(year) + "/" +
-                                                                        String.valueOf(monthOfYear + 1) + "/" +
-                                                                        String.valueOf(dayOfMonth));
-                                                        settleYmdInputedFlag = true;
-                                                    }
-                                                },
-                                                year, month, day);
-                                        // Dialog の Negative Button を設定
-                                        dpd4.setButton(
-                                                DialogInterface.BUTTON_NEGATIVE,
-                                                "未入力",
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        // Negative
-                                                        // Buttonがクリックされた時の動作
-                                                        sYMD.setText("");
-                                                        settleYmdInputedFlag = false;
-                                                    }
-                                                }
-                                                );
-
-                                        dpd4.show();
-                                    }
-
-                                })
-                );
-
         layout5 = new MLinearLayout(context)
                 .orientationHorizontal()
                 .widthFillParent()
@@ -268,7 +190,7 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
                         tv5 = new MTextView(context)
                                 .gravity(Gravity.CENTER_VERTICAL)
-                                .text("実績費用")
+                                .text("実績金額")
                                 .backgroundDrawable(R.drawable.header_design)
                                 .widthWrapContent()
                         ,
@@ -286,7 +208,7 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                                         ;
                                         new AlertDialog.Builder(IncomeDetailEditActivity.this)
                                                 .setIcon(android.R.drawable.ic_dialog_info)
-                                                .setTitle("実際の収入金額を入力してください")
+                                                .setTitle("実績金額を入力してください")
                                                 .setView(temp)
                                                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                     public void onClick(DialogInterface dialog, int whichButton) {
@@ -330,27 +252,12 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
     }
 
     @Override
-    public void afterViewDefined()
-    {
-        if ($.intentHasKey("hoge"))
-        {
-            // Intentから受け取った値をToastで表示
-            UIUtil.longToast(this, $.extras().getString("収入明細の登録が完了しました。"));
-        }
-    }
-
-    @Override
     public ActivityParams toParams() {
         // 入力された値をすべて回収
-        String settleYmd = null;
-        if (settleYmdInputedFlag) {
-            settleYmd = sYMD.getText().toString();
-        }
         return new ActivityParams()
                 .add("予定年月日", "budget_ymd", Util.toCalendar(bYMD.getText().toString()))
                 .add("予算費用", "budget_income", et2.text())
                 .add("カテゴリ名", IncomeDetailCol.CATEGORY_TYPE, (sp3.getSelectedItemPosition() + 1))
-                .add("使用年月日", "settle_ymd", Util.toCalendar(settleYmd))
                 .add("実績費用", "settle_income", et5.text())
                 .add("支払方法", IncomeDetailCol.PAY_TYPE, (sp6.getSelectedItemPosition() + 1));
     }

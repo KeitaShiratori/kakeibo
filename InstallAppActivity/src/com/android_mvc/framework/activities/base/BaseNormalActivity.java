@@ -4,9 +4,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.android_mvc.framework.activities.CommonActivityUtil;
 import com.android_mvc.framework.activities.IBaseActivity;
@@ -59,6 +62,7 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
         $ = new CommonActivityUtil<BaseNormalActivity>();
         $.onActivityCreated(this);
 
+        // 日替わり処理
         PrefDAO pref = new PrefDAO();
         Calendar lastUpdateYMD = pref.getLastUpdateYMD(context);
         Calendar now = Calendar.getInstance();
@@ -88,6 +92,20 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
             }
 
         }
+
+//        // 画面サイズ取得処理
+//        int height = pref.getDisplaySizeHeight(context);
+//        int width = pref.getDisplaySizeWidth(context);
+//
+//        if (height == 0 || width == 0) {
+//            // ウィンドウマネージャのインスタンス取得
+//            WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+//            // ディスプレイのインスタンス生成
+//            Display disp = wm.getDefaultDisplay();
+//            pref.updateDisplaySizeHeight(context, disp.getHeight());
+//            pref.updateDisplaySizeWidth(context, disp.getWidth());
+//        }
+//
     }
 
     @Override

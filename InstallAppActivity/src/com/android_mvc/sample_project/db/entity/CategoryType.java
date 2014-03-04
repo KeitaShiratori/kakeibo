@@ -66,7 +66,7 @@ public class CategoryType extends LogicalEntity<CategoryType> {
         for (CategoryType c : categoryList) {
             list.add(c.getCategoryTypeName());
         }
-        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(context, android.R.layout.simple_spinner_item, list);
+        ArrayAdapter<CharSequence> categoryAdapter = new ArrayAdapter<CharSequence>(context, R.layout.kakeibo_spinner_item, list);
 
         ret.setAdapter(categoryAdapter);
         return ret;

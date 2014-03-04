@@ -3,6 +3,7 @@ package com.android_mvc.sample_project.activities.accountbook;
 import com.android_mvc.framework.activities.base.BaseTabHostActivity;
 import com.android_mvc.framework.ui.tab.TabDescription;
 import com.android_mvc.framework.ui.tab.TabHostBuilder;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.controller.FuncDBController;
 
 /**
@@ -29,12 +30,12 @@ public class EditTabHostActivity extends BaseTabHostActivity
                 .add(
                         new TabDescription("EDIT_COST_DETAIL")
                                 .text("変動費登録")
-                                .icon(android.R.drawable.ic_menu_add)
+                                .icon(R.drawable.ic_sisyutu)
                         ,
 
                         new TabDescription("EDIT_INCOME_DETAIL")
                                 .text("収入登録")
-                                .icon(android.R.drawable.ic_menu_agenda)
+                                .icon(R.drawable.ic_syuunyuu)
                 )
                 .display(firstTab);
 

@@ -192,56 +192,20 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
                         .hint("実績収入")
                         .widthMatchParent();
 
-                final Calendar calendar = Calendar.getInstance();
-                final int year = calendar.get(Calendar.YEAR);
-                final int month = calendar.get(Calendar.MONTH);
-                final int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-                final MTextView sYMD = new MTextView(context)
-                        .hint("実績日付")
-                        .widthMatchParent()
-                        .gravity(Gravity.CENTER_VERTICAL)
-                        .backgroundDrawable(drawable.button_design_1);
-                sYMD.click(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        final DatePickerDialog dpd1 = new DatePickerDialog(
-                                context,
-                                new DatePickerDialog.OnDateSetListener() {
-                                    @Override
-                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                        sYMD.text(
-                                                String.valueOf(year) + "/" +
-                                                        String.valueOf(monthOfYear + 1) + "/" +
-                                                        String.valueOf(dayOfMonth));
-                                    }
-                                },
-                                year, month, day);
-                        dpd1.show();
-                    }
-
-                });
-
                 final MLinearLayout ll1 = new MLinearLayout(activity)
                         .orientationVertical()
-                        .add(et1, sYMD);
+                        .add(et1);
                 ll1.inflateInside();
 
                 new AlertDialog.Builder(activity)
                         .setIcon(android.R.drawable.ic_dialog_info)
-                        .setTitle("実際の収入金額、日付を入力してください。")
+                        .setTitle("実際の金額を入力してください。")
                         .setView(ll1)
                         .setPositiveButton("更新", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 try {
                                     Integer temp1 = Integer.parseInt(et1.text());
-                                    Calendar temp2 = Util.toCalendar(sYMD.text());
-                                    if (temp2 == null) {
-                                        throw new NullPointerException();
-                                    }
                                     i.setSettleIncome(temp1);
-                                    i.setSettleYmd(temp2);
 
                                     // DB更新へ
                                     IncomeDetailController.submit(activity, "UPDATE_INCOME_DETAIL", i);

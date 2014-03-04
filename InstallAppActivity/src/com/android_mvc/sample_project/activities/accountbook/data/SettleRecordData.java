@@ -8,9 +8,8 @@ import android.view.Gravity;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
-import com.android_mvc.sample_project.activities.accountbook.data.cb.ControlBreakKeyAndValue;
 
-public class SettleRecordData implements ControlBreakKeyAndValue {
+public class SettleRecordData{
 
     // メンバ変数
     Calendar yoteiYYYYMM;
@@ -124,36 +123,6 @@ public class SettleRecordData implements ControlBreakKeyAndValue {
                                 )
                 );
         return ret;
-    }
-
-    @Override
-    public Object getLeveledKey(int level) {
-
-        Object ret = null;
-
-        switch (level) {
-        case 0:
-            break;
-
-        case 1:
-            ret = 1;
-            break;
-
-        case 2:
-            ret = 1;
-            break;
-
-        default:
-            break;
-        }
-
-        return ret;
-    }
-
-    @Override
-    public int getValue() {
-        // TODO 自動生成されたメソッド・スタブ
-        return incomeSum;
     }
 
 }

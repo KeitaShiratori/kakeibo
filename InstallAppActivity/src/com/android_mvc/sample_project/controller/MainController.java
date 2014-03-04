@@ -10,13 +10,17 @@ import com.android_mvc.framework.controller.routing.Router;
 import com.android_mvc.framework.controller.routing.RoutingTable;
 import com.android_mvc.framework.controller.validation.ValidationExecutor;
 import com.android_mvc.framework.controller.validation.ValidationResult;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.activities.accountbook.AccountBookShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.AnalysisTabHostActivity;
+import com.android_mvc.sample_project.activities.accountbook.CreditCardActivity;
 import com.android_mvc.sample_project.activities.accountbook.EditTabHostActivity;
 import com.android_mvc.sample_project.activities.accountbook.ShowTabHostActivity;
+import com.android_mvc.sample_project.activities.accountsheet.AccountSheetActivity;
 import com.android_mvc.sample_project.activities.installation.InstallAppActivity;
 import com.android_mvc.sample_project.activities.installation.InstallCompletedActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
+import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.domain.AccountBookEditAction;
 
 /**
@@ -111,7 +115,8 @@ public class MainController extends BaseController
         }
         // 照会画面へ遷移
         else if (button_type.equals("SHOW_COST_DETAIL")
-                || button_type.equals("SHOW_INCOME_DETAIL")) {
+                || button_type.equals("SHOW_INCOME_DETAIL")
+                || button_type.equals(Util._(activity, R.string.MYWALLET))) {
             Router.goWithData(activity, ShowTabHostActivity.class, "照会画面へ",
                     new Intent().putExtra("FIRST_TAB", button_type)
                     );
@@ -128,9 +133,11 @@ public class MainController extends BaseController
             Router.goByRoutingTable(activity, button_type,
                     new RoutingTable()
                             .map("SHOW_ACCOUNT_BOOK", AccountBookShowActivity.class, "目標設定画面へ")
+                            .map("CREDIT_CARD_SETTING", CreditCardActivity.class, "目標設定画面へ")
                             .map("EDIT_TAB_HOST", EditTabHostActivity.class, "登録画面親タブへ")
                             .map("SHOW_TAB_HOST", ShowTabHostActivity.class, "照会画面親タブへ")
                             .map("ANALYSIS_TAB_HOST", AnalysisTabHostActivity.class, "分析画面親タブへ")
+                            .map("ACCOUNT_SHEET", AccountSheetActivity.class, "貯金シートへ")
                     // .map("SHOW_MY_WALLET", ShowMyWalletActivity.class,
                     // "財布の中身へ")
                     );

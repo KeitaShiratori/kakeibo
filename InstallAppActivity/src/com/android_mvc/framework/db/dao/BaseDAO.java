@@ -50,7 +50,7 @@ public class BaseDAO<T extends BaseLogicalEntity<T>>
         List<T> records =  new Finder<T>(helper)
             .where("id > 0")
             .orderBy("id DESC")
-            .offset(1)
+            .offset(0)
             .limit(1)
             .findAll(entity_class)
         ;

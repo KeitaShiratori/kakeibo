@@ -9,9 +9,8 @@ import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
-import com.android_mvc.sample_project.activities.accountbook.data.cb.ControlBreakKeyAndValue;
 
-public class BudgetRecordData implements ControlBreakKeyAndValue {
+public class BudgetRecordData {
 
     // メンバ変数
     Calendar yoteiYYYYMM;
@@ -126,36 +125,6 @@ public class BudgetRecordData implements ControlBreakKeyAndValue {
                                 )
                 );
         return ret;
-    }
-
-    @Override
-    public Object getLeveledKey(int level) {
-
-        Object ret = null;
-
-        switch (level) {
-        case 0:
-            break;
-
-        case 1:
-            ret = 1;
-            break;
-
-        case 2:
-            ret = 1;
-            break;
-
-        default:
-            break;
-        }
-
-        return ret;
-    }
-
-    @Override
-    public int getValue() {
-        // TODO 自動生成されたメソッド・スタブ
-        return incomeSum;
     }
 
 }

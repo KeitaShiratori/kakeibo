@@ -2,16 +2,12 @@ package com.android_mvc.sample_project.activities.common;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
+import android.util.AttributeSet;
 import android.view.View;
 
 import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MLinearLayout;
-import com.android_mvc.framework.ui.view.MPopup;
-import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.AccountBookShowActivity;
@@ -36,6 +32,10 @@ public class HooterMenu extends MLinearLayout {
 
     public HooterMenu(Context context) {
         super(context);
+    }
+
+    public HooterMenu(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     public HooterMenu getHooterMenu(Activity context) {

@@ -13,6 +13,7 @@ import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.entity.CostDetail;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
 
 /**
  * DB登録に関するBL。
@@ -40,12 +41,12 @@ public class CostDetailEditAction extends BaseAction
         Integer pay_type = (Integer) params.getValue("pay_type");
         Calendar budget_ymd = (Calendar) params.getValue("budget_ymd");
         Integer budget_cost = Integer.parseInt((String) params.getValue("budget_cost"));
-        Calendar settle_ymd = (Calendar) params.getValue("settle_ymd");
         Integer settle_cost = null;
         String tmp = (String) params.getValue("settle_cost");
         if (!tmp.isEmpty()) {
             settle_cost = Integer.parseInt((String) params.getValue("settle_cost"));
         }
+        Integer divideNum = (Integer) params.getValue(CostDetailCol.DIVIDE_NUM);
 
         DBEDitActionResult ret = new DBEDitActionResult();
         List<Calendar> days = new ArrayList<Calendar>();
@@ -86,7 +87,7 @@ public class CostDetailEditAction extends BaseAction
 
         for (int i = 0; i < days.size(); i++) {
             // DB登録（すでに非同期でラップされているので，DB操作も同期的でよい）
-            CostDetail c = new CostDetailDAO(activity).create(category_type, pay_type, days.get(i), budget_cost, settle_ymd, settle_cost);
+            CostDetail c = new CostDetailDAO(activity).create(category_type, pay_type, days.get(i), budget_cost, settle_cost, divideNum);
             ret.setRouteId("success")
                     .add("new_cost_detail" + i, c);
         }

@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import com.android_mvc.sample_project.activities.accountbook.SettleShowActivity;
-import com.android_mvc.sample_project.activities.accountbook.data.cb.ControlBreakBuilder;
-import com.android_mvc.sample_project.activities.accountbook.data.cb.ResultGroup;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
@@ -30,7 +28,6 @@ public class SettleShowActivityData {
     Calendar accountBookStartDate;
     Integer accountBookOperator1;
     Integer accountBookOperator2;
-    Calendar settleDate;
     Integer settleCost;
     Integer settleIncome;
     List<SettleRecordData> settleRecordData;
@@ -113,14 +110,6 @@ public class SettleShowActivityData {
 
     public void setAccountBookOperator2(Integer accountBookOperator2) {
         this.accountBookOperator2 = accountBookOperator2;
-    }
-
-    public Calendar getSettleDate() {
-        return settleDate;
-    }
-
-    public void setSettleDate(Calendar settleDate) {
-        this.settleDate = settleDate;
     }
 
     public Integer getSettleCost() {
@@ -218,7 +207,7 @@ public class SettleShowActivityData {
 
             while (cContinueFlag && procFlag.equals(COST)) {
                 // ymdを基準として、有効日付の大小をチェックする。
-                int cChkYMDResult = chkYMD(ymd, this.costDetails.get(cPos).getSettleYmd());
+                int cChkYMDResult = chkYMD(ymd, this.costDetails.get(cPos).getBudgetYmd());
 
                 // ymdと有効日付の年月が同じ場合
                 if (cChkYMDResult == 0) {
@@ -248,7 +237,7 @@ public class SettleShowActivityData {
             this.settleRecordData.get(bPos).setCostSum(cSum);
 
             while (iContinueFlag && procFlag.equals(INCOME)) {
-                int iChkYMDResult = chkYMD(ymd, this.incomeDetails.get(iPos).getSettleYmd());
+                int iChkYMDResult = chkYMD(ymd, this.incomeDetails.get(iPos).getBudgetYmd());
                 if (iChkYMDResult == 0) {
                     // 集計対象の年月と有効日付の年月が同じ場合
                     iSum += this.incomeDetails.get(iPos).getEffectiveSettleIncome();

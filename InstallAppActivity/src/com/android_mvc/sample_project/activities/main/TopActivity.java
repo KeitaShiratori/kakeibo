@@ -23,12 +23,15 @@ public class TopActivity extends BaseNormalActivity
     // UI部品
     private MTextView tv10;
     private MButton button11;
+    private MButton button12;
     private MTextView tv20;
     private MButton button21;
     private MButton button22;
     private MTextView tv30;
     private MButton button31;
     private MButton button32;
+    private MButton button33;
+    private MButton button34;
     private MTextView tv40;
     private MButton button41;
     private MButton button42;
@@ -48,6 +51,11 @@ public class TopActivity extends BaseNormalActivity
                 .backgroundResource(R.drawable.header_design);
         button11 = new MButton(activity)
                 .text("目標")
+                .widthFillParent()
+                .gravity(Gravity.LEFT)
+                .backgroundResource(R.drawable.button_design_1);
+        button12 = new MButton(activity)
+                .text("クレジットカード設定")
                 .widthFillParent()
                 .gravity(Gravity.LEFT)
                 .backgroundResource(R.drawable.button_design_1);
@@ -82,6 +90,16 @@ public class TopActivity extends BaseNormalActivity
                 .backgroundResource(R.drawable.button_design_1);
         button32 = new MButton(activity)
                 .text("収入照会")
+                .widthFillParent()
+                .gravity(Gravity.LEFT)
+                .backgroundResource(R.drawable.button_design_1);
+        button33 = new MButton(activity)
+                .text("財布の中身")
+                .widthFillParent()
+                .gravity(Gravity.LEFT)
+                .backgroundResource(R.drawable.button_design_1);
+        button34 = new MButton(activity)
+                .text("貯金シート")
                 .widthFillParent()
                 .gravity(Gravity.LEFT)
                 .backgroundResource(R.drawable.button_design_1);
@@ -122,6 +140,8 @@ public class TopActivity extends BaseNormalActivity
                                         ,
                                         button11.click(submit("SHOW_ACCOUNT_BOOK"))
                                         ,
+                                        button12.click(submit("CREDIT_CARD_SETTING"))
+                                        ,
                                         tv20
                                         ,
                                         button21.click(submit("EDIT_COST_DETAIL"))
@@ -133,6 +153,10 @@ public class TopActivity extends BaseNormalActivity
                                         button31.click(submit("SHOW_COST_DETAIL"))
                                         ,
                                         button32.click(submit("SHOW_INCOME_DETAIL"))
+                                        ,
+                                        button33.click(submit(s(R.string.MYWALLET)))
+                                        ,
+                                        button34.click(submit("ACCOUNT_SHEET"))
                                         ,
                                         tv40
                                         ,

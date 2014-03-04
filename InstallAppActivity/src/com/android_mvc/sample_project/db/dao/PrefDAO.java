@@ -43,6 +43,54 @@ public class PrefDAO extends BasePrefDAO
         return ret;
     }
 
+    // ----------------- 画面サイズ -----------------
+
+    /**
+     * 画面サイズ（幅）を更新
+     */
+    public void updateDisplaySizeWidth(Context context, int width)
+    {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putInt("DisplayWidth", width);
+        editor.commit();
+
+        FWUtil.d("画面サイズ（幅）を変更：" + width);
+    }
+
+    /**
+     * 画面サイズ（幅）を取得
+     */
+    public int getDisplaySizeWidth(Context context)
+    {
+        SharedPreferences settings = getSettings(context);
+        int ret = settings.getInt("DisplayWidth", 0);
+        FWUtil.d("画面サイズ（幅）は" + ret);
+        return ret;
+    }
+
+    /**
+     * 画面サイズ（高さ）を更新
+     */
+    public void updateDisplaySizeHeight(Context context, int height)
+    {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putInt("DisplayHeight", height);
+        editor.commit();
+
+        FWUtil.d("画面サイズ（高さ）を変更：" + height);
+    }
+
+    /**
+     * 画面サイズ（高さ）を取得
+     */
+    public int getDisplaySizeHeight(Context context)
+    {
+        SharedPreferences settings = getSettings(context);
+        int ret = settings.getInt("DisplayHeight", 0);
+        FWUtil.d("画面サイズ（高さ）は" + ret);
+        return ret;
+    }
+
     // ----------------- その他 -----------------
 
 }

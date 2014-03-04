@@ -73,6 +73,11 @@ public class MButton extends Button implements IFWView {
         return this;
     }
 
+    public MButton drawableLeft(int resource) {
+        setCompoundDrawablesWithIntrinsicBounds(resource, 0, 0, 0);
+        return this;
+    }
+
     public MButton backgroundDrawable(int resource) {
         setBackgroundDrawable(getResources().getDrawable(resource));
         return this;
@@ -82,13 +87,13 @@ public class MButton extends Button implements IFWView {
         setGravity(g);
         return this;
     }
-    public MButton touch(OnTouchListener l){
+
+    public MButton touch(OnTouchListener l) {
         setOnTouchListener(l);
         return this;
     }
-    
-    
-    public MButton hint(String s){
+
+    public MButton hint(String s) {
         setHint(s);
         return this;
     }

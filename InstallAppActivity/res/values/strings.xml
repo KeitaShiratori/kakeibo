@@ -4,12 +4,13 @@
     <string name="hello">Hello World, Android-MVC !</string>
     <string name="app_name">家計簿</string>
     <string name="activity_animation_duration">300</string>
+    <string name="shared_user_id">com.android_mvc.sample_project</string>
 
     <!-- ■■フレームワークで使用する文字列リソース ここから■■ -->
 
 
     <!-- Logのタグ名 -->
-    <string name="tag_for_logging">android-mvc-sample</string>
+    <string name="tag_for_logging">kakeibo</string>
 
     <!-- RDBの物理名 -->
     <string name="rdb_physical_name">android_mvc_sample</string>
@@ -50,11 +51,37 @@
     <string name="MI_NYUURYOKU">未入力</string>
     <string name="TUIKA">追加</string>
     <string name="KOUSIN">更新</string>
-
+    <string name="SISYUTU_TOUROKU_KUREJITTO">支出登録（クレジット）</string>
+    <string name="TYOKIN_SHITO">貯金シート</string>
+    <string name="GETU">月</string>
+    <string name="KA">火</string>
+    <string name="SUI">水</string>
+    <string name="MOKU">木</string>
+    <string name="KIN">金</string>
+    <string name="DO">土</string>
+    <string name="NITI">日</string>
+    <string name="GETUKAKKO">(月)</string>
+    <string name="KAKAKKO">(火)</string>
+    <string name="SUIKAKKO">(水)</string>
+    <string name="MOKUKAKKO">(木)</string>
+    <string name="KINKAKKO">(金)</string>
+    <string name="DOKAKKO">(土)</string>
+    <string name="NITIKAKKO">(日)</string>
+    
     <!-- ■■メッセージリソース ここから■■ -->
     <string name="MSG_00001">本日の財布の中身を入力してください。</string>
     <string name="MSG_00002">財布の中身を入力してください。</string>
-
+    <string name="MSG_00003">入力してください。</string>
+    
     <!-- ■■アプリで使用する文字列リソース ここまで■■ -->
 
+
+    <string name="guidance_year">年</string>
+    <string name="guidance_month"> 月</string>
+    <string name="guidance_hour"> 時</string>
+    <string name="guidance_minute"> 分</string>
+    <string name="year_month_dialog_title">年月を設定します</string>
+    <string name="guidance_calendar_view"> 日付を選択してください</string>
+    <string name="button_set">設定</string>
+    <string name="button_cancel">キャンセル</string>
 </resources>

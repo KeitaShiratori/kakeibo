@@ -48,7 +48,7 @@ public class IncomeDetailEditAction extends BaseAction
         }
 
         // DB登録（すでに非同期でラップされているので，DB操作も同期的でよい）
-        IncomeDetail v = new IncomeDetailDAO(activity).create( category_type, pay_type, budget_ymd, budget_income, settle_ymd, settle_income );
+        IncomeDetail v = new IncomeDetailDAO(activity).create( category_type, pay_type, budget_ymd, budget_income, settle_income );
 
 
         // 実行結果を返す

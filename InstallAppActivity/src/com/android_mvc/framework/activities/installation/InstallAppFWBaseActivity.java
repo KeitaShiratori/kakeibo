@@ -101,6 +101,7 @@ public abstract class InstallAppFWBaseActivity extends BaseNormalActivity
         }
         else
         {
+            update_rdb_if_required();
             onInstallSkipped();
         }
     }
@@ -192,7 +193,39 @@ public abstract class InstallAppFWBaseActivity extends BaseNormalActivity
         }).withSimpleDialog("アプリを初期化中・・・", this).begin();
     }
 
+    
+    /**
+     * 
+     */
+    private void update_rdb_if_required()
+    {
+        FWUtil.d("DB更新プロセスを開始");
+        final Context context = this;
 
+        new AsyncTasksRunner( new SequentialAsyncTask[]{
+
+            new SequentialAsyncTask(){
+
+                @Override
+                protected boolean main() {
+
+                    // DB更新が必要か判定
+                    SQLiteDatabase db = new DBHelper(context).getWritableDatabase();
+                    db.close();
+
+                    // 完了した旨を記録
+                    fwDAO.updateFWInstallCompletedFlag( context, true );
+                    FWUtil.d("DB更新プロセスを終了");
+
+                    // ランナーの親に制御を戻す
+                    return CONTINUE_TASKS;
+                }
+            }
+
+        }).withSimpleDialog("DBを更新中・・・", this).begin();
+    }
+
+    
     /**
      * アプリ起動時に，AP側の設定情報を受け取り，FW側に注入・初期化する。
      */

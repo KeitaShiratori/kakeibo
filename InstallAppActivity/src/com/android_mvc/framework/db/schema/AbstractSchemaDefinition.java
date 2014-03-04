@@ -22,6 +22,15 @@ public abstract class AbstractSchemaDefinition
      */
     protected abstract void define_tables();
 
+    /**
+     * Version1からVersion2へのバージョンアップ用スクリプト実行
+     */
+    public abstract void onUpgrade2();
+
+    /**
+     * Version2からVersion3へのバージョンアップ用スクリプト実行
+     */
+    public abstract void onUpgrade3(SQLiteDatabase db);
 
     /**
      * もし必要なら，AP側で初期データを投入する。
@@ -56,6 +65,21 @@ public abstract class AbstractSchemaDefinition
         //}.execute();
     }
 
+    public void updateDBVersion2(SQLiteDatabase db){
+        this.db = db;
+        
+        FWUtil.d("テーブル構造の更新を開始（→Version2）");
+        onUpgrade2();
+        FWUtil.d("テーブル構造の更新を完了（→Version2）");
+    }
+
+    public void updateDBVersion3(SQLiteDatabase db){
+        this.db = db;
+        
+        FWUtil.d("テーブル構造の更新を開始（→Version3）");
+        onUpgrade3(db);
+        FWUtil.d("テーブル構造の更新を完了（→Version3）");
+    }
 
     /**
      * DBを取得。

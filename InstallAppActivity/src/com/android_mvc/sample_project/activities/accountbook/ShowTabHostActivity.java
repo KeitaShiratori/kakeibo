@@ -93,12 +93,12 @@ public class ShowTabHostActivity extends BaseTabHostActivity
                 .add(
                         new TabDescription("SHOW_COST_DETAIL")
                                 .text("変動費照会")
-                                .icon(android.R.drawable.ic_menu_add)
+                                .icon(R.drawable.ic_sisyutu)
                         ,
 
                         new TabDescription("SHOW_INCOME_DETAIL")
                                 .text("収入照会")
-                                .icon(android.R.drawable.ic_menu_agenda)
+                                .icon(R.drawable.ic_syuunyuu)
 
                         ,
                         new TabDescription(getResources().getString(R.string.MYWALLET))

@@ -1,16 +1,13 @@
 package com.android_mvc.sample_project.activities.accountbook;
 
-import java.security.acl.LastOwnerException;
 import java.util.Calendar;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.android_mvc.framework.ui.UIBuilder;
@@ -20,7 +17,6 @@ import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
-import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.CostDetailController;
@@ -160,22 +156,16 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         if (mode.equals(s(R.string.WEEK_MODE))
                 || mode.equals(s(R.string.MONTH_MODE))) {
             layout1.add(samaryLabgel(CostDetails)
-                    ,
-                    new MTextView(context)
-                            .paddingPx(5)
                     );
         }
-
-        // 小計ラベルを表示する。
-        LabelYMD = CostDetails.get(0).getBudgetYmd();
-        layout1.add(getLabelYMD(CostDetails.get(0).getBudgetYmd(), CostDetails));
 
         // レイアウト内に動的に全変動費明細の情報を表示。
         for (int i = 0; i < CostDetails.size(); i++) {
             CostDetail c = CostDetails.get(i);
 
             // 予定日が変わったら、空白行を挟んで、新しいヘッダ行を追加する。LabelYMDを更新する。
-            if (!LabelYMD.equals(c.getBudgetYmd())) {
+            if (LabelYMD == null
+                    || !LabelYMD.equals(c.getBudgetYmd())) {
                 layout1.add(
                         new MTextView(context)
                                 .paddingPx(5)
@@ -192,11 +182,8 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
 
         // 描画
         layout1.inflateInside();
-
-        // 友達登録操作の直後の場合
-        if ($.hasActionResult())
-        {
-            showRegisteredNewCostDetail();
+        if (mode.equals(s(R.string.NEW_RECORD_MODE))) {
+            mode = s(R.string.DAY_MODE);
         }
     }
 
@@ -355,16 +342,6 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         };
     }
 
-    // 新規登録されたばかりの新しい友達情報を表示
-    private void showRegisteredNewCostDetail() {
-        if ($.actionResultHasKey("new_cost_detail"))
-        {
-            // Intentから情報を取得
-            CostDetail v = (CostDetail) ($.getActionResult().get("new_cost_detail"));
-
-        }
-    }
-
     public LinearLayout getLabelYMD(Calendar budgetYmd, List<CostDetail> costDetails) {
 
         Integer budgetCostSum = 0;
@@ -372,7 +349,8 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         String KEI = mode.equals(s(R.string.DAY_MODE)) ? "合計" : "小計";
 
         for (CostDetail c : costDetails) {
-            if (c.getBudgetYmd().equals(budgetYmd)) {
+            if (!c.getPayType().equals(2)
+                    && c.getBudgetYmd().equals(budgetYmd)) {
                 budgetCostSum += c.getBudgetCost();
                 settleCostSum += c.getEffectiveSettleCost();
             }
@@ -467,56 +445,26 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 final int month = calendar.get(Calendar.MONTH);
                 final int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                final MTextView sYMD = new MTextView(context)
-                        .hint("実績日付")
-                        .widthMatchParent()
-                        .gravity(Gravity.CENTER_VERTICAL)
-                        .backgroundDrawable(drawable.button_design_1);
-                sYMD.click(new OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        final DatePickerDialog dpd1 = new DatePickerDialog(
-                                context,
-                                new DatePickerDialog.OnDateSetListener() {
-                                    @Override
-                                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                        sYMD.text(
-                                                String.valueOf(year) + "/" +
-                                                        String.valueOf(monthOfYear + 1) + "/" +
-                                                        String.valueOf(dayOfMonth));
-                                    }
-                                },
-                                year, month, day);
-                        dpd1.show();
-                    }
-
-                });
 
                 final MLinearLayout ll1 = new MLinearLayout(activity)
                         .orientationVertical()
-                        .add(et1, sYMD);
+                        .add(et1);
                 ll1.inflateInside();
 
                 new AlertDialog.Builder(activity)
                         .setIcon(android.R.drawable.ic_dialog_info)
-                        .setTitle("実際に使用した日付、金額を入力してください。")
+                        .setTitle("実際に使用した金額を入力してください。")
                         .setView(ll1)
                         .setPositiveButton("更新", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 try {
                                     Integer temp1 = Integer.parseInt(et1.text());
-                                    Calendar temp2 = Util.toCalendar(sYMD.text());
-                                    if (temp2 == null) {
-                                        throw new NullPointerException();
-                                    }
                                     c.setSettleCost(temp1);
-                                    c.setSettleYmd(temp2);
 
                                     // DB更新へ
                                     CostDetailController.submit(activity, "UPDATE_COST_DETAIL", c);
                                 } catch (Exception e) {
-                                    UIUtil.longToast(context, "更新に失敗しました。\n実績金額と日付を正しく入力して下さい。");
+                                    UIUtil.longToast(context, "更新に失敗しました。\n実績金額を正しく入力して下さい。");
                                 }
                             }
 

@@ -28,7 +28,7 @@ public class IncomeDetailDAO extends BaseDAO<IncomeDetail>
     /**
      * 1件の変動費明細を保存。
      */
-    public IncomeDetail create(Integer categoryType, Integer payType, Calendar budgetYMD, Integer budgetIncome, Calendar settleYMD, Integer settleIncome)
+    public IncomeDetail create(Integer categoryType, Integer payType, Calendar budgetYMD, Integer budgetIncome, Integer settleIncome)
     {
         // 論理エンティティを構築
         IncomeDetail v = new IncomeDetail();
@@ -36,7 +36,6 @@ public class IncomeDetailDAO extends BaseDAO<IncomeDetail>
         v.setPayType(payType);
         v.setBudgetYmd(budgetYMD);
         v.setBudgetIncome(budgetIncome);
-        v.setSettleYmd(settleYMD);
         v.setSettleIncome(settleIncome);
 
         // DB登録
@@ -46,7 +45,7 @@ public class IncomeDetailDAO extends BaseDAO<IncomeDetail>
     }
 
     public IncomeDetail create(IncomeDetail c) {
-        return create(c.getCategoryType(), c.getPayType(), c.getBudgetYmd(), c.getBudgetIncome(), c.getSettleYmd(), c.getSettleIncome());
+        return create(c.getCategoryType(), c.getPayType(), c.getBudgetYmd(), c.getBudgetIncome(), c.getSettleIncome());
     }
 
     // ------------ R --------------
