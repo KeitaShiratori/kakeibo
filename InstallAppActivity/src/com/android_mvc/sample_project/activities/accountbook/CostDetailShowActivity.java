@@ -209,9 +209,13 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                     creditBudgetYMD.set(Calendar.DAY_OF_MONTH, creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH));
 
                     for (CostDetail c : creditCostDetails) {
-                        if (c.getBudgetYmd().after(fromCreditSimeYMD) && c.getBudgetYmd().before(toCreditSimeYMD)) {
-                            creditBudgetCostSum += c.getBudgetCost() / c.getDivideNum();
-                            creditSettleCostSum += c.getSettleCost() / c.getDivideNum();
+                        for (int divide = 0; divide < c.getDivideNum(); divide++) {
+                            if (c.getBudgetYmd().after(fromCreditSimeYMD) && c.getBudgetYmd().before(toCreditSimeYMD)) {
+                                creditBudgetCostSum += c.getBudgetCost() / c.getDivideNum();
+                                creditSettleCostSum += c.getSettleCost() / c.getDivideNum();
+                                break;
+                            }
+                            c.getBudgetYmd().add(Calendar.MONTH, 1);
                         }
                     }
 
