@@ -76,10 +76,13 @@ public class CreditCardActivity extends AccountBookAppUserBaseActivity {
 
         // レコード追加ボタン
         creditCardData.getLayout1().add(
+                new MTextView(context)
+                        .paddingPx(5)
+                        .textsize(1)
+                ,
                 new MButton(context)
-                        .widthFillParent()
                         .drawableLeft(android.R.drawable.ic_input_add)
-                        .backgroundDrawable(R.drawable.button_design_1)
+                        .backgroundDrawable(R.drawable.button_design_h40_w345)
                         .text("登録")
                         .click(insert(creditCardData.getTv1(), creditCardData.getTv2()))
                 );
@@ -97,12 +100,12 @@ public class CreditCardActivity extends AccountBookAppUserBaseActivity {
                 .add(
                         new MTextView(context)
                                 .text("締日")
-                                .backgroundResource(R.drawable.header_design)
+                                .backgroundResource(R.drawable.header_design_h30_w173)
                                 .gravity(Gravity.CENTER_VERTICAL)
                         ,
                         new MTextView(context)
                                 .text("引き去り日")
-                                .backgroundResource(R.drawable.header_design)
+                                .backgroundResource(R.drawable.header_design_h30_w172)
                                 .gravity(Gravity.CENTER_VERTICAL)
                 );
     }
@@ -127,7 +130,7 @@ public class CreditCardActivity extends AccountBookAppUserBaseActivity {
 
                     CreditCardController.submit(activity);
                 } catch (Exception e) {
-                    UIUtil.longToast(activity, "クレジットカード設定に失敗しました。");
+                    UIUtil.longToast(activity, "クレジットカード設定に失敗しました。\n締日と引き去り日を入力してください。");
                 }
             }
         };

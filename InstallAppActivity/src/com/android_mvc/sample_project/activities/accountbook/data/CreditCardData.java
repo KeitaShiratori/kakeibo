@@ -145,6 +145,7 @@ public class CreditCardData {
         layout1 = new MLinearLayout(context)
                 .orientationVertical()
                 .widthFillParent()
+                .paddingPx(10)
                 .heightFillParent();
 
     }
@@ -176,13 +177,13 @@ public class CreditCardData {
         }
         tv1 = new MTextView(context)
                 .text(simeYmd)
-                .backgroundResource(R.drawable.header_design)
+                .backgroundResource(R.drawable.button_design_h30_w173)
                 .gravity(Gravity.CENTER_VERTICAL);
         tv1.click(Util.createNumberPickerDialog(context, tv1));
 
         tv2 = new MTextView(context)
                 .text(siharaiYmd)
-                .backgroundResource(R.drawable.header_design)
+                .backgroundResource(R.drawable.button_design_h30_w172)
                 .gravity(Gravity.CENTER_VERTICAL);
         tv2.click(Util.createNumberPickerDialog(context, tv2));
 
