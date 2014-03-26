@@ -132,6 +132,11 @@ public class MTextView extends TextView implements IFWView
         setHint(s);
         return this;
     }
+
+    public MTextView hintTextColor(int res){
+        setHintTextColor(res);
+        return this;
+    }
     public MTextView textsize(int size){
         setTextSize(size);
         return this;

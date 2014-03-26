@@ -163,6 +163,7 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         et2 = new MTextView(context)
                                 .gravity(Gravity.CENTER)
                                 .hint("必須入力")
+                                .hintTextColor(android.graphics.Color.argb(128, 255, 0, 0))
                                 .backgroundDrawable(R.drawable.button_design_h40_w230)
                                 .click(new OnClickListener() {
                                     @Override
