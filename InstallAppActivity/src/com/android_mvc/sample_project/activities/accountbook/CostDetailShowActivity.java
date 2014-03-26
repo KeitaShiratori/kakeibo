@@ -391,7 +391,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                                 .gravity(Gravity.CENTER_VERTICAL)
                                 .text(YMD)
                                 .backgroundDrawable(R.drawable.header_design)
-                                .click(homeru(budgetCostSum, settleCostSum))
+                                .click(homeru(budgetCostSum, settleCostSum, LPUtil.decodeTextToCalendarYMD(days[days.length - 1])))
                         ,
                         new MTextView(this)
                                 .gravity(Gravity.CENTER_VERTICAL)
@@ -542,7 +542,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                                         + (budgetYmd.get(Calendar.MONTH) + 1) + "/"
                                         + budgetYmd.get(Calendar.DAY_OF_MONTH) + "\n")
                                 .backgroundDrawable(R.drawable.header_design)
-                                .click(homeru(budgetCostSum, settleCostSum))
+                                .click(homeru(budgetCostSum, settleCostSum, budgetYmd))
                         ,
                         new MTextView(this)
                                 .gravity(Gravity.CENTER_VERTICAL)
@@ -557,17 +557,28 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 );
     }
 
-    private OnClickListener homeru(final Integer budgetCostSum, final Integer settleCostSum) {
+    private OnClickListener homeru(final Integer budgetCostSum, final Integer settleCostSum, final Calendar targetYMD) {
         final CostDetailShowActivity activity = this;
         return new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (budgetCostSum > settleCostSum) {
-                    UIUtil.longToast(activity, "おめでとう！予定金額を守りました！");
+                targetYMD.add(Calendar.DAY_OF_MONTH, 1);
+                if (targetYMD.before(Calendar.getInstance())) {
+                    if (budgetCostSum >= settleCostSum) {
+                        UIUtil.longToast(activity, "おめでとう！予定金額よりも節約できましたね！");
+                    }
+                    else {
+                        UIUtil.longToast(activity, "残念。予定金額より使いすぎてしまいましたね。");
+                    }
                 }
-                else {
-                    UIUtil.longToast(activity, "残念。予定金額より使いすぎています。\n明日は頑張ろう！");
+                else{
+                    if (budgetCostSum >= settleCostSum) {
+                        UIUtil.longToast(activity, "節約を頑張ってますね。この調子で、予定金額を超えないように気を付けてね♪");
+                    }
+                    else {
+                        UIUtil.longToast(activity, "残念。予定金額より使いすぎてしまいましたね。");
+                    }
                 }
             }
         };

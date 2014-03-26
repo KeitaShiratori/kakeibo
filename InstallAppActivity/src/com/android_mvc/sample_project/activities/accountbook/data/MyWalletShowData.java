@@ -135,11 +135,13 @@ public class MyWalletShowData {
         modeButtons = new MLinearLayout(context)
                 .orientationHorizontal()
                 .widthWrapContent()
+                .paddingPx(10)
                 .heightWrapContent();
 
         layout1 = new MLinearLayout(context)
                 .orientationVertical()
                 .widthFillParent()
+                .paddingPx(10)
                 .heightFillParent();
 
         // modeとstartDateのデフォルト値を設定

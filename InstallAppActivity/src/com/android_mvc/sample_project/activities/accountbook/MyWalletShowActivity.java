@@ -295,10 +295,13 @@ public class MyWalletShowActivity extends AccountBookAppUserBaseActivity {
 
         // レコード追加ボタン
         myWalletShowData.getLayout1().add(
+                new MTextView(context)
+                        .paddingPx(5)
+                        .textsize(1)
+                ,
                 new MButton(context)
-                        .widthFillParent()
                         .drawableLeft(android.R.drawable.ic_input_add)
-                        .backgroundResource(R.drawable.button_design_1)
+                        .backgroundResource(R.drawable.button_design_h30_w345)
                         .text(s(R.string.TUIKA))
                         .click(insert())
                 );
