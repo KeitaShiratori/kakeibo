@@ -8,6 +8,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.Gravity;
+import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.android_mvc.framework.ui.view.MLinearLayout;
@@ -153,9 +154,7 @@ public class CostDetail extends LogicalEntity<CostDetail> {
 
         MLinearLayout ret = new MLinearLayout(activity)
                 .orientationVertical()
-                .widthWrapContent()
                 .heightWrapContent()
-                .paddingLeftPx(10)
                 .backgroundDrawable(R.drawable.border)
                 .add(
                         new MLinearLayout(activity)

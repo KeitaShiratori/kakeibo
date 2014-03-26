@@ -100,6 +100,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         layout1 = new MLinearLayout(context)
                 .orientationVertical()
                 .widthMatchParent()
+                .paddingLeftPx(10)
                 .heightWrapContent();
 
         // モード判定
@@ -190,6 +191,40 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 // クレジット支払フラグが立っていたら、クレジットを集計する。
                 if (isCreditSiharai) {
                     List<CostDetail> creditCostDetails = costDetailDAO.findWhereIn(CostDetailCol.PAY_TYPE, "2");
+
+                    // クレジット締日を設定
+                    Calendar fromCreditSimeYMD = (Calendar) startDate.clone();
+                    Calendar toCreditSimeYMD = (Calendar) startDate.clone();
+
+                    fromCreditSimeYMD.add(Calendar.MONTH, -1);
+                    fromCreditSimeYMD.set(Calendar.DAY_OF_MONTH, creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH));
+                    fromCreditSimeYMD.add(Calendar.DAY_OF_MONTH, 1);
+                    toCreditSimeYMD.set(Calendar.DAY_OF_MONTH, creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH));
+
+                    // クレジット引き去り用明細に設定する値
+                    CostDetail creditCostDetail = new CostDetail();
+                    int creditBudgetCostSum = 0;
+                    int creditSettleCostSum = 0;
+                    Calendar creditBudgetYMD = (Calendar) startDate.clone();
+                    creditBudgetYMD.set(Calendar.DAY_OF_MONTH, creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH));
+
+                    for (CostDetail c : creditCostDetails) {
+                        if (c.getBudgetYmd().after(fromCreditSimeYMD) && c.getBudgetYmd().before(toCreditSimeYMD)) {
+                            creditBudgetCostSum += c.getBudgetCost() / c.getDivideNum();
+                            creditSettleCostSum += c.getSettleCost() / c.getDivideNum();
+                        }
+                    }
+
+                    creditCostDetail.setBudgetCost(creditBudgetCostSum);
+                    creditCostDetail.setSettleCost(creditSettleCostSum);
+                    creditCostDetail.setBudgetYmd(creditBudgetYMD);
+                    creditCostDetail.setCategoryType(14);
+                    creditCostDetail.setPayType(1);
+
+                    // クレジット引き去り用明細を表示
+                    layout1.add(
+                            creditLabel(creditCostDetail)
+                            );
                 }
                 // 変動費明細レコードが取得できなかった場合、処理終了
                 if (CostDetails.isEmpty()) {
@@ -249,6 +284,38 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         }
     }
 
+    private MLinearLayout creditLabel(CostDetail credit) {
+        String title = "クレジット引落\n" + LPUtil.encodeCalendarToTextYMD(credit.getBudgetYmd());
+
+        return new MLinearLayout(this)
+                .orientationHorizontal()
+                .widthFillParent()
+                .paddingBottomPx(10)
+                .heightWrapContent()
+                .add(
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text(title)
+                                .backgroundDrawable(R.drawable.header_design)
+                        ,
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text("予定合計"
+                                        + "\n"
+                                        + credit.getBudgetCost() + "円")
+                                .backgroundDrawable(R.drawable.header_design)
+                        ,
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text("実績合計"
+                                        + "\n"
+                                        + credit.getSettleCost() + "円")
+                                .backgroundDrawable(R.drawable.header_design)
+
+                );
+
+    }
+
     private MLinearLayout emptyLabel(String[] days) {
         String YMD = new String();
         String fromYMD = days[0].substring(0, 10);
@@ -264,7 +331,6 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 .orientationHorizontal()
                 .widthFillParent()
                 .heightWrapContent()
-                .paddingLeftPx(10)
                 .add(
                         new MTextView(this)
                                 .gravity(Gravity.CENTER_VERTICAL)
@@ -314,7 +380,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 .orientationHorizontal()
                 .widthFillParent()
                 .heightWrapContent()
-                .paddingLeftPx(10)
+                .paddingBottomPx(10)
                 .add(
 
                         new MTextView(this)
@@ -380,6 +446,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 .orientationHorizontal()
                 .widthFillParent()
                 .heightWrapContent()
+                .paddingPx(10)
                 .add(
                         btnBefore
                         ,
@@ -463,7 +530,6 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 .orientationHorizontal()
                 .widthFillParent()
                 .heightWrapContent()
-                .paddingLeftPx(10)
                 .add(
 
                         new MTextView(this)
