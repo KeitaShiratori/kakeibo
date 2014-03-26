@@ -53,6 +53,7 @@ public class SettleShowActivity extends AccountBookAppUserBaseActivity {
                 .add(layout1 = new MLinearLayout(activity)
                         .orientationVertical()
                         .widthFillParent()
+                        .paddingPx(10)
                         .heightWrapContent())
                 .display();
 
