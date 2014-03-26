@@ -73,8 +73,7 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
     public MLinearLayout getHeader(Context context) {
         MLinearLayout ret = new MLinearLayout(context)
                 .orientationHorizontal()
-                .heightWrapContent()
-                .paddingLeftPx(10);
+                .heightWrapContent();
 
         MTextView tv1 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL)
@@ -99,11 +98,10 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
      */
     public MLinearLayout getDescription(Context context, OnClickListener l) {
         int baseDate = new AccountBookDAO(context).findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH);
-        
+
         MLinearLayout ret = new MLinearLayout(context)
                 .orientationHorizontal()
-                .heightWrapContent()
-                .paddingLeftPx(10);
+                .heightWrapContent();
 
         getMokuhyouMonth().set(Calendar.DAY_OF_MONTH, baseDate);
 
@@ -117,7 +115,7 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
                         + (getMokuhyouMonth().get(Calendar.MONTH) + 1) + "/"
                         + getMokuhyouMonth().get(Calendar.DAY_OF_MONTH)
                         + "\n～"
-                        +nextMonth.get(Calendar.YEAR) + "/"
+                        + nextMonth.get(Calendar.YEAR) + "/"
                         + (nextMonth.get(Calendar.MONTH) + 1) + "/"
                         + nextMonth.get(Calendar.DAY_OF_MONTH))
                 .backgroundDrawable(R.drawable.record_design);
@@ -125,7 +123,7 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
         MTextView tv2 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL)
                 .text(getMokuhyouMonthKingaku() + "円"
-                        +"\n")
+                        + "\n")
                 .backgroundDrawable(R.drawable.record_design);
 
         MTextView bt3 = new MTextView(context)
@@ -135,11 +133,11 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
         // 自動入力フラグがtrueならON、falseならOFF
         if (getAutoInputFlag()) {
             bt3.text("ON"
-                    +"\n")
+                    + "\n")
                     .backgroundDrawable(R.drawable.button_design_1);
         } else {
             bt3.text("OFF"
-                    +"\n")
+                    + "\n")
                     .backgroundDrawable(R.drawable.button_design_2);
 
         }

@@ -35,6 +35,9 @@ import com.android_mvc.sample_project.db.schema.ColumnDefinition.IncomeDetailCol
  */
 public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
+    // コンテンツエリアの親レイアウト
+    MLinearLayout layout0;
+
     MLinearLayout layout1;
     MTextView tv1;
     MTextView bYMD;
@@ -44,17 +47,9 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
     MTextView tv2;
     MTextView et2;
 
-//    MLinearLayout layout3;
-//    MTextView tv3;
-//    Spinner sp3;
-
     MLinearLayout layout5;
     MTextView tv5;
     MTextView et5;
-
-//    MLinearLayout layout6;
-//    MTextView tv6;
-//    Spinner sp6;
 
     MButton button1;
 
@@ -70,43 +65,54 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
         setContentValue();
 
+        layout0 = new MLinearLayout(context)
+                .orientationVertical()
+                .widthMatchParent()
+                .paddingLeftPx(10)
+                .heightWrapContent();
+
         // 入力フォームUIを動的に構築する。
         new UIBuilder(context)
                 .setDisplayHeaderText("収入登録")
                 .add(
-                        layout1,
-                        layout2,
-//                        layout3,
-                        layout5,
-//                        layout6,
-                        button1 = new MButton(context)
-                                .backgroundDrawable(R.drawable.button_design_3)
-                                .text("登録")
+                        layout0
+                )
+                .display();
 
-                                .click(new OnClickListener() {
+        layout0.add(
+                layout1,
+                layout2,
+                layout5,
+                new MTextView(context)
+                        .paddingPx(5)
+                        .textsize(1)
+                ,
+                button1 = new MButton(context)
+                        .backgroundDrawable(R.drawable.button_design_h40_w345)
+                        .text("登録")
+                        .textSize(18)
+                        .click(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                IncomeDetailController.submit(activity);
+                            }
+                        })
+                );
 
-                                    @Override
-                                    public void onClick(View v) {
-                                        IncomeDetailController.submit(activity);
-                                    }
-
-                                })
-                ).display();
-
+        layout0.inflateInside();
     }
 
     private void setContentValue() {
         tv1 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
                 .text("予定年月日")
-                .backgroundDrawable(R.drawable.header_design)
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
                 .widthWrapContent();
 
         bYMD = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                .backgroundDrawable(drawable.button_design_1)
-                .text(year + "/" + (month + 1) + "/" + day)
-                .drawableLeft(android.R.drawable.ic_menu_month);
+                .gravity(Gravity.CENTER)
+                .backgroundDrawable(drawable.button_design_h40_w230)
+                .text(year + "/" + (month + 1) + "/" + day);
 
         layout1 = new MLinearLayout(context)
                 .orientationHorizontal()
@@ -121,25 +127,22 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                 .orientationHorizontal()
                 .widthFillParent()
                 .add(
-
                         tv2 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
+                                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
                                 .text("予定金額")
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
-
                         et2 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
+                                .gravity(Gravity.CENTER)
                                 .hint("必須入力")
-                                .backgroundDrawable(R.drawable.button_design_1)
+                                .backgroundDrawable(R.drawable.button_design_h40_w230)
                                 .click(new OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
                                         final MEditText temp = new MEditText(context)
                                                 .text(et2.text())
                                         ;
-
                                         new AlertDialog.Builder(IncomeDetailEditActivity.this)
                                                 .setIcon(android.R.drawable.ic_dialog_info)
                                                 .setTitle("予定金額を入力してください")
@@ -153,7 +156,6 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                                                             UIUtil.longToast(context, "数値を入力してください");
                                                         }
                                                     }
-
                                                 })
                                                 .setNegativeButton("キャンセル",
                                                         new DialogInterface.OnClickListener() {
@@ -161,46 +163,25 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                                                                 // 何もしない
                                                             }
                                                         }).show();
-
                                     }
-
                                 })
-
                 );
-
-//        layout3 = new MLinearLayout(context)
-//                .orientationHorizontal()
-//                .widthFillParent()
-//                .add(
-//
-//                        tv3 = new MTextView(context)
-//                                .gravity(Gravity.CENTER_VERTICAL)
-//                                .text("カテゴリ")
-//                                .backgroundDrawable(R.drawable.header_design)
-//                                .widthWrapContent()
-//                        ,
-//
-//                        sp3 = new CategoryType().getSpinner(context)
-//                );
 
         layout5 = new MLinearLayout(context)
                 .orientationHorizontal()
                 .widthFillParent()
                 .add(
-
                         tv5 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
+                                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
                                 .text("実績金額")
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
-
                         et5 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
+                                .gravity(Gravity.CENTER)
                                 .hint("未入力")
-                                .backgroundDrawable(R.drawable.button_design_1)
+                                .backgroundDrawable(R.drawable.button_design_h40_w230)
                                 .click(new OnClickListener() {
-
                                     @Override
                                     public void onClick(View v) {
                                         final MEditText temp = new MEditText(context)
@@ -219,7 +200,6 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                                                             UIUtil.longToast(context, "数値を入力してください");
                                                         }
                                                     }
-
                                                 })
                                                 .setNegativeButton("キャンセル",
                                                         new DialogInterface.OnClickListener() {
@@ -227,28 +207,9 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                                                                 // 何もしない
                                                             }
                                                         }).show();
-
                                     }
-
                                 })
-
                 );
-
-//        layout6 = new MLinearLayout(context)
-//                .orientationHorizontal()
-//                .widthFillParent()
-//                .add(
-//
-//                        tv6 = new MTextView(context)
-//                                .gravity(Gravity.CENTER_VERTICAL)
-//                                .text("支払方法")
-//                                .backgroundDrawable(R.drawable.header_design)
-//                                .widthWrapContent()
-//                        ,
-//
-//                        sp6 = new PayType().getSpinner(context)
-//                );
-
     }
 
     @Override
@@ -257,10 +218,7 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
         return new ActivityParams()
                 .add("予定年月日", IncomeDetailCol.BUDGET_YMD, Util.toCalendar(bYMD.getText().toString()))
                 .add("予算費用", IncomeDetailCol.BUDGET_INCOME, et2.text())
-//                .add("カテゴリ名", IncomeDetailCol.CATEGORY_TYPE, (sp3.getSelectedItemPosition() + 1))
-                .add("実績費用", IncomeDetailCol.SETTLE_INCOME, et5.text())
-//                .add("支払方法", IncomeDetailCol.PAY_TYPE, (sp6.getSelectedItemPosition() + 1))
-                ;
+                .add("実績費用", IncomeDetailCol.SETTLE_INCOME, et5.text());
     }
 
 }

@@ -38,6 +38,9 @@ import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
  */
 public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
 
+    // コンテンツエリアの親レイアウト
+    MLinearLayout layout0;
+
     MLinearLayout layout1;
     MTextView tv1;
     MTextView bYMD;
@@ -82,31 +85,44 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
 
         setContentsValue();
 
+        layout0 = new MLinearLayout(context)
+                .orientationVertical()
+                .widthMatchParent()
+                .paddingLeftPx(10)
+                .heightWrapContent();
+
         // 入力フォームUIを動的に構築する。
         new UIBuilder(context)
                 .setDisplayHeaderText("変動費登録")
                 .add(
-                        layout1,
-                        layout2,
-                        layout3,
-                        layout5,
-                        layout6,
-                        layout61,
-                        layout7,
-                        button1 = new MButton(context)
-                                .backgroundDrawable(R.drawable.button_design_3)
-                                .text("登録")
-                                .click(new OnClickListener() {
-
-                                    @Override
-                                    public void onClick(View v) {
-                                        CostDetailController.submit(activity);
-                                    }
-
-                                })
-
+                        layout0
                 )
                 .display();
+
+        layout0.add(
+                layout1,
+                layout2,
+                layout3,
+                layout5,
+                layout6,
+                layout61,
+                layout7,
+                new MTextView(context)
+                        .paddingPx(5)
+                        .textsize(1)
+                ,
+                button1 = new MButton(context)
+                        .backgroundDrawable(R.drawable.button_design_h40_w345)
+                        .text("登録")
+                        .textSize(18)
+                        .click(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                CostDetailController.submit(activity);
+                            }
+                        })
+                );
+        layout0.inflateInside();
 
     }
 
@@ -115,14 +131,13 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
         tv1 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
                 .text("使用予定日")
-                .backgroundDrawable(R.drawable.header_design)
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
                 .widthWrapContent();
 
         bYMD = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                .backgroundDrawable(drawable.button_design_1)
-                .text(year + "/" + (month + 1) + "/" + day)
-                .drawableLeft(android.R.drawable.ic_menu_month);
+                .gravity(Gravity.CENTER)
+                .backgroundDrawable(drawable.button_design_h40_w230)
+                .text(year + "/" + (month + 1) + "/" + day);
 
         layout1 = new MLinearLayout(context)
                 .orientationHorizontal()
@@ -141,14 +156,14 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         tv2 = new MTextView(context)
                                 .text("予定金額")
                                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
 
                         et2 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                                .gravity(Gravity.CENTER)
                                 .hint("必須入力")
-                                .backgroundDrawable(R.drawable.button_design_1)
+                                .backgroundDrawable(R.drawable.button_design_h40_w230)
                                 .click(new OnClickListener() {
                                     @Override
                                     public void onClick(View v) {
@@ -192,7 +207,7 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         tv3 = new MTextView(context)
                                 .text("カテゴリ")
                                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
 
@@ -207,14 +222,14 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         tv5 = new MTextView(context)
                                 .text("実績金額")
                                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
 
                         et5 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                                .gravity(Gravity.CENTER)
                                 .hint("未入力")
-                                .backgroundDrawable(R.drawable.button_design_1)
+                                .backgroundDrawable(R.drawable.button_design_h40_w230)
                                 .click(new OnClickListener() {
 
                                     @Override
@@ -258,7 +273,7 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         tv6 = new MTextView(context)
                                 .text("支払方法")
                                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
 
@@ -272,14 +287,14 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         tv61 = new MTextView(context)
                                 .text("支払回数")
                                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
 
                         tv62 = new MTextView(context)
                                 .hint(s(R.string.MI_NYUURYOKU))
-                                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .backgroundDrawable(drawable.button_design_1)
+                                .gravity(Gravity.CENTER)
+                                .backgroundDrawable(drawable.button_design_h40_w230)
                                 .widthWrapContent()
                                 .click(ifPossibleCreateNumberPickerDialog())
                 );
@@ -292,7 +307,7 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
                         tv7 = new MTextView(context)
                                 .text("繰り返し区分")
                                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .backgroundDrawable(R.drawable.header_design)
+                                .backgroundDrawable(R.drawable.header_design_h40_w115)
                                 .widthWrapContent()
                         ,
 
@@ -346,7 +361,7 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
 
     private Spinner getSpinner() {
         Spinner ret = new Spinner(context);
-        ret.setBackgroundResource(R.drawable.button_design_1);
+        ret.setBackgroundResource(R.drawable.button_design_h40_w230);
         List<CharSequence> list = new ArrayList<CharSequence>();
         list.add("繰り返しなし");
         list.add("平日のみ");

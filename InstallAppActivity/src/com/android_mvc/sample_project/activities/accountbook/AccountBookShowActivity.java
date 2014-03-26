@@ -76,6 +76,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                         layout1 = new MLinearLayout(context)
                                 .orientationVertical()
                                 .widthFillParent()
+                                .paddingPx(10)
                                 .heightWrapContent()
                 );
 
@@ -85,19 +86,19 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                 accountBook.getHeader(context),
                 accountBook.getDescription(context),
                 new MButton(context)
-                        .text("目標金額変更")
-                        .backgroundDrawable(R.drawable.button_design_1)
-                        .widthMatchParent()
+                        .text("最終目標変更")
+                        .backgroundDrawable(R.drawable.button_design_h30_w345)
                         .click(updateMokuhyouKingaku(accountBook))
                 ,
                 new MButton(context)
                         .text("基準日変更")
-                        .backgroundDrawable(R.drawable.button_design_1)
-                        .widthMatchParent()
+                        .backgroundDrawable(R.drawable.button_design_h30_w345)
                         .click(updateStartDate(accountBook))
                 ,
                 // 空行
-                new MTextView(context).paddingPx(15)
+                new MTextView(context)
+                        .paddingPx(5)
+                        .textsize(1)
                 ,
                 // 月別目標のヘッダ
                 accountBookDetails.get(0).getHeader(context)
@@ -290,7 +291,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
         // OKボタンを押した時の動作
         android.content.DialogInterface.OnClickListener click = new android.content.DialogInterface.OnClickListener() {
-            
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // チュートリアル済みフラグを立てる。
@@ -318,7 +319,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
                 // OKボタンを押した時の動作
                 android.content.DialogInterface.OnClickListener click = new android.content.DialogInterface.OnClickListener() {
-                    
+
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // チュートリアル済みフラグを立てる。

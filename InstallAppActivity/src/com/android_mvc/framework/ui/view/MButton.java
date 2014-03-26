@@ -97,4 +97,9 @@ public class MButton extends Button implements IFWView {
         setHint(s);
         return this;
     }
+    
+    public MButton textSize(float size){
+        setTextSize(size);
+        return this;
+    }
 }

@@ -48,7 +48,7 @@ public class PayType extends LogicalEntity<PayType> {
 
     public Spinner getSpinner(Context context) {
         Spinner ret = new Spinner(context);
-        ret.setBackgroundResource(R.drawable.button_design_1);
+        ret.setBackgroundResource(R.drawable.button_design_h40_w230);
         List<PayType> payList = new PayTypeDAO(context).findAll();
         List<CharSequence> list = new ArrayList<CharSequence>();
         for (PayType p : payList) {

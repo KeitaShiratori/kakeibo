@@ -77,7 +77,7 @@ public class AccountBook extends LogicalEntity<AccountBook> {
                 .orientationHorizontal()
                 .widthFillParent()
                 .heightWrapContent()
-                .paddingLeftPx(10);
+                ;
 
         MTextView tv1 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL)
@@ -108,7 +108,7 @@ public class AccountBook extends LogicalEntity<AccountBook> {
                 .orientationHorizontal()
                 .widthFillParent()
                 .heightWrapContent()
-                .paddingLeftPx(10);
+                ;
 
         MTextView tv1 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL)
