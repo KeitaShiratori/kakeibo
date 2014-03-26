@@ -36,8 +36,8 @@ public class IncomeDetailEditAction extends BaseAction
         ActivityParams params = activity.toParams();
 
         // 登録用の値を取得（バリデ通過済み）
-        Integer category_type = (Integer) params.getValue("category_type");
-        Integer pay_type = (Integer)params.getValue("pay_type");
+        Integer category_type = 0;//(Integer) params.getValue("category_type");
+        Integer pay_type = 0;//(Integer)params.getValue("pay_type");
         Calendar budget_ymd = (Calendar)params.getValue("budget_ymd");
         Integer budget_income = Integer.parseInt((String)params.getValue("budget_income"));
         Calendar settle_ymd = (Calendar)params.getValue("settle_ymd");

@@ -142,6 +142,9 @@ public class MyWalletShowData {
                 .widthFillParent()
                 .heightFillParent();
 
+        // modeとstartDateのデフォルト値を設定
+        mode = "DEFAULT";
+        startDate = Calendar.getInstance();
     }
 
     public void makeModeButtons() {

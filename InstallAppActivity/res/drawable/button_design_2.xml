@@ -10,7 +10,7 @@
 
                     <stroke android:width="0.5dip" android:color="@color/black" />
 
-                    <size android:height="40dp" android:width="115dp" />
+                    <size android:height="30dp" android:width="115dp" />
                 </shape></item>
         </layer-list></item>
 
@@ -23,7 +23,7 @@
 
                     <stroke android:width="2dip" android:color="@color/black" />
 
-                    <size android:height="40dp" android:width="115dp" />
+                    <size android:height="30dp" android:width="115dp" />
                 </shape></item>
         </layer-list></item>
 

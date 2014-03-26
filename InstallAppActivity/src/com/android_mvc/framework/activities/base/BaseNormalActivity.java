@@ -4,19 +4,21 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.android_mvc.framework.activities.CommonActivityUtil;
 import com.android_mvc.framework.activities.IBaseActivity;
+import com.android_mvc.framework.common.FWUtil;
 import com.android_mvc.framework.controller.action.ActionResult;
 import com.android_mvc.framework.controller.validation.ActivityParams;
 import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.menu.OptionMenuBuilder;
+import com.android_mvc.sample_project.bat.AlarmReceiver;
+import com.android_mvc.sample_project.bat.KakeiboNotification;
+import com.android_mvc.sample_project.bat.PeriodicService;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.dao.PrefDAO;
 import com.android_mvc.sample_project.db.entity.CostDetail;
@@ -37,6 +39,9 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
 
     // Activityの共通便利クラス
     protected CommonActivityUtil<BaseNormalActivity> $;
+
+    // prefDAO
+    protected PrefDAO pref;
 
     // UI構築用
     protected Activity context;
@@ -63,7 +68,7 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
         $.onActivityCreated(this);
 
         // 日替わり処理
-        PrefDAO pref = new PrefDAO();
+        pref = new PrefDAO();
         Calendar lastUpdateYMD = pref.getLastUpdateYMD(context);
         Calendar now = Calendar.getInstance();
         if (now.get(Calendar.DAY_OF_YEAR) > lastUpdateYMD.get(Calendar.DAY_OF_YEAR)
@@ -93,19 +98,29 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
 
         }
 
-//        // 画面サイズ取得処理
-//        int height = pref.getDisplaySizeHeight(context);
-//        int width = pref.getDisplaySizeWidth(context);
-//
-//        if (height == 0 || width == 0) {
-//            // ウィンドウマネージャのインスタンス取得
-//            WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
-//            // ディスプレイのインスタンス生成
-//            Display disp = wm.getDefaultDisplay();
-//            pref.updateDisplaySizeHeight(context, disp.getHeight());
-//            pref.updateDisplaySizeWidth(context, disp.getWidth());
-//        }
-//
+        // // 画面サイズ取得処理
+        // int height = pref.getDisplaySizeHeight(context);
+        // int width = pref.getDisplaySizeWidth(context);
+        //
+        // if (height == 0 || width == 0) {
+        // // ウィンドウマネージャのインスタンス取得
+        // WindowManager wm = (WindowManager)
+        // getSystemService(Context.WINDOW_SERVICE);
+        // // ディスプレイのインスタンス生成
+        // Display disp = wm.getDefaultDisplay();
+        // pref.updateDisplaySizeHeight(context, disp.getHeight());
+        // pref.updateDisplaySizeWidth(context, disp.getWidth());
+        // }
+        //
+
+        // 通知予約をセット
+        Intent intent = new Intent(BaseNormalActivity.this, AlarmReceiver.class);
+        FWUtil.setAlarmManager(context, intent);
+
+        // 通知を削除
+        KakeiboNotification kn = new KakeiboNotification();
+        kn.removeNotice(context);
+
     }
 
     @Override
@@ -158,4 +173,13 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
     protected String s(int resorceId) {
         return getResources().getString(resorceId);
     }
+
+    /**
+     * 常駐サービスを起動
+     */
+    public void startPeriodicService() {
+        new PeriodicService().startResident(context);
+    }
+
+
 }

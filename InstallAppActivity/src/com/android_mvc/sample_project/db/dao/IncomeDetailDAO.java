@@ -58,12 +58,10 @@ public class IncomeDetailDAO extends BaseDAO<IncomeDetail>
         return findAll(helper, IncomeDetail.class);
     }
 
-    public List<IncomeDetail> findByOrder() {
+    public List<IncomeDetail> findOrderByBudgetYmd() {
         return new Finder<IncomeDetail>(helper)
                 .where("id > 0")
-                .orderBy(IncomeDetailCol.BUDGET_YMD + " DESC,"
-                        +IncomeDetailCol.CATEGORY_TYPE + " DESC,"
-                        + IncomeDetailCol.PAY_TYPE + " DESC")
+                .orderBy(IncomeDetailCol.BUDGET_YMD + " DESC")
                 .findAll(IncomeDetail.class)
             ;
     }

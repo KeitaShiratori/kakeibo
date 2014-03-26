@@ -82,7 +82,66 @@ public class BaseValidationsUtil
         {
             vres.err(params.getName(key) + "には" + nc.value + "より大きい数を入力してください。");
         }
+        else if ("lessThan".equals(nc.type_code) && !(target_value < nc.value))
+        {
+            vres.err(params.getName(key) + "には" + nc.value + "より小さい数を入力してください。");
+        }
         // TODO: 演算タイプの追加
+    }
+
+    /**
+     * 該当キーの数値に対し，特定の演算条件を満たすことを要求する。
+     */
+    protected void assertCalendarOperation(String key, CalendarComparator cc)
+    {
+        Calendar target_value;
+
+        try {
+            target_value = (Calendar) params.getValue(key);
+        } catch (Exception e) {
+            return;
+        }
+
+        // 演算を実行
+        if ("before".equals(cc.type_code) && !(target_value.before(lastDayOfMonth(cc.value))))
+        {
+            vres.err(params.getName(key) + "には"
+                    + cc.value.get(Calendar.YEAR) + "年"
+                    + (cc.value.get(Calendar.MONTH) + 1) + "月"
+                    + "以前の日付を入力してください。");
+        }
+        else if ("after".equals(cc.type_code) && !(target_value.after(firstDayOfMonth(cc.value))))
+        {
+            vres.err(params.getName(key) + "には"
+                    + cc.value.get(Calendar.YEAR) + "年"
+                    + (cc.value.get(Calendar.MONTH) + 1) + "月"
+                    + "以降の日付を入力してください。");
+        }
+        // TODO: 演算タイプの追加
+    }
+
+    /**
+     * その月の初日の前日を返す。
+     * @param c
+     * @return
+     */
+    protected Calendar firstDayOfMonth(Calendar c){
+        Calendar ret = c;
+        ret.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
+        ret.add(Calendar.DAY_OF_MONTH, -1);
+        return ret;
+    }
+
+    /** 
+     * その月の最終日の翌日を返す。
+     * @param c
+     * @return
+     */
+    protected Calendar lastDayOfMonth(Calendar c){
+        Calendar ret = c;
+        ret.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+        ret.add(Calendar.DAY_OF_MONTH, 1);
+        return ret;
     }
 
     /**
@@ -109,6 +168,30 @@ public class BaseValidationsUtil
     protected NumberComparator greaterThan(long l)
     {
         return new NumberComparator(l, "greaterThan");
+    }
+
+    /**
+     * 「よりも小さい」を表す。
+     */
+    protected NumberComparator lessThan(long l)
+    {
+        return new NumberComparator(l, "lessThan");
+    }
+
+    /**
+     * 「以前」を表す。
+     */
+    protected CalendarComparator before(Calendar c)
+    {
+        return new CalendarComparator(c, "before");
+    }
+
+    /**
+     * 「以降」を表す。
+     */
+    protected CalendarComparator after(Calendar c)
+    {
+        return new CalendarComparator(c, "after");
     }
 
     /**

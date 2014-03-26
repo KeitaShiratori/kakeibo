@@ -21,21 +21,28 @@ import com.android_mvc.sample_project.controller.MainController;
 public class TopActivity extends BaseNormalActivity
 {
     // UI部品
+    private MLinearLayout ll1;
     private MTextView tv10;
     private MButton button11;
     private MButton button12;
+
+    private MLinearLayout ll2;
     private MTextView tv20;
     private MButton button21;
     private MButton button22;
+
+    private MLinearLayout ll3;
     private MTextView tv30;
     private MButton button31;
     private MButton button32;
     private MButton button33;
-    private MButton button34;
+    // private MButton button34;
+
+    private MLinearLayout ll4;
     private MTextView tv40;
     private MButton button41;
     private MButton button42;
-    private MButton button5;
+
     private TopActivity activity;
 
     @Override
@@ -49,16 +56,22 @@ public class TopActivity extends BaseNormalActivity
                 .widthFillParent()
                 .gravity(Gravity.LEFT)
                 .backgroundResource(R.drawable.header_design);
+        ll1 = new MLinearLayout(activity)
+                .orientationHorizontal()
+                .heightWrapContent()
+                .widthFillParent()
+                .paddingBottomPx(10);
         button11 = new MButton(activity)
                 .text("目標")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
         button12 = new MButton(activity)
                 .text("クレジットカード設定")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
+        button11.click(submit("SHOW_ACCOUNT_BOOK"));
+        button12.click(submit("CREDIT_CARD_SETTING"));
+        ll1.add(button11, button12);
 
         // 登録セクション
         tv20 = new MTextView(activity)
@@ -66,16 +79,22 @@ public class TopActivity extends BaseNormalActivity
                 .widthFillParent()
                 .gravity(Gravity.LEFT)
                 .backgroundResource(R.drawable.header_design);
+        ll2 = new MLinearLayout(activity)
+                .orientationHorizontal()
+                .heightWrapContent()
+                .widthFillParent()
+                .paddingBottomPx(10);
         button21 = new MButton(activity)
                 .text("支出登録")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
         button22 = new MButton(activity)
                 .text("収入登録")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
+        button21.click(submit("EDIT_COST_DETAIL"));
+        button22.click(submit("EDIT_INCOME_DETAIL"));
+        ll2.add(button21, button22);
 
         // 照会セクション
         tv30 = new MTextView(activity)
@@ -83,26 +102,31 @@ public class TopActivity extends BaseNormalActivity
                 .widthFillParent()
                 .gravity(Gravity.LEFT)
                 .backgroundResource(R.drawable.header_design);
+        ll3 = new MLinearLayout(activity)
+                .orientationHorizontal()
+                .heightWrapContent()
+                .widthFillParent()
+                .paddingBottomPx(10);
         button31 = new MButton(activity)
                 .text("支出照会")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
         button32 = new MButton(activity)
                 .text("収入照会")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
         button33 = new MButton(activity)
                 .text("財布の中身")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
-        button34 = new MButton(activity)
-                .text("貯金シート")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
+        // button34 = new MButton(activity)
+        // .text("貯金シート")
+        // .gravity(Gravity.CENTER_VERTICAL)
+        // .backgroundResource(R.drawable.button_design);
+        button31.click(submit("SHOW_COST_DETAIL"));
+        button32.click(submit("SHOW_INCOME_DETAIL"));
+        button33.click(submit(s(R.string.MYWALLET)));
+        ll3.add(button31, button32, button33);
 
         // 分析セクション
         tv40 = new MTextView(activity)
@@ -110,23 +134,22 @@ public class TopActivity extends BaseNormalActivity
                 .widthFillParent()
                 .gravity(Gravity.LEFT)
                 .backgroundResource(R.drawable.header_design);
+        ll4 = new MLinearLayout(activity)
+                .orientationHorizontal()
+                .heightWrapContent()
+                .widthFillParent()
+                .paddingBottomPx(10);
         button41 = new MButton(activity)
                 .text("予定分析")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
         button42 = new MButton(activity)
                 .text("実績分析")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
-
-        // その他セクション
-        button5 = new MButton(activity)
-                .text("財布の中身\n財布の中身を確認します。")
-                .widthFillParent()
-                .gravity(Gravity.LEFT)
-                .backgroundResource(R.drawable.button_design_1);
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design);
+        button41.click(submit("SHOW_BUDGET_SHOW"));
+        button42.click(submit("SHOW_SETTLE_SHOW"));
+        ll4.add(button41, button42);
 
         new UIBuilder(context)
                 .setDisplayHeaderText("TOP")
@@ -136,34 +159,14 @@ public class TopActivity extends BaseNormalActivity
                                 .widthFillParent()
                                 .heightFillParent()
                                 .add(
-                                        tv10
-                                        ,
-                                        button11.click(submit("SHOW_ACCOUNT_BOOK"))
-                                        ,
-                                        button12.click(submit("CREDIT_CARD_SETTING"))
-                                        ,
-                                        tv20
-                                        ,
-                                        button21.click(submit("EDIT_COST_DETAIL"))
-                                        ,
-                                        button22.click(submit("EDIT_INCOME_DETAIL"))
-                                        ,
-                                        tv30
-                                        ,
-                                        button31.click(submit("SHOW_COST_DETAIL"))
-                                        ,
-                                        button32.click(submit("SHOW_INCOME_DETAIL"))
-                                        ,
-                                        button33.click(submit(s(R.string.MYWALLET)))
-                                        ,
-                                        button34.click(submit("ACCOUNT_SHEET"))
-                                        ,
-                                        tv40
-                                        ,
-                                        button41.click(submit("SHOW_BUDGET_SHOW"))
-                                        ,
-                                        button42.click(submit("SHOW_SETTLE_SHOW"))
-
+                                        tv10,
+                                        ll1,
+                                        tv20,
+                                        ll2,
+                                        tv30,
+                                        ll3,
+                                        tv40,
+                                        ll4
                                 )
                 )
                 .display();

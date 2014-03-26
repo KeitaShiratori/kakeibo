@@ -90,7 +90,7 @@ public class AccountBook extends LogicalEntity<AccountBook> {
                 .backgroundDrawable(R.drawable.header_design);
 
         MTextView tv3 = new MTextView(context)
-                .text("開始日")
+                .text("基準日")
                 .gravity(Gravity.CENTER_VERTICAL)
                 .backgroundDrawable(R.drawable.header_design);
 
@@ -121,7 +121,7 @@ public class AccountBook extends LogicalEntity<AccountBook> {
                 .backgroundDrawable(R.drawable.record_design);
 
         MTextView tv3 = new MTextView(context)
-                .text(LPUtil.encodeCalendarToTextYMD(getStartDate()))
+                .text(getStartDate().get(Calendar.DAY_OF_MONTH) + "日")
                 .gravity(Gravity.CENTER_VERTICAL)
                 .backgroundDrawable(R.drawable.record_design);
 

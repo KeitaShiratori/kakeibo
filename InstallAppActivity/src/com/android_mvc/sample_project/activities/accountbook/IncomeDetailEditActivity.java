@@ -44,17 +44,17 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
     MTextView tv2;
     MTextView et2;
 
-    MLinearLayout layout3;
-    MTextView tv3;
-    Spinner sp3;
+//    MLinearLayout layout3;
+//    MTextView tv3;
+//    Spinner sp3;
 
     MLinearLayout layout5;
     MTextView tv5;
     MTextView et5;
 
-    MLinearLayout layout6;
-    MTextView tv6;
-    Spinner sp6;
+//    MLinearLayout layout6;
+//    MTextView tv6;
+//    Spinner sp6;
 
     MButton button1;
 
@@ -76,9 +76,9 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                 .add(
                         layout1,
                         layout2,
-                        layout3,
+//                        layout3,
                         layout5,
-                        layout6,
+//                        layout6,
                         button1 = new MButton(context)
                                 .backgroundDrawable(R.drawable.button_design_3)
                                 .text("登録")
@@ -168,20 +168,20 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
                 );
 
-        layout3 = new MLinearLayout(context)
-                .orientationHorizontal()
-                .widthFillParent()
-                .add(
-
-                        tv3 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
-                                .text("カテゴリ")
-                                .backgroundDrawable(R.drawable.header_design)
-                                .widthWrapContent()
-                        ,
-
-                        sp3 = new CategoryType().getSpinner(context)
-                );
+//        layout3 = new MLinearLayout(context)
+//                .orientationHorizontal()
+//                .widthFillParent()
+//                .add(
+//
+//                        tv3 = new MTextView(context)
+//                                .gravity(Gravity.CENTER_VERTICAL)
+//                                .text("カテゴリ")
+//                                .backgroundDrawable(R.drawable.header_design)
+//                                .widthWrapContent()
+//                        ,
+//
+//                        sp3 = new CategoryType().getSpinner(context)
+//                );
 
         layout5 = new MLinearLayout(context)
                 .orientationHorizontal()
@@ -234,20 +234,20 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
                 );
 
-        layout6 = new MLinearLayout(context)
-                .orientationHorizontal()
-                .widthFillParent()
-                .add(
-
-                        tv6 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
-                                .text("支払方法")
-                                .backgroundDrawable(R.drawable.header_design)
-                                .widthWrapContent()
-                        ,
-
-                        sp6 = new PayType().getSpinner(context)
-                );
+//        layout6 = new MLinearLayout(context)
+//                .orientationHorizontal()
+//                .widthFillParent()
+//                .add(
+//
+//                        tv6 = new MTextView(context)
+//                                .gravity(Gravity.CENTER_VERTICAL)
+//                                .text("支払方法")
+//                                .backgroundDrawable(R.drawable.header_design)
+//                                .widthWrapContent()
+//                        ,
+//
+//                        sp6 = new PayType().getSpinner(context)
+//                );
 
     }
 
@@ -255,11 +255,12 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
     public ActivityParams toParams() {
         // 入力された値をすべて回収
         return new ActivityParams()
-                .add("予定年月日", "budget_ymd", Util.toCalendar(bYMD.getText().toString()))
-                .add("予算費用", "budget_income", et2.text())
-                .add("カテゴリ名", IncomeDetailCol.CATEGORY_TYPE, (sp3.getSelectedItemPosition() + 1))
-                .add("実績費用", "settle_income", et5.text())
-                .add("支払方法", IncomeDetailCol.PAY_TYPE, (sp6.getSelectedItemPosition() + 1));
+                .add("予定年月日", IncomeDetailCol.BUDGET_YMD, Util.toCalendar(bYMD.getText().toString()))
+                .add("予算費用", IncomeDetailCol.BUDGET_INCOME, et2.text())
+//                .add("カテゴリ名", IncomeDetailCol.CATEGORY_TYPE, (sp3.getSelectedItemPosition() + 1))
+                .add("実績費用", IncomeDetailCol.SETTLE_INCOME, et5.text())
+//                .add("支払方法", IncomeDetailCol.PAY_TYPE, (sp6.getSelectedItemPosition() + 1))
+                ;
     }
 
 }

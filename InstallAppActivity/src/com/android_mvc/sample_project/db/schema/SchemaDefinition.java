@@ -53,7 +53,7 @@ public class SchemaDefinition extends AbstractSchemaDefinition
                         new RDBColumn().nameIs(CostDetailCol.PAY_TYPE).comment("支払種別").typeIs("integer").notNull(),
                         new RDBColumn().nameIs(CostDetailCol.BUDGET_YMD).comment("予算年月日").typeIs("text").notNull(),
                         new RDBColumn().nameIs(CostDetailCol.BUDGET_COST).comment("予算費用").typeIs("text").notNull(),
-                        new RDBColumn().nameIs(CostDetailCol.SETTLE_COST).comment("決算費用").typeIs("text"),
+                        new RDBColumn().nameIs(CostDetailCol.SETTLE_COST).comment("決算費用").typeIs("text")
                 })
                 .create();
 

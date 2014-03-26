@@ -5,6 +5,7 @@ import com.android_mvc.framework.controller.validation.ValidationResult;
 import com.android_mvc.sample_project.activities.accountbook.AccountBookShowActivity;
 import com.android_mvc.sample_project.activities.installation.InstallCompletedActivity;
 import com.android_mvc.sample_project.controller.util.ValidationsUtil;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookCol;
 
 /**
  * DB操作系の画面のバリデーション処理の記述。

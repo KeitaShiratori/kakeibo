@@ -39,7 +39,7 @@ public class MyWalletAction extends BaseAction
         // 画面入力値を取得
         ActivityParams params = activity.toParams();
 
-        DBEDitActionResult ret = new DBEDitActionResult();
+        MyWalletActionResult ret = new MyWalletActionResult();
 
         // DB登録（すでに非同期でラップされているので，DB操作も同期的でよい）
         // 登録対象の年月日で検索。すでに同一日付で登録があれば上書きする。
@@ -66,7 +66,7 @@ public class MyWalletAction extends BaseAction
     }
 
     // 実行結果オブジェクト
-    static class DBEDitActionResult extends ActionResult
+    static class MyWalletActionResult extends ActionResult
     {
         private static final long serialVersionUID = 1L;
 

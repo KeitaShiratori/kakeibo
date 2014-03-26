@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android_mvc.sample_project"
     android:versionCode="1"
-    android:versionName="1.0">
+    android:versionName="1.0" >
 
     <!-- SDKのバージョン -->
     <uses-sdk android:minSdkVersion="11" />
@@ -110,8 +110,16 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".bat.AlarmReceiver" android:process=":remote" />  
+
         <!-- サンプルのサービス -->
         <service android:name=".bat.SamplePeriodicService" >
+        </service>
+
+        <!-- 定期的サービス -->
+        <service
+            android:name=".bat.PeriodicService"
+            android:enabled="true" >
         </service>
 
         <!-- ============ 外部ライブラリ ============= -->
@@ -124,8 +132,6 @@
     <!-- ============ パーミッション ============= -->
 
 
-    <!-- ネットワークアクセス -->
-    <uses-permission android:name="android.permission.INTERNET" >
-    </uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
 </manifest>

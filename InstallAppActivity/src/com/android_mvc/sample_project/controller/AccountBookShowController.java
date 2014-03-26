@@ -6,10 +6,14 @@ import com.android_mvc.framework.controller.action.ActionResult;
 import com.android_mvc.framework.controller.action.BLExecutor;
 import com.android_mvc.framework.controller.routing.Router;
 import com.android_mvc.framework.controller.routing.RoutingTable;
+import com.android_mvc.framework.controller.validation.ValidationExecutor;
+import com.android_mvc.framework.controller.validation.ValidationResult;
 import com.android_mvc.sample_project.activities.accountbook.AccountBookShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.BudgetShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.IncomeDetailEditActivity;
+import com.android_mvc.sample_project.activities.installation.InstallCompletedActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
 import com.android_mvc.sample_project.db.entity.AccountBook;
 import com.android_mvc.sample_project.db.entity.AccountBookDetail;
@@ -33,6 +37,22 @@ public class AccountBookShowController extends BaseController
     public static void submit(final AccountBookShowActivity activity, final AccountBookDetail abd)
     {
         new ControlFlowDetail<AccountBookShowActivity>(activity)
+                .setValidation(new ValidationExecutor() {
+                    @Override
+                    public ValidationResult doValidate()
+                    {
+                        // バリデーション処理
+                        return new AccountBookShowValidation().validate(activity);
+                    }
+
+                    @Override
+                    public void onValidationFailed()
+                    {
+                        // バリデーション失敗時の処理
+                        showErrMessages();
+                        stayInThisPage();
+                    }
+                })
                 .setBL(new BLExecutor() {
                     @Override
                     public ActionResult doAction()
@@ -61,14 +81,16 @@ public class AccountBookShowController extends BaseController
     /**
      * 家計簿照会画面からの遷移時
      */
-    public static void submit(final AccountBookShowActivity activity, String action_type, final Long account_book_id)
+    public static void submit(final AccountBookShowActivity activity, String action_type)
     {
         Router.goByRoutingTable(activity, action_type,
                 new RoutingTable()
                         .map("BACK_TO_TOP", TopActivity.class, "トップ画面へ")
-                        .map("EDIT_COST_DETAIL", CostDetailEditActivity.class, "変動費一覧画面へ")
+                        .map("EDIT_COST_DETAIL", CostDetailEditActivity.class, "変動費登録画面へ")
                         .map("SHOW_COST_DETAIL", CostDetailShowActivity.class, "変動費一覧画面へ")
+                        .map("EDIT_INCOME_DETAIL", IncomeDetailEditActivity.class, "収入登録画面へ")
                         .map("SHOW_BUDGET_SHOW", BudgetShowActivity.class, "予定表示へ")
+                        .map("InstallCompletedActivity", InstallCompletedActivity.class)
                 );
     }
 

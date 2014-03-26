@@ -70,7 +70,6 @@ public class MainController extends BaseController
                     public void onValidationFailed()
                     {
                         showErrMessages();
-
                         // バリデーション失敗時の遷移先
                         // goOnValidationFailed( CostDetailEditActivity.class );
                         stayInThisPage();

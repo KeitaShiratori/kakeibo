@@ -59,6 +59,8 @@ public abstract class AbstractSchemaDefinition
 
         FWUtil.d("テーブル構造の初期化を開始");
         define_tables();
+        onUpgrade2();
+        onUpgrade3(db);
         FWUtil.d("テーブル構造の初期化を完了");
 
         //    }

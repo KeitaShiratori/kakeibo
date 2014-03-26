@@ -152,7 +152,7 @@ public class CreditCardData {
     public void makeModeButtons() {
         this.modeButtons.add(
                 btnBefore,
-                
+
                 btnDayMode,
                 btnWeekMode,
                 btnMonthMode,
@@ -166,9 +166,14 @@ public class CreditCardData {
         String simeYmd = new String();
         String siharaiYmd = new String();
 
-        simeYmd = (creditCardSetting.getSimeYmd() != null) ? creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH) + "日" : "未入力";
-        siharaiYmd = (creditCardSetting.getSiharaiYmd() != null) ? creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH) + "日" : "未入力";
-
+        if (creditCardSetting != null) {
+            simeYmd = (creditCardSetting.getSimeYmd() != null) ? creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH) + "日" : "未入力";
+            siharaiYmd = (creditCardSetting.getSiharaiYmd() != null) ? creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH) + "日" : "未入力";
+        }
+        else{
+            simeYmd = "未入力";
+            siharaiYmd = "未入力";
+        }
         tv1 = new MTextView(context)
                 .text(simeYmd)
                 .backgroundResource(R.drawable.header_design)

@@ -8,6 +8,7 @@ import com.android_mvc.framework.db.dao.IFWDAO;
 import com.android_mvc.framework.db.DBHelper;
 import com.android_mvc.framework.task.AsyncTasksRunner;
 import com.android_mvc.framework.task.SequentialAsyncTask;
+import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

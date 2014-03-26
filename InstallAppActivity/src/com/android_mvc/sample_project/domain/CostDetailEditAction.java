@@ -6,11 +6,13 @@ import java.util.List;
 
 import android.app.Activity;
 
+import com.android_mvc.framework.activities.base.BaseNormalActivity;
 import com.android_mvc.framework.controller.action.ActionResult;
 import com.android_mvc.framework.controller.action.BaseAction;
 import com.android_mvc.framework.controller.validation.ActivityParams;
 import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
+import com.android_mvc.sample_project.activities.accountbook.MyWalletShowActivity;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.entity.CostDetail;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
@@ -24,9 +26,9 @@ import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
 public class CostDetailEditAction extends BaseAction
 {
 
-    private CostDetailEditActivity activity;
+    private BaseNormalActivity activity;
 
-    public CostDetailEditAction(CostDetailEditActivity activity) {
+    public CostDetailEditAction(BaseNormalActivity activity) {
         this.activity = activity;
     }
 

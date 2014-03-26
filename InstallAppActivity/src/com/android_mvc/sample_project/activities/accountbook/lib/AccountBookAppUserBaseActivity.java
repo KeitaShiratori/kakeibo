@@ -1,13 +1,13 @@
 package com.android_mvc.sample_project.activities.accountbook.lib;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Bundle;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 
 import com.android_mvc.framework.activities.accountbook.AccountBookAppFWBaseActivity;
-import com.android_mvc.framework.common.FWUtil;
-import com.android_mvc.framework.db.schema.RDBSchema;
+import com.android_mvc.sample_project.bat.PeriodicService;
 import com.android_mvc.sample_project.common.AppSettings;
-import com.android_mvc.sample_project.db.schema.SchemaDefinition;
 
 /**
  * ユーザがいじる必要のない初期化処理ロジック。
@@ -32,5 +32,5 @@ public abstract class AccountBookAppUserBaseActivity extends AccountBookAppFWBas
             // したがって，本Activityは，APの顔とFWの顔という二面性を持つことになる。邪道だが面白い。
 
     }
-    
+
 }

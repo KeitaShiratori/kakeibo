@@ -20,8 +20,11 @@ import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.CostDetailController;
+import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
+import com.android_mvc.sample_project.db.dao.CreditCardSettingDAO;
 import com.android_mvc.sample_project.db.entity.CostDetail;
+import com.android_mvc.sample_project.db.entity.CreditCardSetting;
 import com.android_mvc.sample_project.db.entity.lib.LPUtil;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
 
@@ -45,6 +48,15 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
     private MButton btnMonthMode;
     private MButton btnAfter;
     private MButton btnBefore;
+
+    // DAO
+    private CostDetailDAO costDetailDAO;
+    private CreditCardSettingDAO creditCardSettingDAO;
+    private AccountBookDAO accountBookDAO;
+
+    // 制御用変数
+    private boolean isCreditSiharai;
+    private CreditCardSetting creditCardSetting;
 
     // モード定義
     public static String NEW_RECORD_MODE = "NEW_RECORD_MODE";
@@ -70,14 +82,21 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
     public void procAsyncBeforeUI() {
         //
         Util.d("UI構築前に実行される処理です。");
-
     }
 
     @Override
     public void defineContentView() {
+        // 初期処理
         final CostDetailShowActivity activity = this;
 
-        // 初期処理
+        costDetailDAO = new CostDetailDAO(this);
+        creditCardSettingDAO = new CreditCardSettingDAO(this);
+        accountBookDAO = new AccountBookDAO(this);
+
+        creditCardSetting = creditCardSettingDAO.findNewestOne();
+
+        isCreditSiharai = false;
+
         layout1 = new MLinearLayout(context)
                 .orientationVertical()
                 .widthMatchParent()
@@ -86,6 +105,14 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         // モード判定
         mode = ShowTabHostActivity.mode;
         startDate = ShowTabHostActivity.startDate;
+
+        // 変動費明細が１件もない状態で収入登録された後、startDateとmodeがnullになる。nullだと画面表示時にエラー発生する。
+        if (startDate == null) {
+            startDate = Calendar.getInstance();
+        }
+        if (mode == null) {
+            mode = "DEFAULT";
+        }
 
         Util.d("表示モード: " + mode);
         Util.d("startDate: " + startDate);
@@ -111,7 +138,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         }
         // 全件モード
         else if (mode.equals(ALL_MODE)) {
-            CostDetails = new CostDetailDAO(this).findOrderBy(CostDetailCol.BUDGET_YMD);
+            CostDetails = costDetailDAO.findOrderBy(CostDetailCol.BUDGET_YMD);
         }
         // 日、週、月のいずれかのモード
         else {
@@ -121,42 +148,75 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
             if (mode.equals(DAY_MODE)) {
                 days = new String[1];
                 days[0] = LPUtil.encodeCalendarToText(startDate);
+                if (startDate.get(Calendar.DAY_OF_MONTH)
+                == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
+                    isCreditSiharai = true;
+                }
             }
             else if (mode.equals(WEEK_MODE)) {
                 days = new String[7];
                 days[0] = LPUtil.encodeCalendarToText(startDate);
                 Calendar tmp = (Calendar) startDate.clone();
                 for (int i = 1; i < days.length; i++) {
+                    if (tmp.get(Calendar.DAY_OF_MONTH)
+                    == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
+                        isCreditSiharai = true;
+                    }
                     tmp.add(Calendar.DATE, 1);
                     days[i] = LPUtil.encodeCalendarToText(tmp);
                 }
                 tmp = null;
             }
             else if (mode.equals(MONTH_MODE)) {
-                days = new String[startDate.getActualMaximum(Calendar.DAY_OF_MONTH)];
                 Calendar tmp = (Calendar) startDate.clone();
                 tmp.set(Calendar.DAY_OF_MONTH, 1);
+                days = new String[startDate.getActualMaximum(Calendar.DAY_OF_MONTH)];
+                days[0] = LPUtil.encodeCalendarToText(tmp);
                 for (int i = 1; i < days.length; i++) {
+                    if (tmp.get(Calendar.DAY_OF_MONTH)
+                    == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
+                        isCreditSiharai = true;
+                    }
                     tmp.add(Calendar.DATE, 1);
                     days[i] = LPUtil.encodeCalendarToText(tmp);
                 }
                 tmp = null;
             }
 
-            // 全CostDetailをDBからロード
-            CostDetails = new CostDetailDAO(this).findWhereIn(CostDetailCol.BUDGET_YMD, days);
-        }
+            try {
+                // 全CostDetailをDBからロード
+                CostDetails = costDetailDAO.findWhereIn(CostDetailCol.BUDGET_YMD, days);
 
-        // 変動費明細レコードが取得できなかった場合、処理終了
-        if (CostDetails.isEmpty()) {
-            return;
-        }
+                // クレジット支払フラグが立っていたら、クレジットを集計する。
+                if (isCreditSiharai) {
+                    List<CostDetail> creditCostDetails = costDetailDAO.findWhereIn(CostDetailCol.PAY_TYPE, "2");
+                }
+                // 変動費明細レコードが取得できなかった場合、処理終了
+                if (CostDetails.isEmpty()) {
+                    Util.d("CostDetail and creditCostDetails are Empty!");
+                    layout1.add(
+                            emptyLabel(days)
+                            );
+                    layout1.inflateInside();
+                    return;
+                }
+            } catch (NullPointerException e) {
+                // 変動費明細レコードが取得できなかった場合、処理終了
+                Util.d("CostDetailDAO throws NullPointerException!");
+                layout1.add(
+                        emptyLabel(days)
+                        );
+                layout1.inflateInside();
+                return;
+            }
 
-        // 週モードか月モードの場合、合計ラベルを表示する。
-        if (mode.equals(s(R.string.WEEK_MODE))
-                || mode.equals(s(R.string.MONTH_MODE))) {
-            layout1.add(samaryLabgel(CostDetails)
-                    );
+            // 週モードか月モードの場合、合計ラベルを表示する。
+            if (mode.equals(s(R.string.WEEK_MODE))
+                    || mode.equals(s(R.string.MONTH_MODE))) {
+                layout1.add(
+                        samaryLabgel(days, CostDetails)
+                        );
+            }
         }
 
         // レイアウト内に動的に全変動費明細の情報を表示。
@@ -168,9 +228,11 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                     || !LabelYMD.equals(c.getBudgetYmd())) {
                 layout1.add(
                         new MTextView(context)
-                                .paddingPx(5)
+                                .paddingPx(1)
+                                .textsize(5)
                         ,
-                        getLabelYMD(c.getBudgetYmd(), CostDetails));
+                        getLabelYMD(c.getBudgetYmd(), CostDetails)
+                        );
                 LabelYMD = c.getBudgetYmd();
             }
 
@@ -187,16 +249,65 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         }
     }
 
-    private View samaryLabgel(List<CostDetail> selectedCostDetails) {
-        Calendar startYmd = selectedCostDetails.get(0).getBudgetYmd();
-        Calendar endYmd = selectedCostDetails.get(selectedCostDetails.size() - 1).getBudgetYmd();
+    private MLinearLayout emptyLabel(String[] days) {
+        String YMD = new String();
+        String fromYMD = days[0].substring(0, 10);
+
+        YMD += fromYMD + "\n";
+
+        if (days.length > 1) {
+            String toYMD = days[days.length - 1].substring(0, 10);
+            YMD += "～" + toYMD;
+        }
+
+        return new MLinearLayout(this)
+                .orientationHorizontal()
+                .widthFillParent()
+                .heightWrapContent()
+                .paddingLeftPx(10)
+                .add(
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text(YMD)
+                                .backgroundDrawable(R.drawable.header_design)
+                        ,
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text("予定合計"
+                                        + "\n"
+                                        + 0 + "円")
+                                .backgroundDrawable(R.drawable.header_design)
+                        ,
+                        new MTextView(this)
+                                .gravity(Gravity.CENTER_VERTICAL)
+                                .text("実績合計"
+                                        + "\n"
+                                        + 0 + "円")
+                                .backgroundDrawable(R.drawable.header_design)
+
+                );
+
+    }
+
+    private MLinearLayout samaryLabgel(String[] days, List<CostDetail> selectedCostDetails) {
+        String YMD = new String();
+
+        String fromYMD = days[0].substring(0, 10);
+        YMD += fromYMD + "\n";
+
+        if (days.length > 1) {
+            String toYMD = days[days.length - 1].substring(0, 10);
+            YMD += "～" + toYMD;
+        }
 
         Integer budgetCostSum = 0;
         Integer settleCostSum = 0;
 
         for (CostDetail c : selectedCostDetails) {
-            budgetCostSum += c.getBudgetCost();
-            settleCostSum += c.getEffectiveSettleCost();
+            if (!c.getPayType().equals(2)) {
+                budgetCostSum += c.getBudgetCost();
+                settleCostSum += c.getEffectiveSettleCost();
+            }
         }
 
         return new MLinearLayout(this)
@@ -208,15 +319,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
 
                         new MTextView(this)
                                 .gravity(Gravity.CENTER_VERTICAL)
-                                .text(startYmd.get(Calendar.YEAR) + "/"
-                                        + (startYmd.get(Calendar.MONTH) + 1) + "/"
-                                        + startYmd.get(Calendar.DAY_OF_MONTH)
-                                        + "\n"
-                                        + "～"
-                                        + endYmd.get(Calendar.YEAR) + "/"
-                                        + (endYmd.get(Calendar.MONTH) + 1) + "/"
-                                        + endYmd.get(Calendar.DAY_OF_MONTH)
-                                )
+                                .text(YMD)
                                 .backgroundDrawable(R.drawable.header_design)
                                 .click(homeru(budgetCostSum, settleCostSum))
                         ,
@@ -444,7 +547,6 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 final int year = calendar.get(Calendar.YEAR);
                 final int month = calendar.get(Calendar.MONTH);
                 final int day = calendar.get(Calendar.DAY_OF_MONTH);
-
 
                 final MLinearLayout ll1 = new MLinearLayout(activity)
                         .orientationVertical()

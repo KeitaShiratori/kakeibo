@@ -9,11 +9,11 @@
         android:color="@color/aliceblue" />
 
     <padding
-        android:left="7dp"
-        android:right="7dp" />
+        android:left="2dp"
+        android:right="2dp" />
 
     <size
-        android:height="40dp"
+        android:height="30dp"
         android:width="115dp" />
 
 </shape>

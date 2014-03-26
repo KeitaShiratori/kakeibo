@@ -1,11 +1,19 @@
 package com.android_mvc.sample_project.controller;
 
 
+import java.util.Calendar;
+import java.util.List;
+
 import com.android_mvc.framework.controller.validation.ValidationResult;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailEditActivity;
 import com.android_mvc.sample_project.activities.installation.InstallCompletedActivity;
 import com.android_mvc.sample_project.controller.util.ValidationsUtil;
+import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
+import com.android_mvc.sample_project.db.entity.AccountBookDetail;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookCol;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.IncomeDetailCol;
 
 /**
  * DB操作系の画面のバリデーション処理の記述。
@@ -23,8 +31,13 @@ public class FuncDBValidation extends ValidationsUtil
     public ValidationResult validate(CostDetailEditActivity activity)
     {
         initValidationOf(activity);
+        List<AccountBookDetail> abd = new AccountBookDetailDAO(activity).findAll();
+        Calendar fromYMD = abd.get(abd.size() - 1).getMokuhyouMonth();
+        Calendar toYMD = abd.get(0).getMokuhyouMonth(); 
 
-//        assertNotEmpty("budget_ymd");
+        assertNotEmpty(CostDetailCol.BUDGET_YMD);
+        assertCalendarOperation(CostDetailCol.BUDGET_YMD, after(fromYMD));
+        assertCalendarOperation(CostDetailCol.BUDGET_YMD, before(toYMD));
 
         assertNotEmpty("budget_cost");
         assertValidInteger("budget_cost");
@@ -36,13 +49,18 @@ public class FuncDBValidation extends ValidationsUtil
 	public ValidationResult validate(InstallCompletedActivity activity) {
 
         initValidationOf(activity);
-        
-        assertValidInteger("mokuhyou_kingaku");	
-        assertNumberOperation("mokuhyou_kingaku", greaterThan(0));
 
-        assertValidInteger("mokuhyou_kikan");	
-        assertNumberOperation("mokuhyou_kikan", greaterThan(0));
-        
+        // 未入力チェック
+        assertNotEmpty(AccountBookCol.MOKUHYOU_KIKAN);
+        assertNotEmpty(AccountBookCol.MOKUHYOU_KINGAKU);
+        assertNotEmpty(AccountBookCol.START_DATE);
+
+        // 数値チェック
+        assertValidInteger(AccountBookCol.MOKUHYOU_KINGAKU);
+        assertNumberOperation(AccountBookCol.MOKUHYOU_KINGAKU, greaterThan(0));
+
+        assertValidInteger(AccountBookCol.MOKUHYOU_KIKAN);
+        assertNumberOperation(AccountBookCol.MOKUHYOU_KIKAN, lessThan(25));
 
         return getValidationResult();
 	}
@@ -54,12 +72,12 @@ public class FuncDBValidation extends ValidationsUtil
     {
         initValidationOf(activity);
 
-//        assertNotEmpty("budget_ymd");
+        assertNotEmpty(IncomeDetailCol.BUDGET_YMD);
 
-        assertNotEmpty("budget_income");
-        assertValidInteger("budget_income");
+        assertNotEmpty(IncomeDetailCol.BUDGET_INCOME);
+        assertValidInteger(IncomeDetailCol.BUDGET_INCOME);
 
-        assertValidInteger("settle_income");
+        assertValidInteger(IncomeDetailCol.BUDGET_INCOME);
 
         return getValidationResult();
     }

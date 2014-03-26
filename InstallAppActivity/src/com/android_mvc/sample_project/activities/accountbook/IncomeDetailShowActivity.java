@@ -37,7 +37,7 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
     MTextView tv1;
     private Calendar LabelYMD;
 
-    // 全友達のリスト
+    // 全収入明細のリスト
     List<IncomeDetail> IncomeDetails;
 
     @Override
@@ -53,7 +53,7 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
         Util.d("UI構築前に実行される処理です。");
 
         // 全IncomeDetailをDBからロード
-        IncomeDetails = new IncomeDetailDAO(this).findByOrder();
+        IncomeDetails = new IncomeDetailDAO(this).findOrderByBudgetYmd();
     }
 
     @Override
@@ -71,10 +71,17 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
                 )
                 .display();
 
-        // 収入明細レコードが取得できた場合、ヘッダ行を表示する
         if (!IncomeDetails.isEmpty()) {
+            // 収入明細レコードが取得できた場合、ヘッダ行を表示する
             LabelYMD = IncomeDetails.get(0).getBudgetYmd();
             layout1.add(getLabelYMD(IncomeDetails.get(0).getBudgetYmd(), IncomeDetails));
+        }
+        else {
+            // 収入明細が存在しない場合、メッセージを表示する。
+            layout1.add(new MTextView(context)
+                    .text("収入明細が存在しません")
+                    .textColor(R.color.red)
+                    );
         }
 
         for (final IncomeDetail i : IncomeDetails)
@@ -224,6 +231,6 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
 
             }
         };
-     }
+    }
 
 }

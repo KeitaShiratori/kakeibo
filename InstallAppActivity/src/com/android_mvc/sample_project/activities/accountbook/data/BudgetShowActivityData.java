@@ -44,15 +44,16 @@ public class BudgetShowActivityData {
     // 初期処理
     public void init(BudgetShowActivity activity) {
         accountBook = new AccountBookDAO(activity).findAll().get(0);
+        accountBookStartDate = accountBook.getStartDate();
         accountBookDetails = new AccountBookDetailDAO(activity).findAll();
         costDetails = new CostDetailDAO(activity).findByOrder();
-        incomeDetails = new IncomeDetailDAO(activity).findByOrder();
+        incomeDetails = new IncomeDetailDAO(activity).findOrderByBudgetYmd();
         creditCardSetting = new CreditCardSettingDAO(activity).findNewestOne();
 
         budgetRecordData = new ArrayList<BudgetRecordData>();
         for (int i = accountBookDetails.size() - 1; i >= 0; i--) {
             AccountBookDetail a = accountBookDetails.get(i);
-            BudgetRecordData tmp = new BudgetRecordData();
+            BudgetRecordData tmp = new BudgetRecordData(activity);
             tmp.setYoteiYYYYMM(a.getMokuhyouMonth());
             tmp.setMokuhyouKingaku(a.getMokuhyouMonthKingaku());
             budgetRecordData.add(tmp);
@@ -217,7 +218,11 @@ public class BudgetShowActivityData {
 
         // コントロールブレイク
         while (bContinueFlag) {
+            // 集計対象の年月を取得
             ymd = this.accountBookDetails.get(bPos).getMokuhyouMonth();
+            // 開始日を取得
+            ymd.set(Calendar.DAY_OF_MONTH, this.accountBook.getStartDate().get(Calendar.DAY_OF_MONTH));
+
             mokuhyouKingaku = this.accountBookDetails.get(bPos).getMokuhyouMonthKingaku();
             cSum = 0;
             iSum = 0;
@@ -226,13 +231,33 @@ public class BudgetShowActivityData {
                 // ymdを基準として、有効日付の大小をチェックする。
                 int cChkYMDResult = chkYMD(ymd, this.costDetails.get(cPos).getEffectiveYMD());
 
+                // 集計対象月以前に登録されたレコードで、クレジットカード払いのレコードが存在する場合は、
+                // 特別に集計対象とする。
+                if (bPos == 0
+                        &&cChkYMDResult < 0 
+                        && this.costDetails.get(cPos).getPayType() == 2 
+                        && creditCardSetting != null){
+                    cChkYMDResult = 0;
+                }
+
                 // ymdと有効日付の年月が同じ場合
                 if (cChkYMDResult == 0) {
-                    // 支払方法がクレジットの場合、creditSumに支払金額を計上する。
-                    if (this.costDetails.get(cPos).getPayType() == 2) {
+                    // 支払方法がクレジットかつ、クレジットカード設定が登録済みの場合、creditSumに支払金額を計上する。
+                    if (this.costDetails.get(cPos).getPayType() == 2 && creditCardSetting != null) {
+                        // CostDetailの予定日付とクレカの締日を比較して、締日以降であればinitをインクリメントする。
+                        int offset = 0;
+                        if (costDetails.get(cPos).getBudgetYmd().get(Calendar.DAY_OF_MONTH) 
+                                > creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
+                            offset++;
+                        }
+                        if (creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH) 
+                                < accountBook.getStartDate().get(Calendar.DAY_OF_MONTH)) {
+                            offset--;
+                        }
                         for (int divide = 0; divide < this.costDetails.get(cPos).getDivideNum(); divide++) {
-                            if (bPos + 1 + divide < this.accountBookDetails.size()) {
-                                creditSum[bPos + 1 + divide] += costDetails.get(cPos).getEffectiveCost() / costDetails.get(cPos).getDivideNum();
+                            if (bPos + 1 + divide + offset < this.accountBookDetails.size()
+                                    && bPos + 1 + divide + offset >= 0) {
+                                creditSum[bPos + 1 + divide + offset] += costDetails.get(cPos).getEffectiveCost() / costDetails.get(cPos).getDivideNum();
                             }
                         }
                     }
@@ -338,12 +363,20 @@ public class BudgetShowActivityData {
     }
 
     private int chkYMD(Calendar baseYMD, Calendar comparedYMD) {
-        int base = baseYMD.get(Calendar.YEAR) * 100 + baseYMD.get(Calendar.MONTH);
-        int comp = comparedYMD.get(Calendar.YEAR) * 100 + comparedYMD.get(Calendar.MONTH);
+        // 基準日を数値化
+        long base = baseYMD.get(Calendar.YEAR) * 10000 + baseYMD.get(Calendar.MONTH) * 100 + baseYMD.get(Calendar.DAY_OF_MONTH);
+
+        // 基準日の翌月を数値化
+        Calendar baseNextYMD = (Calendar) baseYMD.clone();
+        baseNextYMD.add(Calendar.MONTH, 1);
+        long baseNextMonth = baseNextYMD.get(Calendar.YEAR) * 10000 + baseNextYMD.get(Calendar.MONTH) * 100 + baseNextYMD.get(Calendar.DAY_OF_MONTH);
+
+        // 比較対象の日付を数値化
+        long comp = comparedYMD.get(Calendar.YEAR) * 10000 + comparedYMD.get(Calendar.MONTH) * 100 + comparedYMD.get(Calendar.DAY_OF_MONTH);
 
         if (base > comp) {
             return -1;
-        } else if (base == comp) {
+        } else if (base <= comp && comp < baseNextMonth) {
             return 0;
         } else {
             return 1;

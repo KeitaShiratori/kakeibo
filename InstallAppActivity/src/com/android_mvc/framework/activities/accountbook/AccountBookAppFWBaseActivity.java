@@ -8,6 +8,9 @@ import com.android_mvc.framework.db.dao.IFWDAO;
 import com.android_mvc.framework.db.DBHelper;
 import com.android_mvc.framework.task.AsyncTasksRunner;
 import com.android_mvc.framework.task.SequentialAsyncTask;
+import com.android_mvc.framework.ui.UIUtil;
+import com.android_mvc.sample_project.activities.accountbook.CostDetailShowActivity;
+import com.android_mvc.sample_project.bat.PeriodicService;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -43,7 +46,6 @@ public abstract class AccountBookAppFWBaseActivity extends BaseNormalActivity
         super.onCreate(savedInstanceState);
 
     }
-
 
     /**
      * アプリ起動時に，AP側の設定情報を受け取り，FW側に注入・初期化する。

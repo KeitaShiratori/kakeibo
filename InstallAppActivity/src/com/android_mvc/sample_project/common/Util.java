@@ -5,7 +5,9 @@ import java.util.StringTokenizer;
 
 import net.simonvt.datepicker.DatePickerDialog;
 import net.simonvt.numberpicker.NumberPicker;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.Display;
@@ -16,6 +18,8 @@ import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.android_mvc.framework.common.BaseUtil;
+import com.android_mvc.framework.ui.UIUtil;
+import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 
@@ -295,6 +299,11 @@ public class Util extends BaseUtil
         };
     }
 
+    public static OnClickListener createNumberPickerDialog(final Context context, final MTextView tv) {
+        int maxValue = 31;
+        return createNumberPickerDialog(context, tv, maxValue);
+    }
+
     /**
      * MTextViewをクリックしたときにNumberPickerDialogを開くリスナーを返す。
      * 
@@ -302,13 +311,13 @@ public class Util extends BaseUtil
      * @param c
      * @return
      */
-    public static OnClickListener createNumberPickerDialog(final Context context, final MTextView tv) {
+    public static OnClickListener createNumberPickerDialog(final Context context, final MTextView tv, final int maxValue) {
         return new OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 final NumberPicker np1 = new NumberPicker(context);
-                np1.setMaxValue(31);
+                np1.setMaxValue(maxValue);
                 np1.setMinValue(1);
                 np1.setBackgroundColor(context.getResources().getColor(R.color.white));
                 np1.setFocusable(true);
@@ -335,4 +344,95 @@ public class Util extends BaseUtil
         };
     }
 
+    public static OnClickListener createIntInputDialog(final Context context, final MTextView tv) {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final MEditText temp = new MEditText(context)
+                        .text(tv.text());
+
+                new AlertDialog.Builder(context)
+                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setTitle("入力してください")
+                        .setView(temp)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                try {
+                                    Integer NumberFormatExceptionCatcher = Integer.parseInt(temp.getText().toString());
+                                    tv.text(temp.text());
+                                } catch (NumberFormatException e) {
+                                    UIUtil.longToast(context, "数値を入力してください");
+                                }
+                            }
+
+                        })
+                        .setNegativeButton("キャンセル",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        // 何もしない
+                                    }
+                                }).show();
+
+            }
+
+        };
+
+    }
+
+    /**
+     * OKボタンのみを持つダイアログを表示する。 OKボタンを押した時のイベントはclickに渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createAlertDialogWithOKButton(Activity activity, String title, String content, int icon, android.content.DialogInterface.OnClickListener click) {
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+
+        ret.setPositiveButton("OK", click);
+
+        ret.create();
+        ret.show();
+
+        return ret;
+    }
+
+    /**
+     * 3つのボタンを持つダイアログを表示する。 各ボタンの文言とイベントを渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createAlertDialogWith3Buttons(Activity activity, String title, String content, int icon,
+            String buttonText1, android.content.DialogInterface.OnClickListener buttonEvent1,
+            String buttonText2, android.content.DialogInterface.OnClickListener buttonEvent2,
+            String buttonText3, android.content.DialogInterface.OnClickListener buttonEvent3) {
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+
+        ret.setPositiveButton(buttonText1, buttonEvent1);
+        ret.setNeutralButton(buttonText2, buttonEvent2);
+        ret.setNegativeButton(buttonText3, buttonEvent3);
+
+        ret.create();
+        ret.show();
+
+        return ret;
+    }
 }

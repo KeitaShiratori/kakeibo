@@ -42,7 +42,7 @@ public class SettleShowActivityData {
         accountBook = new AccountBookDAO(activity).findAll().get(0);
         accountBookDetails = new AccountBookDetailDAO(activity).findAll();
         costDetails = new CostDetailDAO(activity).findByOrder();
-        incomeDetails = new IncomeDetailDAO(activity).findByOrder();
+        incomeDetails = new IncomeDetailDAO(activity).findOrderByBudgetYmd();
 
         settleRecordData = new ArrayList<SettleRecordData>();
         for (int i = accountBookDetails.size() - 1; i >= 0; i--) {

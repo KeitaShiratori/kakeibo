@@ -12,6 +12,7 @@ import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.sample_project.activities.installation.InstallCompletedActivity;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
+import com.android_mvc.sample_project.db.dao.PrefDAO;
 import com.android_mvc.sample_project.db.entity.AccountBook;
 import com.android_mvc.sample_project.db.entity.AccountBookDetail;
 
@@ -33,6 +34,7 @@ public class AccountBookEditAction extends BaseAction
     public ActionResult exec()
     {
         ActivityParams params = activity.toParams();
+        PrefDAO pref = new PrefDAO();
 
         // 登録用の値を取得（バリデ通過済み）
         Integer mokuhyou_kingaku = Integer.valueOf((String)params.getValue("mokuhyou_kingaku"));
@@ -50,6 +52,12 @@ public class AccountBookEditAction extends BaseAction
             AccountBookDetail abd = new AccountBookDetailDAO(activity).create(mokuhyouMonthKingaku, mokuhyouMonth, true);
             mokuhyouMonth.add(Calendar.MONTH, 1);
         }
+ 
+        // インストール画面のチュートリアル済みフラグが立っていなければフラグを立てる。
+        if(!pref.getTutorialDoneFlagInstallComplete(activity)){
+            pref.updateTutorialDoneFlagInstallComplete(activity, true);
+        }
+
         // 実行結果を返す
         return new AccountBookEditActionResult()
             .setRouteId("success")

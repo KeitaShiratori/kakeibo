@@ -208,54 +208,57 @@ public class CostDetail extends LogicalEntity<CostDetail> {
                                 )
                 );
 
+        // クレジットカード設定がnullでない場合は支払回数と支払金額を表示する。
         // 支払回数が設定されている場合、支払回数と支払金額を表示する。
         if (getDivideNum() != null) {
-            if (payTerm == null) {
-                CreditCardSetting ccs = new CreditCardSettingDAO(context).findNewestOne();
-                Calendar tmp = ccs.getSiharaiYmd();
-                tmp.set(Calendar.MONTH, getBudgetYmd().get(Calendar.MONTH));
+            CreditCardSetting ccs = new CreditCardSettingDAO(context).findNewestOne();
+            if (ccs != null) {
+                if (payTerm == null) {
+                    Calendar tmp = ccs.getSiharaiYmd();
+                    tmp.set(Calendar.MONTH, getBudgetYmd().get(Calendar.MONTH));
 
-                // 予定日付が締日より前なら、支払日を翌月にする。そうでなければ、翌々月にする。
-                if (getBudgetYmd().get(Calendar.DAY_OF_MONTH) >= ccs.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
-                    tmp.add(Calendar.MONTH, 1);
-                }
-                else {
-                    tmp.add(Calendar.MONTH, 2);
+                    // 予定日付が締日より前なら、支払日を翌月にする。そうでなければ、翌々月にする。
+                    if (getBudgetYmd().get(Calendar.DAY_OF_MONTH) <= ccs.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
+                        tmp.add(Calendar.MONTH, 1);
+                    }
+                    else {
+                        tmp.add(Calendar.MONTH, 2);
+                    }
+
+                    payTerm = (tmp.get(Calendar.MONTH) + 1) + "月";
+                    // 支払回数が複数回の場合
+                    if (getDivideNum() > 1) {
+                        tmp.add(Calendar.MONTH, getDivideNum() - 1);
+                        payTerm += "~" + (tmp.get(Calendar.MONTH) + 1) + "月";
+                    }
                 }
 
-                payTerm = (tmp.get(Calendar.MONTH) + 1) + "月";
-                // 支払回数が複数回の場合
-                if (getDivideNum() > 1) {
-                    tmp.add(Calendar.MONTH, getDivideNum() - 1);
-                    payTerm += "~" + (tmp.get(Calendar.MONTH) + 1) + "月";
-                }
+                ret.add(
+                        new MLinearLayout(activity)
+                                .orientationHorizontal()
+                                .widthFillParent()
+                                .heightWrapContent()
+                                .add(
+                                        new MTextView(activity)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .text(divideNum)
+                                                .backgroundDrawable(drawable.record_design)
+                                                .widthWrapContent()
+                                        ,
+                                        new MTextView(activity)
+                                                .text("支払額: " + (getEffectiveCost() / getDivideNum()) + "円")
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(drawable.record_design)
+                                                .widthWrapContent()
+                                        ,
+                                        new MTextView(activity)
+                                                .text("引落月: " + payTerm)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(drawable.record_design)
+                                                .widthWrapContent()
+                                )
+                        );
             }
-
-            ret.add(
-                    new MLinearLayout(activity)
-                            .orientationHorizontal()
-                            .widthFillParent()
-                            .heightWrapContent()
-                            .add(
-                                    new MTextView(activity)
-                                            .gravity(Gravity.CENTER_VERTICAL)
-                                            .text(divideNum)
-                                            .backgroundDrawable(drawable.record_design)
-                                            .widthWrapContent()
-                                    ,
-                                    new MTextView(activity)
-                                            .text("支払額: " + (getEffectiveCost() / getDivideNum()) + "円")
-                                            .gravity(Gravity.CENTER_VERTICAL)
-                                            .backgroundDrawable(drawable.record_design)
-                                            .widthWrapContent()
-                                    ,
-                                    new MTextView(activity)
-                                            .text("引落月: " + payTerm)
-                                            .gravity(Gravity.CENTER_VERTICAL)
-                                            .backgroundDrawable(drawable.record_design)
-                                            .widthWrapContent()
-                            )
-                    );
         }
 
         return ret;

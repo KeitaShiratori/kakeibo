@@ -1,9 +1,13 @@
 package com.android_mvc.sample_project.activities.installation;
 
 import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
 
 import com.android_mvc.framework.ui.UIBuilder;
+import com.android_mvc.framework.ui.view.MPopup;
 import com.android_mvc.framework.ui.view.MTextView;
+import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.activities.installation.lib.InstallAppUserBaseActivity;
 import com.android_mvc.sample_project.controller.MainController;
 
@@ -18,7 +22,7 @@ public class InstallAppActivity extends InstallAppUserBaseActivity
 
     // NOTE: アプリの初期化フローの詳細は，親クラスを参照のこと。
 
-    MTextView tv1;
+    private MTextView tv1;
 
     @Override
     public void defineContentView()
@@ -33,6 +37,7 @@ public class InstallAppActivity extends InstallAppUserBaseActivity
                                 .widthWrapContent()
                 )
                 .displayWithoutHooter();
+
 
     }
 

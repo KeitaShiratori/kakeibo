@@ -132,8 +132,10 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     public MLinearLayout getDescription(Activity activity, Context context, OnClickListener l1, OnClickListener l2) {
         String budgetIncome = (getBudgetIncome() == null) ? "未入力" : getBudgetIncome() + "円";
         String settleIncome = (getSettleIncome() == null) ? "未入力" : getSettleIncome() + "円";
-        String categoryType = (getCategoryType() == null) ? "未入力" : new CategoryTypeDAO(activity).findById(Long.parseLong(getCategoryType().toString())).getCategoryTypeName();
-        String payType = (getPayType() == null) ? "未入力" : new PayTypeDAO(activity).findById(Long.parseLong(getPayType().toString())).getPayTypeName();
+        // String categoryType = (getCategoryType() == null) ? "未入力" : new
+        // CategoryTypeDAO(activity).findById(Long.parseLong(getCategoryType().toString())).getCategoryTypeName();
+        // String payType = (getPayType() == null) ? "未入力" : new
+        // PayTypeDAO(activity).findById(Long.parseLong(getPayType().toString())).getPayTypeName();
 
         return new MLinearLayout(activity)
                 .orientationVertical()
@@ -149,7 +151,7 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                 .add(
                                         new MTextView(activity)
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                .text(categoryType)
+                                                // .text(categoryType)
                                                 .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
                                         ,
@@ -174,7 +176,7 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                 .add(
 
                                         new MTextView(activity)
-                                                .text(payType)
+                                                // .text(payType)
                                                 .gravity(Gravity.CENTER_VERTICAL)
                                                 .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
@@ -205,8 +207,8 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     public IncomeDetail logicalFromPhysical(Cursor c)
     {
         setId(c.getLong(0));
-        setCategoryType(c.getInt(1));
-        setPayType(c.getInt(2));
+        // setCategoryType(c.getInt(1));
+        // setPayType(c.getInt(2));
         setBudgetYmd(LPUtil.decodeTextToCalendar(c.getString(3)));
         setBudgetIncome(c.getInt(4));
         String tmp = c.getString(5);
@@ -233,26 +235,22 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
             values.put("id", getId());
         }
 
-        if (getCategoryType() != null) {
-            values.put("category_type", getCategoryType());
-        }
+        values.put("category_type", 0);
 
-        if (getPayType() != null) {
-            values.put("pay_type", getPayType());
-        }
+        values.put("pay_type", 0);
 
         if (getBudgetYmd() != null) {
-            values.put("budget_ymd", LPUtil.encodeCalendarToText(getBudgetYmd()));
+            values.put(IncomeDetailCol.BUDGET_YMD, LPUtil.encodeCalendarToText(getBudgetYmd()));
         }
 
         if (getBudgetIncome() != null) {
-            values.put("budget_income", getBudgetIncome());
+            values.put(IncomeDetailCol.BUDGET_INCOME, getBudgetIncome());
         }
 
         if (getSettleIncome() != null) {
-            values.put("settle_income", getSettleIncome().toString());
+            values.put(IncomeDetailCol.SETTLE_INCOME, getSettleIncome().toString());
         } else {
-            values.put("settle_income", "");
+            values.put(IncomeDetailCol.SETTLE_INCOME, "");
         }
         return values;
     }

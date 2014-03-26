@@ -11,8 +11,12 @@ import com.android_mvc.framework.controller.validation.ValidationResult;
 import com.android_mvc.framework.task.AsyncTasksRunner;
 import com.android_mvc.framework.task.RunnerFollower;
 import com.android_mvc.framework.task.SequentialAsyncTask;
+import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.menu.OptionMenuBuilder;
 
+
+import com.android_mvc.sample_project.activities.accountbook.CostDetailShowActivity;
+import com.android_mvc.sample_project.bat.PeriodicService;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -348,5 +352,7 @@ public class CommonActivityUtil<T extends IBaseActivity>
             optionMenuBuilder.onItemSelected(item);
         }
     }
+
+
 
 }

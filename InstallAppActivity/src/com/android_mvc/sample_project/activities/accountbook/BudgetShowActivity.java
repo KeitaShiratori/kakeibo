@@ -91,6 +91,7 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
         return new OnClickListener() {
 
             final Calendar today = Calendar.getInstance();
+            final Calendar baseYMD = budgetShowActivityData.getAccountBookStartDate();
 
             @Override
             public void onClick(View v) {
@@ -101,6 +102,17 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
                 Integer settleCostSum = 0;
                 Integer kasyobun = 0;
                 Integer result = 0;
+
+                // 残り日数の計算
+                int restDaysOfMonth = (today.getActualMaximum(Calendar.DAY_OF_MONTH) - today.get(Calendar.DAY_OF_MONTH) + 1);
+                int diffDays = baseYMD.get(Calendar.DAY_OF_MONTH);
+
+                if (today.get(Calendar.DAY_OF_MONTH) < baseYMD.get(Calendar.DAY_OF_MONTH)) {
+                    diffDays -= today.get(Calendar.DAY_OF_MONTH);
+                }
+                else {
+                    diffDays += restDaysOfMonth;
+                }
 
                 for (CostDetail c : costDetails) {
                     if (c.getBudgetYmd().get(Calendar.YEAR) == today.get(Calendar.YEAR)
@@ -117,7 +129,7 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
                             && b.getYoteiYYYYMM().get(Calendar.MONTH) == today.get(Calendar.MONTH)) {
                         // 可処分所得を計算し、当月の残り日数で日割りする。
                         kasyobun = (b.getIncomeSum() - b.getMokuhyouKingaku() - b.getCostSum());
-                        kasyobun = kasyobun / (today.getActualMaximum(Calendar.DAY_OF_MONTH) - today.get(Calendar.DAY_OF_MONTH) + 1);
+                        kasyobun = kasyobun / diffDays;
                         break;
                     }
                 }

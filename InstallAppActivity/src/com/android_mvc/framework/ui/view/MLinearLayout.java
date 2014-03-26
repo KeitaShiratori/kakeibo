@@ -3,6 +3,7 @@ package com.android_mvc.framework.ui.view;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.android_mvc.framework.annotations.SuppressDebugLog;
+import com.android_mvc.framework.controller.validation.ActivityParams;
 import com.android_mvc.framework.ui.view.etc.LayoutUtil;
 import com.android_mvc.sample_project.activities.common.HooterMenu;
 import com.android_mvc.sample_project.common.Util;
@@ -199,6 +201,11 @@ public class MLinearLayout extends LinearLayout implements IFWView, IFWLayoutVie
         return this;
     }
 
+    public MLinearLayout paddingBottomPx(int px) {
+        setPadding(0, 0, 0, px);
+        return this;
+    }
+
     public MLinearLayout weight( int w){
     	if(w != 0){
     		setWeightSum(w);
@@ -236,4 +243,5 @@ public class MLinearLayout extends LinearLayout implements IFWView, IFWLayoutVie
         setOnClickListener(l);
         return this;
     }
+
 }

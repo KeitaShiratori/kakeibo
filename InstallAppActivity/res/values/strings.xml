@@ -3,6 +3,7 @@
 
     <string name="hello">Hello World, Android-MVC !</string>
     <string name="app_name">家計簿</string>
+    <string name="pandingIntent_name">今日の収支を入力しましたか？</string>
     <string name="activity_animation_duration">300</string>
     <string name="shared_user_id">com.android_mvc.sample_project</string>
 
@@ -42,9 +43,9 @@
 
     <!-- ■■画面表示用文字列リソース ここから■■ -->
     <string name="NEN_GAPPI">年月日</string>
-    <string name="KINGAKU">金額</string>
+    <string name="KINGAKU">残金</string>
     <string name="ZANDAKA">残高</string>
-    <string name="HIKIDASHI">引き出し</string>
+    <string name="HIKIDASHI">預金引出</string>
     <string name="SAGAKU">差額</string>
     <string name="SISYUTU_GOUKEI">支出合計</string>
     <string name="ENN">円</string>

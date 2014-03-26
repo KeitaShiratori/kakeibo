@@ -1,6 +1,15 @@
 package com.android_mvc.framework.common;
 
+import java.util.Calendar;
+
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
 import com.android_mvc.framework.db.DBHelper;
+import com.android_mvc.sample_project.bat.AlarmReceiver;
 
 
 /**
@@ -47,6 +56,27 @@ public class FWUtil extends BaseUtil
         FWUtil.setGoogleMapsAPIKey( settings.getGoogleMapsAPIKey() );
 
         // 他にAPから渡されるFW側の初期化処理
+
+    }
+
+    /**
+     * 定刻起動サービスの開始
+     */
+    public static void setAlarmManager(Context context, Intent intent) {
+        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        if(calendar.get(Calendar.HOUR) > 19){
+            calendar.add(Calendar.DATE, 1);
+        }
+        calendar.set(Calendar.HOUR, 20);
+        calendar.set(Calendar.MINUTE, 0);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        // one shot
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), sender);
+//        Toast.makeText(BaseNormalActivity.this, "Start Alarm!", Toast.LENGTH_SHORT).show();
 
     }
 

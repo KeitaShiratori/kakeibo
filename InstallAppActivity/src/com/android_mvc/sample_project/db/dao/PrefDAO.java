@@ -91,6 +91,77 @@ public class PrefDAO extends BasePrefDAO
         return ret;
     }
 
+    // ----------------- チュートリアル -----------------
+
+    /**
+     * 目標金額設定画面のチュートリアルフラグを更新
+     */
+    public void updateTutorialDoneFlagInstallComplete(Context context, boolean done)
+    {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putBoolean("tutorialFlagInstallComplete", done);
+        editor.commit();
+
+        FWUtil.d("目標金額設定画面のチュートリアルフラグを変更：" + done);
+    }
+
+    /**
+     * 目標金額設定画面のチュートリアルフラグを取得
+     */
+    public boolean getTutorialDoneFlagInstallComplete(Context context)
+    {
+        SharedPreferences settings = getSettings(context);
+        boolean ret = settings.getBoolean("tutorialFlagInstallComplete", false);
+        FWUtil.d("目標金額設定画面のチュートリアルフラグは" + ret);
+        return ret;
+    }
+    
+    /**
+     * 家計簿照会画面のチュートリアルフラグを更新
+     */
+    public void updateTutorialDoneFlagAccountBookShow1(Context context, boolean done)
+    {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putBoolean("tutorialFlagAccountBookShow1", done);
+        editor.commit();
+
+        FWUtil.d("家計簿照会画面のチュートリアルフラグを変更：" + done);
+    }
+
+    /**
+     * 家計簿照会画面のチュートリアルフラグをを取得
+     */
+    public boolean getTutorialDoneFlagAccountBookShow1(Context context)
+    {
+        SharedPreferences settings = getSettings(context);
+        boolean ret = settings.getBoolean("tutorialFlagAccountBookShow1", false);
+        FWUtil.d("家計簿照会画面のチュートリアルフラグは" + ret);
+        return ret;
+    }
+    
+    /**
+     * 家計簿照会画面のチュートリアルフラグを更新
+     */
+    public void updateTutorialDoneFlagAccountBookShow2(Context context, boolean done)
+    {
+        SharedPreferences.Editor editor = getEditor(context);
+        editor.putBoolean("tutorialFlagAccountBookShow2", done);
+        editor.commit();
+
+        FWUtil.d("家計簿照会画面のチュートリアルフラグを変更：" + done);
+    }
+
+    /**
+     * 家計簿照会画面のチュートリアルフラグをを取得
+     */
+    public boolean getTutorialDoneFlagAccountBookShow2(Context context)
+    {
+        SharedPreferences settings = getSettings(context);
+        boolean ret = settings.getBoolean("tutorialFlagAccountBookShow2", false);
+        FWUtil.d("家計簿照会画面のチュートリアルフラグは" + ret);
+        return ret;
+    }
+
     // ----------------- その他 -----------------
 
 }
