@@ -11,10 +11,12 @@ import com.android_mvc.framework.controller.action.ActionResult;
 import com.android_mvc.framework.controller.action.BaseAction;
 import com.android_mvc.framework.controller.validation.ActivityParams;
 import com.android_mvc.framework.ui.UIUtil;
-import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
-import com.android_mvc.sample_project.activities.accountbook.MyWalletShowActivity;
+import com.android_mvc.sample_project.common.Util;
+import com.android_mvc.sample_project.db.dao.AccountBookDAO;
+import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.entity.CostDetail;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookDetailCol;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
 
 /**
@@ -52,20 +54,29 @@ public class CostDetailEditAction extends BaseAction
 
         DBEDitActionResult ret = new DBEDitActionResult();
         List<Calendar> days = new ArrayList<Calendar>();
-        int dayCounter = budget_ymd.getActualMaximum(Calendar.DAY_OF_MONTH) - budget_ymd.get(Calendar.DAY_OF_MONTH) + 1;
+
+        Calendar lastDay = new AccountBookDetailDAO(activity).findOrderByKeyDesc(AccountBookDetailCol.MOKUHYOU_MONTH).get(0).getMokuhyouMonth();
+        lastDay.add(Calendar.MONTH, 1);
+        int accountBookStartDate = new AccountBookDAO(activity).findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH);
+        lastDay.set(Calendar.DAY_OF_MONTH, accountBookStartDate);
+        lastDay.add(Calendar.DAY_OF_MONTH, -1);
+        // int dayCounter = budget_ymd.getActualMaximum(Calendar.DAY_OF_MONTH) -
+        // budget_ymd.get(Calendar.DAY_OF_MONTH) + 1;
+        long dayCounter = (lastDay.getTimeInMillis() - budget_ymd.getTimeInMillis()) / (1000 * 60 * 60 * 24);
+        dayCounter += 1;
 
         if (params.getValue("repeat_dvn").toString().equals("繰り返しなし")) {
             days.add(budget_ymd);
         }
         else if (params.getValue("repeat_dvn").toString().equals("毎日")) {
-            // 当月の残り日数分、daysに日付をセット
+            // 残り日数分、daysに日付をセット
             for (int i = 0; i < dayCounter; i++) {
                 days.add((Calendar) budget_ymd.clone());
                 budget_ymd.add(Calendar.DAY_OF_MONTH, 1);
             }
         }
         else if (params.getValue("repeat_dvn").toString().equals("平日のみ")) {
-            // 当月の残り日数分繰り返し
+            // 残り日数分繰り返し
             for (int i = 0; i < dayCounter; i++) {
                 // 予定日が土日でない場合、daysに日付をセット
                 if (budget_ymd.get(Calendar.DAY_OF_WEEK) != Calendar.SATURDAY
@@ -76,12 +87,36 @@ public class CostDetailEditAction extends BaseAction
             }
         }
         else if (params.getValue("repeat_dvn").toString().equals("土日のみ")) {
-            // 当月の残り日数分繰り返し
+            // 残り日数分繰り返し
             for (int i = 0; i < dayCounter; i++) {
                 // 予定日が土日の場合、daysに日付をセット
                 if (budget_ymd.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY
                         || budget_ymd.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
                     days.add((Calendar) budget_ymd.clone());
+                }
+                budget_ymd.add(Calendar.DAY_OF_MONTH, 1);
+            }
+        }
+        else if (params.getValue("repeat_dvn").toString().equals("毎週")) {
+            final Calendar inputYMD = (Calendar) budget_ymd.clone();
+            // 残り日数分繰り返し
+            for (int i = 0; i < dayCounter; i++) {
+                // 予定日の曜日と同じ曜日の場合、daysに日付をセット
+                if (budget_ymd.get(Calendar.DAY_OF_WEEK) == inputYMD.get(Calendar.DAY_OF_WEEK)) {
+                    days.add((Calendar) budget_ymd.clone());
+                    Util.d("登録対象の日付：" + days.get(days.size()-1));
+                }
+                budget_ymd.add(Calendar.DAY_OF_MONTH, 1);
+            }
+        }
+        else if (params.getValue("repeat_dvn").toString().equals("毎月")) {
+            final Calendar inputYMD = (Calendar) budget_ymd.clone();
+            // 残り日数分繰り返し
+            for (int i = 0; i < dayCounter; i++) {
+                // 予定日の日と同じ日の場合、daysに日付をセット
+                if (budget_ymd.get(Calendar.DAY_OF_MONTH) == inputYMD.get(Calendar.DAY_OF_MONTH)) {
+                    days.add((Calendar) budget_ymd.clone());
+                    Util.d("登録対象の日付：" + days.get(days.size()-1));
                 }
                 budget_ymd.add(Calendar.DAY_OF_MONTH, 1);
             }
@@ -92,6 +127,10 @@ public class CostDetailEditAction extends BaseAction
             CostDetail c = new CostDetailDAO(activity).create(category_type, pay_type, days.get(i), budget_cost, settle_cost, divideNum);
             ret.setRouteId("success")
                     .add("new_cost_detail" + i, c);
+            Util.d("登録内容" 
+                    + "日付：" + ((CostDetail) ret.get("new_cost_detail" + i)).getBudgetYmd().getTime()
+                    + "予定金額："+((CostDetail) ret.get("new_cost_detail" + i)).getBudgetCost()
+                    + "実績金額："+((CostDetail) ret.get("new_cost_detail" + i)).getSettleCost());
         }
 
         ret.add("FIRST_TAB", "SHOW_COST_DETAIL");

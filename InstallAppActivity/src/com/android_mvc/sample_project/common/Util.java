@@ -1,6 +1,7 @@
 package com.android_mvc.sample_project.common;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import net.simonvt.datepicker.DatePickerDialog;
@@ -22,6 +23,10 @@ import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
+import com.android_mvc.sample_project.db.dao.CategoryTypeDAO;
+import com.android_mvc.sample_project.db.dao.PayTypeDAO;
+import com.android_mvc.sample_project.db.entity.CategoryType;
+import com.android_mvc.sample_project.db.entity.PayType;
 
 /**
  * アプリ内でのコアな共通処理
@@ -31,6 +36,9 @@ import com.android_mvc.sample_project.R;
  */
 public class Util extends BaseUtil
 {
+    public static List<CategoryType> categoryTypes;
+    public static List<PayType> payTypes;
+
     /**
      * 指定された日付・時刻文字列を、可能であれば Calendarクラスに変換します。 以下の形式の日付文字列を変換できます。
      * 
@@ -435,4 +443,28 @@ public class Util extends BaseUtil
 
         return ret;
     }
+    
+    public static String getCategoryTypeName(Activity activity, int id) {
+
+        if (categoryTypes == null || categoryTypes.isEmpty()) {
+            categoryTypes = new CategoryTypeDAO(activity).findAll();
+        }
+
+        String ret = categoryTypes.get(id).getCategoryTypeName();
+
+        return ret;
+    }
+
+    public static String getPayTypeName(Activity activity, int id) {
+
+        if (payTypes == null || payTypes.isEmpty()) {
+            payTypes = new PayTypeDAO(activity).findAll();
+        }
+
+        String ret = payTypes.get(id).getPayTypeName();
+
+        return ret;
+    }
+
+
 }

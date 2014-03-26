@@ -53,9 +53,10 @@ public class BudgetShowActivityData {
         budgetRecordData = new ArrayList<BudgetRecordData>();
         for (int i = accountBookDetails.size() - 1; i >= 0; i--) {
             AccountBookDetail a = accountBookDetails.get(i);
-            BudgetRecordData tmp = new BudgetRecordData(activity);
+            BudgetRecordData tmp = new BudgetRecordData();
             tmp.setYoteiYYYYMM(a.getMokuhyouMonth());
             tmp.setMokuhyouKingaku(a.getMokuhyouMonthKingaku());
+            tmp.setStartDate(accountBookStartDate.get(Calendar.DAY_OF_MONTH));
             budgetRecordData.add(tmp);
         }
 
@@ -221,7 +222,7 @@ public class BudgetShowActivityData {
             // 集計対象の年月を取得
             ymd = this.accountBookDetails.get(bPos).getMokuhyouMonth();
             // 開始日を取得
-            ymd.set(Calendar.DAY_OF_MONTH, this.accountBook.getStartDate().get(Calendar.DAY_OF_MONTH));
+            ymd.set(Calendar.DAY_OF_MONTH, accountBookStartDate.get(Calendar.DAY_OF_MONTH));
 
             mokuhyouKingaku = this.accountBookDetails.get(bPos).getMokuhyouMonthKingaku();
             cSum = 0;
@@ -234,9 +235,9 @@ public class BudgetShowActivityData {
                 // 集計対象月以前に登録されたレコードで、クレジットカード払いのレコードが存在する場合は、
                 // 特別に集計対象とする。
                 if (bPos == 0
-                        &&cChkYMDResult < 0 
-                        && this.costDetails.get(cPos).getPayType() == 2 
-                        && creditCardSetting != null){
+                        && cChkYMDResult < 0
+                        && this.costDetails.get(cPos).getPayType() == 2
+                        && creditCardSetting != null) {
                     cChkYMDResult = 0;
                 }
 
@@ -246,18 +247,20 @@ public class BudgetShowActivityData {
                     if (this.costDetails.get(cPos).getPayType() == 2 && creditCardSetting != null) {
                         // CostDetailの予定日付とクレカの締日を比較して、締日以降であればinitをインクリメントする。
                         int offset = 0;
-                        if (costDetails.get(cPos).getBudgetYmd().get(Calendar.DAY_OF_MONTH) 
-                                > creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
+                        if (costDetails.get(cPos).getBudgetYmd().get(Calendar.DAY_OF_MONTH)
+                        > creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
                             offset++;
                         }
-                        if (creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH) 
-                                < accountBook.getStartDate().get(Calendar.DAY_OF_MONTH)) {
+                        if (creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)
+                        < accountBook.getStartDate().get(Calendar.DAY_OF_MONTH)) {
                             offset--;
                         }
                         for (int divide = 0; divide < this.costDetails.get(cPos).getDivideNum(); divide++) {
                             if (bPos + 1 + divide + offset < this.accountBookDetails.size()
                                     && bPos + 1 + divide + offset >= 0) {
-                                creditSum[bPos + 1 + divide + offset] += costDetails.get(cPos).getEffectiveCost() / costDetails.get(cPos).getDivideNum();
+                                creditSum[bPos + 1 + divide + offset] 
+                                        += costDetails.get(cPos).getEffectiveCost()
+                                        / costDetails.get(cPos).getDivideNum();
                             }
                         }
                     }

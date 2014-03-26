@@ -8,8 +8,6 @@ import android.view.Gravity;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
-import com.android_mvc.sample_project.R.drawable;
-import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 
 public class BudgetRecordData {
 
@@ -21,13 +19,12 @@ public class BudgetRecordData {
     Integer mokuhyouKingaku;
     int startDate;
 
-    public BudgetRecordData(Context context) {
+    public BudgetRecordData() {
         yoteiYYYYMM = Calendar.getInstance();
         costSum = 0;
         incomeSum = 0;
         disposablencome = 0;
         mokuhyouKingaku = 0;
-        startDate = new AccountBookDAO(context).findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH);
 
     }
 
@@ -71,10 +68,17 @@ public class BudgetRecordData {
         this.mokuhyouKingaku = mokuhyouKingaku;
     }
 
+    public int getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(int startDate) {
+        this.startDate = startDate;
+    }
+
     // カスタムG&S
 
     public MLinearLayout getDescription(Context context) {
-
         yoteiYYYYMM.set(Calendar.DAY_OF_MONTH, startDate);
         Calendar nextYMD = (Calendar) yoteiYYYYMM.clone();
         nextYMD.add(Calendar.MONTH, 1);
@@ -102,14 +106,14 @@ public class BudgetRecordData {
                                                         + (nextYMD.get(Calendar.MONTH) + 1) + "/"
                                                         + nextYMD.get(Calendar.DAY_OF_MONTH)
                                                         + "  ")
-                                                .backgroundDrawable(drawable.record_design)
+                                                .backgroundDrawable(R.drawable.record_design)
                                                 .textsize(18)
                                                 .widthWrapContent()
                                         ,
                                         new MTextView(context)
                                                 .gravity(Gravity.CENTER_VERTICAL)
                                                 .text("残り: " + disposablencome + "円")
-                                                .backgroundDrawable(drawable.record_design)
+                                                .backgroundDrawable(R.drawable.record_design)
                                                 .textsize(18)
                                                 .textColor(disposablencome < 0 ? android.graphics.Color.RED : android.graphics.Color.BLACK)
                                                 .widthFillParent()
@@ -124,19 +128,19 @@ public class BudgetRecordData {
                                         new MTextView(context)
                                                 .gravity(Gravity.CENTER_VERTICAL)
                                                 .text("収入: " + incomeSum + "円")
-                                                .backgroundDrawable(drawable.record_design)
+                                                .backgroundDrawable(R.drawable.record_design)
                                                 .widthWrapContent()
                                         ,
                                         new MTextView(context)
                                                 .gravity(Gravity.CENTER_VERTICAL)
                                                 .text("貯金: " + mokuhyouKingaku + "円")
-                                                .backgroundDrawable(drawable.record_design)
+                                                .backgroundDrawable(R.drawable.record_design)
                                                 .widthWrapContent()
                                         ,
                                         new MTextView(context)
                                                 .gravity(Gravity.CENTER_VERTICAL)
                                                 .text("支出: " + costSum + "円")
-                                                .backgroundDrawable(drawable.record_design)
+                                                .backgroundDrawable(R.drawable.record_design)
                                                 .widthWrapContent()
                                 )
                 );

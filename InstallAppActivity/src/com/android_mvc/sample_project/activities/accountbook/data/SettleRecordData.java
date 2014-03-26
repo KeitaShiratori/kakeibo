@@ -9,7 +9,7 @@ import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 
-public class SettleRecordData{
+public class SettleRecordData {
 
     // メンバ変数
     Calendar yoteiYYYYMM;
@@ -17,6 +17,7 @@ public class SettleRecordData{
     Integer incomeSum;
     Integer disposablencome;
     Integer mokuhyouKingaku;
+    int startDate;
 
     public SettleRecordData() {
         yoteiYYYYMM = Calendar.getInstance();
@@ -67,8 +68,22 @@ public class SettleRecordData{
         this.mokuhyouKingaku = mokuhyouKingaku;
     }
 
+    public int getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(int startDate) {
+        this.startDate = startDate;
+    }
+
     // カスタムG&S
+
     public MLinearLayout getDescription(Context context) {
+        yoteiYYYYMM.set(Calendar.DAY_OF_MONTH, startDate);
+        Calendar nextYMD = (Calendar) yoteiYYYYMM.clone();
+        nextYMD.add(Calendar.MONTH, 1);
+        nextYMD.add(Calendar.DAY_OF_MONTH, -1);
+
         MLinearLayout ret = new MLinearLayout(context)
                 .orientationVertical()
                 .widthWrapContent()
@@ -83,8 +98,14 @@ public class SettleRecordData{
                                 .add(
                                         new MTextView(context)
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                .text(yoteiYYYYMM.get(Calendar.YEAR) + "年"
-                                                        + (yoteiYYYYMM.get(Calendar.MONTH) + 1) + "月")
+                                                .text(yoteiYYYYMM.get(Calendar.YEAR) + "/"
+                                                        + (yoteiYYYYMM.get(Calendar.MONTH) + 1) + "/"
+                                                        + yoteiYYYYMM.get(Calendar.DAY_OF_MONTH)
+                                                        + "～"
+                                                        + nextYMD.get(Calendar.YEAR) + "/"
+                                                        + (nextYMD.get(Calendar.MONTH) + 1) + "/"
+                                                        + nextYMD.get(Calendar.DAY_OF_MONTH)
+                                                        + "  ")
                                                 .backgroundDrawable(R.drawable.record_design)
                                                 .textsize(18)
                                                 .widthWrapContent()
@@ -94,6 +115,7 @@ public class SettleRecordData{
                                                 .text("残り: " + disposablencome + "円")
                                                 .backgroundDrawable(R.drawable.record_design)
                                                 .textsize(18)
+                                                .textColor(disposablencome < 0 ? android.graphics.Color.RED : android.graphics.Color.BLACK)
                                                 .widthFillParent()
                                 )
                         ,

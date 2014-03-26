@@ -1,23 +1,21 @@
 package com.android_mvc.sample_project.db.entity;
 
 import java.util.Calendar;
+import java.util.List;
 
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.text.TextUtils.StringSplitter;
 import android.view.Gravity;
 import android.view.View.OnClickListener;
 
-import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.R.drawable;
-import com.android_mvc.sample_project.db.dao.CategoryTypeDAO;
+import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.db.dao.CreditCardSettingDAO;
-import com.android_mvc.sample_project.db.dao.PayTypeDAO;
 import com.android_mvc.sample_project.db.entity.lib.LPUtil;
 import com.android_mvc.sample_project.db.entity.lib.LogicalEntity;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
@@ -52,6 +50,10 @@ public class CostDetail extends LogicalEntity<CostDetail> {
     private Integer settle_cost = null;
     private Integer divideNum = null;
     private String payTerm = null;
+
+    // 制御用(非公開メンバ)
+    private List<CategoryType> categoryTypes;
+    private List<PayType> payTypes;
 
     // IDEが自動生成したG&S
 
@@ -145,8 +147,8 @@ public class CostDetail extends LogicalEntity<CostDetail> {
     public MLinearLayout getDescription(Activity activity, Context context, OnClickListener l1, OnClickListener l2) {
         String budgetCost = (getBudgetCost() == null) ? "未入力" : getBudgetCost() + "円";
         String settleCost = (getSettleCost() == null) ? "未入力" : getSettleCost() + "円";
-        String categoryType = (getCategoryType() == null) ? "未入力" : new CategoryTypeDAO(activity).findById(Long.parseLong(getCategoryType().toString())).getCategoryTypeName();
-        String payType = (getPayType() == null) ? "未入力" : new PayTypeDAO(activity).findById(Long.parseLong(getPayType().toString())).getPayTypeName();
+        String categoryType = (getCategoryType() == null) ? "未入力" : Util.getCategoryTypeName(activity, getCategoryType() - 1);
+        String payType = (getPayType() == null) ? "未入力" : Util.getPayTypeName(activity, getPayType() - 1);
         String divideNum = (getDivideNum() == null) ? "" : " " + getDivideNum() + "回払い";
 
         MLinearLayout ret = new MLinearLayout(activity)

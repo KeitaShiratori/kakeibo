@@ -248,7 +248,7 @@ public class MyWalletShowActivity extends AccountBookAppUserBaseActivity {
                                                             + "\n※通常、1,2,3の順に操作すると計算が合います。"
                                                             + "\n"
                                                             + "\n1.預金引出："
-                                                            + "\n銀行から預金を引出した場に入力して下さい。"
+                                                            + "\n銀行から預金を引き出した場合に入力して下さい。"
                                                             + "\n"
                                                             + "\n2.残金修正："
                                                             + "\n残金の修正をします。"
@@ -260,13 +260,6 @@ public class MyWalletShowActivity extends AccountBookAppUserBaseActivity {
                                                     "1.預金引出", updateHikidasi(activity, dialogYMD, dialogWalletKingakuZenjitu, dialogHikidasi, dialogWalletKingakuToujitu, dialogCostSum),
                                                     "2.残金修正", update(activity, dialogYMD, dialogWalletKingakuZenjitu, dialogHikidasi, dialogWalletKingakuToujitu, dialogCostSum),
                                                     "3.支出修正", autoInputCostDetail(activity, dialogYMD, dialogWalletKingakuZenjitu, dialogHikidasi, dialogWalletKingakuToujitu, dialogCostSum));
-                                            // .click(sagakuCheckFlag ? null :
-                                            // update(activity, YMD.get(i),
-                                            // tempWalletKingakuZenjitu,
-                                            // tempWalletKingakuToujitu,
-                                            // tempCostSum))
-                                            // .click(sagakuCheckFlag ? null :
-                                            // submitToCostShow(YMD.get(i)))
                                         }
 
                                     }

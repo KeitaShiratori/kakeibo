@@ -1,12 +1,6 @@
 package com.android_mvc.sample_project.activities.accountbook;
 
-import android.graphics.Color;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-
 import com.android_mvc.framework.ui.UIBuilder;
-import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.activities.accountbook.data.SettleRecordData;

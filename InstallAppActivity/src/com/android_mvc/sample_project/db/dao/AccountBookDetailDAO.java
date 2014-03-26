@@ -7,7 +7,9 @@ import android.content.Context;
 
 import com.android_mvc.framework.db.DBHelper;
 import com.android_mvc.framework.db.dao.BaseDAO;
+import com.android_mvc.framework.db.dao.Finder;
 import com.android_mvc.sample_project.db.entity.AccountBookDetail;
+import com.android_mvc.sample_project.db.entity.MyWallet;
 
 /**
  * 変動費明細を読み書きするクラス。
@@ -47,7 +49,7 @@ public class AccountBookDetailDAO extends BaseDAO<AccountBookDetail>
 
 
     /**
-     * 変動費明細を全て登録順に返す。
+     * 家計簿明細を全て登録順に返す。
      */
     public List<AccountBookDetail> findAll()
     {
@@ -65,6 +67,34 @@ public class AccountBookDetailDAO extends BaseDAO<AccountBookDetail>
 
         // NOTE: 細かい条件で検索したい場合は，Finderを利用すること。
         // findAllやfindByIdの実装を参照。
+
+    /**
+     * 任意のKeyで降順にソートした結果を返す。KeyにはMyWalletColクラスのメンバを指定する。
+     * 
+     * @param orderKey
+     * @return
+     */
+    public List<AccountBookDetail> findOrderByKeyDesc(String orderKey) {
+
+        return new Finder<AccountBookDetail>(helper)
+                .where("id > 0")
+                .orderBy(orderKey + " DESC")
+                .findAll(AccountBookDetail.class);
+    }
+
+    /**
+     * 任意のKeyで昇順にソートした結果を返す。KeyにはMyWalletColクラスのメンバを指定する。
+     * 
+     * @param orderKey
+     * @return
+     */
+    public List<AccountBookDetail> findOrderByKeyAsc(String orderKey) {
+
+        return new Finder<AccountBookDetail>(helper)
+                .where("id > 0")
+                .orderBy(orderKey + " ASC")
+                .findAll(AccountBookDetail.class);
+    }
 
 
     // ------------ U --------------

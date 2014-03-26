@@ -352,6 +352,8 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
         list.add("平日のみ");
         list.add("土日のみ");
         list.add("毎日");
+        list.add("毎週");
+        list.add("毎月");
         ArrayAdapter<CharSequence> Adapter = new ArrayAdapter<CharSequence>(context, android.R.layout.simple_spinner_item, list);
 
         ret.setAdapter(Adapter);
