@@ -574,7 +574,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 }
                 else{
                     if (budgetCostSum >= settleCostSum) {
-                        UIUtil.longToast(activity, "節約を頑張ってますね。この調子で、予定金額を超えないように気を付けてね♪");
+                        UIUtil.longToast(activity, "予定金額を超えないように気を付けてね♪");
                     }
                     else {
                         UIUtil.longToast(activity, "残念。予定金額より使いすぎてしまいましたね。");

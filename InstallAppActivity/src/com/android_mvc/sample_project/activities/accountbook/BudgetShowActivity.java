@@ -64,6 +64,7 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
                 .add(layout1 = new MLinearLayout(activity)
                         .orientationVertical()
                         .widthFillParent()
+                        .paddingPx(10)
                         .heightWrapContent())
                 .display();
 
@@ -71,9 +72,13 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
         layout1.add(new MTextView(context)
                 .text("本日の残り金額表示")
                 .gravity(Gravity.CENTER_VERTICAL)
-                .backgroundResource(R.drawable.button_design_1)
-                .widthMatchParent()
+                .backgroundResource(R.drawable.button_design_h30_w345)
                 .click(showTodayYoteiKingaku(budgetShowActivityData))
+                ,
+                new MTextView(context)
+                        .paddingPx(5)
+                        .textsize(1)
+
                 );
 
         for (BudgetRecordData b : budgetShowActivityData.getBudgetRecordData()) {
