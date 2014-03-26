@@ -141,6 +141,7 @@
     <color name="mediumpurple">#FF9370db</color>
     <color name="slateblue">#FF6a5acd</color>
     <color name="mediumslateblue">#FF7b68ee</color>
-
+    <color name="clearcolor">#00000000</color>
+    
 
 </resources>
