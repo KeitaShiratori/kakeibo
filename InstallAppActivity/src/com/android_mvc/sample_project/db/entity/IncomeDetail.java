@@ -141,7 +141,6 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                 .orientationVertical()
                 .widthWrapContent()
                 .heightWrapContent()
-                .paddingLeftPx(10)
                 .backgroundDrawable(R.drawable.border)
                 .add(
                         new MLinearLayout(activity)

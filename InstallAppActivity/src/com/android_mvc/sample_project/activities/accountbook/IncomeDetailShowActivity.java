@@ -67,6 +67,7 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
                         layout1 = new MLinearLayout(context)
                                 .orientationVertical()
                                 .widthMatchParent()
+                                .paddingPx(10)
                                 .heightWrapContent()
                 )
                 .display();
@@ -91,6 +92,7 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
                 layout1.add(
                         new MTextView(context)
                                 .paddingPx(5)
+                                .textsize(1)
                         ,
                         getLabelYMD(i.getBudgetYmd(), IncomeDetails));
                 LabelYMD = i.getBudgetYmd();
@@ -137,7 +139,6 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
                 .orientationHorizontal()
                 .widthFillParent()
                 .heightWrapContent()
-                .paddingLeftPx(10)
                 .add(
 
                         new MTextView(this)
