@@ -52,6 +52,13 @@ public class AccountBookDetailDAO extends BaseDAO<AccountBookDetail>
         return a;
     }
 
+    /**
+     * 1件の家計簿明細を保存。
+     */
+    public void create(AccountBookDetail abd) {
+        create(abd.getMokuhyouMonthKingaku(), abd.getMokuhyouMonth(), abd.getAutoInputFlag(), abd.getSimeFlag());
+    }
+
 
     // ------------ R --------------
 

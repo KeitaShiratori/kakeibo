@@ -218,7 +218,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
     }
 
     private void doSime1() {
-        String title1 = "月末締め処理の実行（TEST）";
+        String title1 = "月末締め処理の実行";
         String contents1 = "月末締め処理を行います。";
         android.content.DialogInterface.OnClickListener click1 = doSime2();
 
@@ -647,12 +647,58 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
             @Override
             public void onClick(View v) {
-                String title = "目標期間の延長（TEST）";
-                String contents = "目標期間の延長を行います。"
+                String title1 = "目標期間の延長（TEST）";
+                String contents1 = "目標期間の延長を行います。"
                         + "\n※目標期間の短縮はできません。"
                         + "\n"
-                        + "\n目標期間を延長しますか？";
-                Util.createAlertDialogWithOKButton(activity, title, contents, R.drawable.icon, null);
+                        + "\n目標期間を延長しますか？"
+                        + "\nOKボタンを押すと、１ヶ月延長します。";
+                android.content.DialogInterface.OnClickListener click1 = updateMokuhyouKikan1();
+
+                Util.createAlertDialogWithOKandCancelButtons(activity, title1, contents1, R.drawable.icon,
+                        click1, null);
+            }
+
+        };
+    }
+
+    private android.content.DialogInterface.OnClickListener updateMokuhyouKikan1() {
+        return new android.content.DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AccountBookDAO accountBookDAO = new AccountBookDAO(context);
+                AccountBookDetailDAO accountBookDetailDAO = new AccountBookDetailDAO(context);
+
+                AccountBook targetAccountBook = accountBookDAO.findAll().get(0);
+                AccountBookDetail target = accountBookDetailDAO.findAll().get(0);
+
+                // AccountBookの目標期間を更新する。
+                targetAccountBook.setMokuhyouKikan(targetAccountBook.getMokuhyouKikan() + 1);
+
+                // AccountBookを更新する。
+                accountBookDAO.update(targetAccountBook);
+
+                // AccountBookDetailの更新
+                // BL処理内でIDが重複するとinsertされずにupdateされてしまうので、IDを消す
+                target.setId(null);
+
+                // 日付を決める。
+                Calendar targetYMD = target.getMokuhyouMonth();
+                targetYMD.add(Calendar.MONTH, 1);
+                target.setMokuhyouMonth(targetYMD);
+
+                // 目標金額は0円
+                target.setMokuhyouMonthKingaku(0);
+
+                // 自動入力はOFF
+                target.setAutoInputFlag(false);
+
+                // 締めフラグはOFF
+                target.setSimeFlag(false);
+
+                // 次画面遷移
+                AccountBookShowController.submit(AccountBookShowActivity.this, target);
             }
         };
     }

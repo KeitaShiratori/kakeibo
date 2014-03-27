@@ -68,7 +68,7 @@ public class InstallCompletedActivity extends BaseNormalActivity
         tv31 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL)
                 .backgroundDrawable(R.drawable.header_design)
-                .text("基準日:")
+                .text("基準日")
                 .widthWrapContent();
         tv32 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)

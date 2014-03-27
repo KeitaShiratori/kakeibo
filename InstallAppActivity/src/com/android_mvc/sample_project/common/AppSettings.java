@@ -46,18 +46,18 @@ public class AppSettings extends AbstractAppSettings
         // --------------- 開発用の設定項目 ------------------
 
         // 開発中モードかどうか
-        // DEBUGGING_FLAG = true;
-        DEBUGGING_FLAG = false;
+         DEBUGGING_FLAG = true;
+//        DEBUGGING_FLAG = false;
 
         // 開発中モードであれば，アプリ起動時に毎回プリファレンスを削除するかどうか。
         // USB経由でインストールした際に，FW初期化フラグなんかを消去してやり直すために必要。
-        // FORGET_PREFS_ON_DEBUG = true;
-        FORGET_PREFS_ON_DEBUG = false;
+         FORGET_PREFS_ON_DEBUG = true;
+//        FORGET_PREFS_ON_DEBUG = false;
 
         // 開発中モードであれば，アプリ起動時に毎回RDBを削除するかどうか。
         // USB経由で繰り返しデバッグする際に必要。
-        // FORGET_RDB_ON_DEBUG = true;
-        FORGET_RDB_ON_DEBUG = false;
+         FORGET_RDB_ON_DEBUG = true;
+//        FORGET_RDB_ON_DEBUG = false;
 
     }
 
