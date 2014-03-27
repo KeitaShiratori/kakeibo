@@ -15,6 +15,7 @@ import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.entity.lib.LPUtil;
 import com.android_mvc.sample_project.db.entity.lib.LogicalEntity;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookDetailCol;
 
 public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
     // Intent経由でエンティティを運搬可能にするために
@@ -28,16 +29,19 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
     @Override
     public final String[] columns() {
         return new String[] {
-                "id",
-                "mokuhyou_month_kingaku",
-                "mokuhyou_month",
-                "auto_input_flag" };
+                AccountBookDetailCol.ID,
+                AccountBookDetailCol.MOKUHYOU_MONTH_KINGAKU,
+                AccountBookDetailCol.MOKUHYOU_MONTH,
+                AccountBookDetailCol.AUTO_INPUT_FLAG,
+                AccountBookDetailCol.SIME_FLAG
+        };
     }
 
     // メンバ
     private Integer mokuhyou_month_kingaku = null;
     private Calendar mokuhyou_month = null;
     private Boolean auto_input_flag = null;
+    private Boolean sime_flag = null;
 
     // IDEが自動生成したG&S
 
@@ -63,6 +67,14 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
 
     public void setAutoInputFlag(Boolean auto_input_flag) {
         this.auto_input_flag = auto_input_flag;
+    }
+
+    public Boolean getSimeFlag() {
+        return sime_flag;
+    }
+
+    public void setSimeFlag(Boolean sime_flag) {
+        this.sime_flag = sime_flag;
     }
 
     // カスタムG&S
@@ -131,7 +143,7 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
 
         MTextView bt3 = new MTextView(context)
                 .gravity(Gravity.CENTER)
-                .click(l);
+                .click(getSimeFlag() ? null : l);
 
         // 自動入力フラグがtrueならON、falseならOFF
         if (getAutoInputFlag()) {
@@ -139,10 +151,16 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
                     + "\n")
                     .backgroundDrawable(R.drawable.button_design_1);
         } else {
-            bt3.text("OFF"
-                    + "\n")
-                    .backgroundDrawable(R.drawable.button_design_2);
-
+            if (getSimeFlag()) {
+                bt3.text("締め"
+                        + "\n")
+                        .backgroundDrawable(R.drawable.record_design);
+            }
+            else {
+                bt3.text("OFF"
+                        + "\n")
+                        .backgroundDrawable(R.drawable.button_design_2);
+            }
         }
 
         ret.add(tv1, tv2, bt3);
@@ -160,6 +178,7 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
         setMokuhyouMonthKingaku(c.getInt(1));
         setMokuhyouMonth(LPUtil.decodeTextToCalendar(c.getString(2)));
         setAutoInputFlag(LPUtil.decodeIntegerToBoolean(c.getInt(3)));
+        setSimeFlag(LPUtil.decodeIntegerToBoolean(c.getInt(4)));
 
         return this;
     }
@@ -172,20 +191,23 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
         // entityをContentValueに変換
 
         if (getId() != null) {
-            values.put("id", getId());
+            values.put(AccountBookDetailCol.ID, getId());
         }
 
         if (getMokuhyouMonthKingaku() != null) {
-            values.put("mokuhyou_month_kingaku", getMokuhyouMonthKingaku());
+            values.put(AccountBookDetailCol.MOKUHYOU_MONTH_KINGAKU, getMokuhyouMonthKingaku());
         }
 
         if (getMokuhyouMonth() != null) {
-            values.put("mokuhyou_month",
+            values.put(AccountBookDetailCol.MOKUHYOU_MONTH,
                     LPUtil.encodeCalendarToText(getMokuhyouMonth()));
         }
 
-        values.put("auto_input_flag",
+        values.put(AccountBookDetailCol.AUTO_INPUT_FLAG,
                 LPUtil.encodeBooleanToInteger(getAutoInputFlag()));
+
+        values.put(AccountBookDetailCol.SIME_FLAG,
+                LPUtil.encodeBooleanToInteger(getSimeFlag()));
 
         return values;
     }

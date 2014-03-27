@@ -25,18 +25,26 @@ public class AccountBookDetailDAO extends BaseDAO<AccountBookDetail>
     // ------------ C --------------
 
 
+    /**
+     * 1件の家計簿明細を保存。締めフラグはOFF。
+     */
+    public AccountBookDetail create(Integer mokuhyouMonthKingaku, Calendar mokuhyouMonth, Boolean autoInputFlag)
+    {
+        return create(mokuhyouMonthKingaku, mokuhyouMonth, autoInputFlag, false);
+    }
 
 
 	/**
      * 1件の変動費明細を保存。
      */
-    public AccountBookDetail create(Integer mokuhyouMonthKingaku, Calendar mokuhyouMonth, Boolean autoInputFlag)
+    public AccountBookDetail create(Integer mokuhyouMonthKingaku, Calendar mokuhyouMonth, Boolean autoInputFlag, Boolean simeFlag)
     {
         // 論理エンティティを構築
         AccountBookDetail a = new AccountBookDetail();
         a.setMokuhyouMonthKingaku(mokuhyouMonthKingaku);
         a.setMokuhyouMonth(mokuhyouMonth);
         a.setAutoInputFlag(autoInputFlag);
+        a.setSimeFlag(simeFlag);
 
         // DB登録
         a.save(helper);
