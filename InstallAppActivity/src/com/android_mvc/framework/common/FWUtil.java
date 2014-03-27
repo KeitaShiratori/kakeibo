@@ -67,10 +67,10 @@ public class FWUtil extends BaseUtil
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        if(calendar.get(Calendar.HOUR) > 19){
+        if(calendar.get(Calendar.HOUR_OF_DAY) > 19){
             calendar.add(Calendar.DATE, 1);
         }
-        calendar.set(Calendar.HOUR, 20);
+        calendar.set(Calendar.HOUR_OF_DAY, 20);
         calendar.set(Calendar.MINUTE, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

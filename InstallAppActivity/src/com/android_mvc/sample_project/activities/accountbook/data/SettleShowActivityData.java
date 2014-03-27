@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import com.android_mvc.sample_project.activities.accountbook.SettleShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
@@ -41,7 +41,7 @@ public class SettleShowActivityData {
     private static String NOTHING = "";
 
     // 初期処理
-    public void init(SettleShowActivity activity) {
+    public void init(AccountBookAppUserBaseActivity activity) {
         accountBook = new AccountBookDAO(activity).findAll().get(0);
         accountBookStartDate = accountBook.getStartDate();
         accountBookDetails = new AccountBookDetailDAO(activity).findAll();

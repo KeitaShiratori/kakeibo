@@ -414,13 +414,67 @@ public class Util extends BaseUtil
     }
 
     /**
+     * OKボタンとキャンセルボタンを持つダイアログを表示する。 
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param buttonEventOK
+     * @param buttonEventCancel
+     * @return
+     */
+    public static Builder createAlertDialogWithOKandCancelButtons(Activity activity, String title, String content, int icon,
+            android.content.DialogInterface.OnClickListener buttonEventOK,
+            android.content.DialogInterface.OnClickListener buttonEventCancel) {
+        return createAlertDialogWith2Buttons(activity, title, content, icon, "OK", buttonEventOK, "キャンセル", buttonEventCancel);
+    }
+
+    /**
+     * 2つのボタンを持つダイアログを表示する。 各ボタンの文言とイベントを渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param buttonText1
+     * @param buttonEvent1
+     * @param buttonText2
+     * @param buttonEvent2
+     * @return
+     */
+    public static Builder createAlertDialogWith2Buttons(Activity activity, String title, String content, int icon,
+            String buttonText1, android.content.DialogInterface.OnClickListener buttonEvent1,
+            String buttonText2, android.content.DialogInterface.OnClickListener buttonEvent2) {
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+
+        ret.setPositiveButton(buttonText1, buttonEvent1);
+        ret.setNegativeButton(buttonText2, buttonEvent2);
+
+        ret.create();
+        ret.show();
+
+        return ret;
+    }
+
+    /**
      * 3つのボタンを持つダイアログを表示する。 各ボタンの文言とイベントを渡す。
      * 
      * @param activity
      * @param title
      * @param content
      * @param icon
-     * @param click
+     * @param buttonText1
+     * @param buttonEvent1
+     * @param buttonText2
+     * @param buttonEvent2
+     * @param buttonText3
+     * @param buttonEvent3
      * @return
      */
     public static Builder createAlertDialogWith3Buttons(Activity activity, String title, String content, int icon,
@@ -443,7 +497,7 @@ public class Util extends BaseUtil
 
         return ret;
     }
-    
+
     public static String getCategoryTypeName(Activity activity, int id) {
 
         if (categoryTypes == null || categoryTypes.isEmpty()) {
@@ -465,6 +519,5 @@ public class Util extends BaseUtil
 
         return ret;
     }
-
 
 }

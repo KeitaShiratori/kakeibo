@@ -1,6 +1,8 @@
 package com.android_mvc.framework.ui;
 
 
+import com.android_mvc.sample_project.common.Util;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
@@ -23,6 +25,7 @@ public class UIUtil {
             @Override
             public void run() {
                 longToast( activity.getApplicationContext(), s );
+                Util.d(s);
             }
         });
             // NOTE: 別スレッドでUI操作をじかに呼んではいけないので

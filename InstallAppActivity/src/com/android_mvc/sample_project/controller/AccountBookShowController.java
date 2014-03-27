@@ -75,7 +75,7 @@ public class AccountBookShowController extends BaseController
                 )
                 .setDialogText("お待ちください")
                 .startControl();
-        ;
+
     }
 
     /**

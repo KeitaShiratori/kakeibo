@@ -136,21 +136,27 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                     .text("支出が登録されました")
                     .textColor(R.color.red);
             layout1.add(tv1);
+
+            String[] days = null;
+            days = new String[1];
+            days[0] = LPUtil.encodeCalendarToText(startDate);
+
         }
         // 全件モード
         else if (mode.equals(ALL_MODE)) {
             CostDetails = costDetailDAO.findOrderBy(CostDetailCol.BUDGET_YMD);
         }
         // 日、週、月のいずれかのモード
-        else {
+        else if (mode.equals(DAY_MODE) || mode.equals(WEEK_MODE) || mode.equals(MONTH_MODE)) {
             String[] days = null;
 
             // モードにしたがい、DBの検索範囲を設定
             if (mode.equals(DAY_MODE)) {
                 days = new String[1];
                 days[0] = LPUtil.encodeCalendarToText(startDate);
-                if (startDate.get(Calendar.DAY_OF_MONTH)
-                == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
+                if (creditCardSetting != null
+                        && startDate.get(Calendar.DAY_OF_MONTH)
+                            == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
                     isCreditSiharai = true;
                 }
             }
@@ -159,8 +165,9 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 days[0] = LPUtil.encodeCalendarToText(startDate);
                 Calendar tmp = (Calendar) startDate.clone();
                 for (int i = 1; i < days.length; i++) {
-                    if (tmp.get(Calendar.DAY_OF_MONTH)
-                    == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
+                    if (creditCardSetting != null
+                            && tmp.get(Calendar.DAY_OF_MONTH)
+                                == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
                         isCreditSiharai = true;
                     }
                     tmp.add(Calendar.DATE, 1);
@@ -174,8 +181,9 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 days = new String[startDate.getActualMaximum(Calendar.DAY_OF_MONTH)];
                 days[0] = LPUtil.encodeCalendarToText(tmp);
                 for (int i = 1; i < days.length; i++) {
-                    if (tmp.get(Calendar.DAY_OF_MONTH)
-                    == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
+                    if (creditCardSetting != null
+                            && tmp.get(Calendar.DAY_OF_MONTH)
+                                == creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)) {
                         isCreditSiharai = true;
                     }
                     tmp.add(Calendar.DATE, 1);
@@ -256,6 +264,9 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                         samaryLabgel(days, CostDetails)
                         );
             }
+        }
+        else if (mode.equals("DEFAULT")) {
+            return;
         }
 
         // レイアウト内に動的に全変動費明細の情報を表示。
@@ -572,7 +583,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                         UIUtil.longToast(activity, "残念。予定金額より使いすぎてしまいましたね。");
                     }
                 }
-                else{
+                else {
                     if (budgetCostSum >= settleCostSum) {
                         UIUtil.longToast(activity, "予定金額を超えないように気を付けてね♪");
                     }

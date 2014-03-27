@@ -45,12 +45,12 @@ public class PeriodicService extends BasePeriodicService
         Calendar ret = Calendar.getInstance();
 
         // 20時以降なら、起動時刻を翌日にする。
-        if (ret.get(Calendar.HOUR_OF_DAY) > 20) {
+        if (ret.get(Calendar.HOUR_OF_DAY) > 19) {
             ret.add(Calendar.DATE, 1);
         }
 
         // 起動時刻を20時に設定する。
-        ret.set(Calendar.HOUR, 20);
+        ret.set(Calendar.HOUR_OF_DAY, 20);
         ret.set(Calendar.MINUTE, 0);
         ret.set(Calendar.SECOND, 0);
         
