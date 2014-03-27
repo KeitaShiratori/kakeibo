@@ -43,6 +43,7 @@ public final class ColumnDefinition {
         public static final String MOKUHYOU_MONTH_KINGAKU = "mokuhyou_month_kingaku";
         public static final String MOKUHYOU_MONTH = "mokuhyou_month";
         public static final String AUTO_INPUT_FLAG = "auto_input_flag";
+        public static final String SIME_FLAG = "sime_flag";
     }
 
     public class AccountSheetCol {

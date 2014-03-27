@@ -33,6 +33,11 @@ public abstract class AbstractSchemaDefinition
     public abstract void onUpgrade3(SQLiteDatabase db);
 
     /**
+     * Version3からVersion4へのバージョンアップ用スクリプト実行
+     */
+    public abstract void onUpgrade4(SQLiteDatabase db);
+
+    /**
      * もし必要なら，AP側で初期データを投入する。
      * SQLを直に書いてもよいし，ORMを使ってもよい。
      * 前者の場合はSQLiteDatabaseを使用。後者だとContextが必要。
@@ -59,8 +64,9 @@ public abstract class AbstractSchemaDefinition
 
         FWUtil.d("テーブル構造の初期化を開始");
         define_tables();
-        onUpgrade2();
-        onUpgrade3(db);
+        updateDBVersion2(db);
+        updateDBVersion3(db);
+        updateDBVersion4(db);
         FWUtil.d("テーブル構造の初期化を完了");
 
         //    }
@@ -81,6 +87,14 @@ public abstract class AbstractSchemaDefinition
         FWUtil.d("テーブル構造の更新を開始（→Version3）");
         onUpgrade3(db);
         FWUtil.d("テーブル構造の更新を完了（→Version3）");
+    }
+
+    public void updateDBVersion4(SQLiteDatabase db){
+        this.db = db;
+        
+        FWUtil.d("テーブル構造の更新を開始（→Version4）");
+        onUpgrade4(db);
+        FWUtil.d("テーブル構造の更新を完了（→Version4）");
     }
 
     /**

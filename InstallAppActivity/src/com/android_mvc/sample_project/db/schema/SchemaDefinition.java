@@ -149,24 +149,6 @@ public class SchemaDefinition extends AbstractSchemaDefinition
         db.execSQL("insert into pay_type (id, pay_type_name) values (1, '現金' );");
         db.execSQL("insert into pay_type (id, pay_type_name) values (2, 'クレジット' );");
 
-        /*
-         * テストデータ投入
-         */
-        // IncomeDetail
-        // Calendar cal1 = Calendar.getInstance();
-        //
-        // db.execSQL("insert into income_detail ( id, category_type, budget_income, budget_ymd, settle_income, settle_ymd, pay_type) values ('1', '1', '250000', '"
-        // + cal1 + "', '" + cal1 +"', '250000', '2');");
-        //
-        // // CostDetail
-        // db.execSQL("insert into cost_detail(id, category_type, budget_cost, budget_ymd, settle_cost, settle_ymd, pay_type) values ('1', '1', '5000', '"
-        // + cal1 + "', '" + cal1 + "', '4500', '2');)");
-        // db.execSQL("insert into cost_detail(id, category_type, budget_cost, budget_ymd, settle_cost, settle_ymd, pay_type) values ('2', '1', '0', '"
-        // + cal1 + "', '" + cal1 + "', '4500', '2');)");
-        // db.execSQL("insert into cost_detail(id, category_type, budget_cost, budget_ymd, settle_cost, settle_ymd, pay_type) values ('3', '1', '400', '"
-        // + cal1 + "', '" + cal1 + "', '500', '2');)");
-        // db.execSQL("insert into cost_detail(id, category_type, budget_cost, budget_ymd, settle_cost, settle_ymd, pay_type) values ('4', '1', '1000', '"
-        // + cal1 + "', '" + cal1 + "', '600', '2');)");
     }
 
     public void onUpgrade2() {
@@ -201,8 +183,23 @@ public class SchemaDefinition extends AbstractSchemaDefinition
                         new RDBColumn().nameIs(CreditCardSettingCol.SIHARAI_YMD).typeIs("text")
                 })
                 .create();
-    
+
         db.execSQL("alter table cost_detail add column divide_num integer;");
         db.execSQL("update cost_detail set divide_num = 1 where pay_type = 2;");
+    }
+
+    public void onUpgrade4(SQLiteDatabase db) {
+        db.execSQL("alter table "
+                + new AccountBookDetail().tableName()
+                + " add column "
+                + AccountBookDetailCol.SIME_FLAG
+                + " integer;");
+
+        db.execSQL("update "
+                + new AccountBookDetail().tableName()
+                + " set "
+                + AccountBookDetailCol.SIME_FLAG
+                + " = 0");
+
     }
 }

@@ -25,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper
     private static String DB_FULL_PATH = "/data/data/com/android_mvc/framework/db/kakeiboDB";
 
     // データベースバージョン
-    private static final int DB_VERSION = 3; // TODO:
+    private static final int DB_VERSION = 4; // TODO:
 
     // DB構造の定義（初期化用）
     AbstractSchemaDefinition schemaDefinition;
@@ -95,6 +95,13 @@ public class DBHelper extends SQLiteOpenHelper
                 schemaDefinition = new SchemaDefinition();
             }
             schemaDefinition.updateDBVersion3(db);
+        }
+
+        if (oldVersion < 4) {
+            if(schemaDefinition == null){
+                schemaDefinition = new SchemaDefinition();
+            }
+            schemaDefinition.updateDBVersion4(db);
         }
     }
 
