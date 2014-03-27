@@ -97,9 +97,17 @@ public class MButton extends Button implements IFWView {
         setHint(s);
         return this;
     }
-    
-    public MButton textSize(float size){
+
+    public MButton textSize(float size) {
         setTextSize(size);
         return this;
     }
+
+    public MButton textColor(int color) {
+        setTextColor(color);
+        // 色の指定には，XMLではなく「android.graphics.Color」クラスを使う。
+        // @see http://www.javadrive.jp/android/textview/index3.html
+        return this;
+    }
+
 }

@@ -195,10 +195,16 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
         else {
             uiBuildar.displayWithoutHooter();
             layout1.add(
+                    // 空行
+                    new MTextView(context)
+                            .paddingPx(5)
+                            .textsize(1)
+                    ,
                     new MButton(context)
                             .text("月別目標設定完了")
-                            .backgroundDrawable(R.drawable.button_design_1)
-                            .widthMatchParent()
+                            .textSize(18)
+                            .textColor(android.graphics.Color.RED)
+                            .backgroundDrawable(R.drawable.button_design_h40_w345)
                             .click(tutorialComplete(context)));
         }
         layout1.inflateInside();

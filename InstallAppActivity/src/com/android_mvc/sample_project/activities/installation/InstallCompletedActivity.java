@@ -16,6 +16,7 @@ import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
 import com.android_mvc.sample_project.common.Util;
+import com.android_mvc.sample_project.controller.CostDetailController;
 import com.android_mvc.sample_project.controller.MainController;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookCol;
 
@@ -27,23 +28,24 @@ import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookCol;
  */
 public class InstallCompletedActivity extends BaseNormalActivity
 {
+    // 親レイアウト
+    MLinearLayout layout0;
+
+    // 画面UI部品
     MButton button0;
     MTextView tv0;
 
     MLinearLayout layout1;
     MTextView tv11;
     MTextView tv12;
-    MTextView tv13;
 
     MLinearLayout layout2;
     MTextView tv21;
     MTextView tv22;
-    MTextView tv23;
 
     MLinearLayout layout3;
     MTextView tv31;
     MTextView tv32;
-    MTextView tv33;
 
     final Calendar calendar = Calendar.getInstance();
     int day = 0;
@@ -56,6 +58,12 @@ public class InstallCompletedActivity extends BaseNormalActivity
     public void defineContentView() {
         final InstallCompletedActivity activity = this;
 
+        layout0 = new MLinearLayout(context)
+                .orientationVertical()
+                .widthMatchParent()
+                .paddingLeftPx(10)
+                .heightWrapContent();
+
         // 基準日の初期表示内容を設定
         if (calendar.get(Calendar.DAY_OF_MONTH) > 28) {
             day = 1;
@@ -65,102 +73,95 @@ public class InstallCompletedActivity extends BaseNormalActivity
         }
 
         // ここに，画面上のUI部品の定義を記述する。
-        tv31 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
-                .backgroundDrawable(R.drawable.header_design)
-                .text("基準日")
-                .widthWrapContent();
-        tv32 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                .backgroundDrawable(R.drawable.button_design_1)
-                .text(day + "")
-                .widthWrapContent();
-        tv32.click(Util.createNumberPickerDialog(context, tv32, 28));
-        tv33 = new MTextView(context)
-                .text("日")
-                .gravity(Gravity.CENTER_VERTICAL)
-                .widthWrapContent();
-
         tv11 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
-                .backgroundDrawable(R.drawable.header_design)
-                .text("目標金額")
-                .widthWrapContent();
+                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .text("目標金額（円）");
 
         tv12 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                .gravity(Gravity.CENTER)
                 .hint("必須入力")
-                .backgroundDrawable(R.drawable.button_design_1);
+                .hintTextColor(android.graphics.Color.argb(128, 255, 0, 0))
+                .backgroundDrawable(R.drawable.button_design_h40_w230);
         tv12.click(Util.createIntInputDialog(activity, tv12));
 
-        tv13 = new MTextView(context)
-                .text("円")
-                .gravity(Gravity.CENTER_VERTICAL)
-                .widthWrapContent();
-
         tv21 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
-                .text("目標期間")
-                .backgroundDrawable(R.drawable.header_design)
-                .widthWrapContent();
-        tv22 = new MTextView(context)
                 .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .text("期間（ヶ月）");
+        tv22 = new MTextView(context)
+                .gravity(Gravity.CENTER)
                 .hint("必須入力")
-                .backgroundDrawable(R.drawable.button_design_1);
-        tv22.click(Util.createIntInputDialog(activity, tv22));
-        tv23 = new MTextView(context)
-                .text("ヶ月")
-                .gravity(Gravity.CENTER_VERTICAL)
+                .hintTextColor(android.graphics.Color.argb(128, 255, 0, 0))
+                .backgroundDrawable(R.drawable.button_design_h40_w230);
+        tv22.click(Util.createNumberPickerDialog(context, tv22, 24));
+
+        tv31 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .text("基準日（日）")
                 .widthWrapContent();
+        tv32 = new MTextView(context)
+                .gravity(Gravity.CENTER)
+                .backgroundDrawable(R.drawable.button_design_h40_w230)
+                .text(day + "");
+        tv32.click(Util.createNumberPickerDialog(context, tv32, 28));
 
         new UIBuilder(context)
                 .setDisplayHeaderText("目標金額設定")
                 .add(
-                        tv0 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL)
-                                .text("目標金額と目標期間を設定してください。")
-                                .widthWrapContent()
-                        ,
-
-                        layout3 = new MLinearLayout(context)
-                                .orientationHorizontal()
-                                .widthFillParent()
-                                .add(
-                                        tv31,
-                                        tv32,
-                                        tv33
-                                ),
-
-                        layout1 = new MLinearLayout(context)
-                                .orientationHorizontal()
-                                .widthFillParent()
-                                .add(
-                                        tv11,
-                                        tv12,
-                                        tv13
-                                ),
-
-                        layout2 = new MLinearLayout(context)
-                                .orientationHorizontal()
-                                .widthFillParent()
-                                .add(
-                                        tv21,
-                                        tv22,
-                                        tv23
-                                ),
-                        button0 = new MButton(context)
-                                .widthFillParent()
-                                .text("目標を設定してトップ画面へ")
-                                .backgroundDrawable(R.drawable.button_design_1)
-                                .click(new OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        MainController.submit(activity);
-                                    }
-                                })
+                        layout0
                 )
                 .displayWithoutHooter();
 
+        layout0.add(
+                tv0 = new MTextView(context)
+                        .gravity(Gravity.CENTER_VERTICAL)
+                        .text("目標金額と目標期間を設定してください。")
+                        .widthWrapContent()
+                ,
+
+                layout1 = new MLinearLayout(context)
+                        .orientationHorizontal()
+                        .widthFillParent()
+                        .add(
+                                tv11,
+                                tv12
+                        ),
+
+                layout2 = new MLinearLayout(context)
+                        .orientationHorizontal()
+                        .widthFillParent()
+                        .add(
+                                tv21,
+                                tv22
+                        ),
+
+                layout3 = new MLinearLayout(context)
+                        .orientationHorizontal()
+                        .widthFillParent()
+                        .add(
+                                tv31,
+                                tv32
+                        ),
+
+                new MTextView(context)
+                        .paddingPx(5)
+                        .textsize(1)
+                ,
+                button0 = new MButton(context)
+                        .text("目標を設定してトップ画面へ")
+                        .backgroundDrawable(R.drawable.button_design_h40_w345)
+                        .textSize(18)
+                        .click(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                MainController.submit(activity);
+                            }
+                        })
+                );
+
+        layout0.inflateInside();
     }
 
     @Override
