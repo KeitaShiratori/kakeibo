@@ -103,45 +103,23 @@ public class BaseValidationsUtil
         }
 
         // 演算を実行
-        if ("before".equals(cc.type_code) && !(target_value.before(lastDayOfMonth(cc.value))))
+        if ("before".equals(cc.type_code) && target_value.compareTo(cc.value) > 0)
         {
             vres.err(params.getName(key) + "には"
-                    + cc.value.get(Calendar.YEAR) + "年"
-                    + (cc.value.get(Calendar.MONTH) + 1) + "月"
+                    + cc.value.get(Calendar.YEAR) + "/"
+                    + (cc.value.get(Calendar.MONTH) + 1) + "/"
+                    + cc.value.get(Calendar.DAY_OF_MONTH)
                     + "以前の日付を入力してください。");
         }
-        else if ("after".equals(cc.type_code) && !(target_value.after(firstDayOfMonth(cc.value))))
+        else if ("after".equals(cc.type_code) && target_value.compareTo(cc.value) < 0)
         {
             vres.err(params.getName(key) + "には"
-                    + cc.value.get(Calendar.YEAR) + "年"
-                    + (cc.value.get(Calendar.MONTH) + 1) + "月"
+                    + cc.value.get(Calendar.YEAR) + "/"
+                    + (cc.value.get(Calendar.MONTH) + 1) + "/"
+                    + cc.value.get(Calendar.DAY_OF_MONTH)
                     + "以降の日付を入力してください。");
         }
         // TODO: 演算タイプの追加
-    }
-
-    /**
-     * その月の初日の前日を返す。
-     * @param c
-     * @return
-     */
-    protected Calendar firstDayOfMonth(Calendar c){
-        Calendar ret = c;
-        ret.set(Calendar.DAY_OF_MONTH, c.getActualMinimum(Calendar.DAY_OF_MONTH));
-        ret.add(Calendar.DAY_OF_MONTH, -1);
-        return ret;
-    }
-
-    /** 
-     * その月の最終日の翌日を返す。
-     * @param c
-     * @return
-     */
-    protected Calendar lastDayOfMonth(Calendar c){
-        Calendar ret = c;
-        ret.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
-        ret.add(Calendar.DAY_OF_MONTH, 1);
-        return ret;
     }
 
     /**
