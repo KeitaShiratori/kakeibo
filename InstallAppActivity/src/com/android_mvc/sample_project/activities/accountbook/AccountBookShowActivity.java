@@ -18,14 +18,18 @@ import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
+import com.android_mvc.sample_project.activities.accountbook.data.BudgetRecordData;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.activities.common.HooterMenu;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.AccountBookShowController;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
+import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.entity.AccountBook;
 import com.android_mvc.sample_project.db.entity.AccountBookDetail;
+import com.android_mvc.sample_project.db.entity.CostDetail;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
 
 /**
  * サンプルのDB参照アクティビティ。
@@ -85,15 +89,26 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                 // 最終目標
                 accountBook.getHeader(context),
                 accountBook.getDescription(context),
-                new MButton(context)
-                        .text("最終目標変更")
-                        .backgroundDrawable(R.drawable.button_design_h30_w345)
-                        .click(updateMokuhyouKingaku(accountBook))
-                ,
-                new MButton(context)
-                        .text("基準日変更")
-                        .backgroundDrawable(R.drawable.button_design_h30_w345)
-                        .click(updateStartDate(accountBook))
+                new MLinearLayout(activity)
+                        .orientationHorizontal()
+                        .widthFillParent()
+                        .heightWrapContent()
+                        .add(
+                                new MButton(context)
+                                        .text("最終目標変更")
+                                        .backgroundDrawable(R.drawable.button_design_h30_w115)
+                                        .click(updateMokuhyouKingaku(accountBook))
+                                ,
+                                new MButton(context)
+                                        .text("期間延長")
+                                        .backgroundDrawable(R.drawable.button_design_h30_w115)
+                                        .click(updateMokuhyouKikan(accountBook))
+                                ,
+                                new MButton(context)
+                                        .text("基準日変更")
+                                        .backgroundDrawable(R.drawable.button_design_h30_w115)
+                                        .click(updateStartDate(accountBook))
+                        )
                 ,
                 // 空行
                 new MTextView(context)
@@ -138,6 +153,28 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
         // 描画
         if (pref.getTutorialDoneFlagAccountBookShow2(context)) {
+            layout1.add(
+                    // 空行
+                    new MTextView(context)
+                            .paddingPx(5)
+                            .textsize(1)
+                    ,
+                    new MLinearLayout(activity)
+                            .orientationHorizontal()
+                            .widthFillParent()
+                            .heightWrapContent()
+                            .add(
+                                    new MButton(context)
+                                            .text("月末締め処理")
+                                            .backgroundDrawable(R.drawable.button_design_h30_w173)
+                                            .click(doSime())
+                                    ,
+                                    new MButton(context)
+                                            .text("締め解除")
+                                            .backgroundDrawable(R.drawable.button_design_h30_w172)
+                                            .click(undoSime())
+                            )
+                    );
             uiBuildar.display();
         }
         else {
@@ -151,6 +188,48 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
         }
         layout1.inflateInside();
 
+    }
+
+    private OnClickListener doSime() {
+        final AccountBookShowActivity activity = this;
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String title = "月末締め処理の実行（TEST）";
+                String contents = "月末締め処理を行います。";
+                Util.createAlertDialogWithOKButton(activity, title, contents, R.drawable.icon, null);
+            }
+        };
+    }
+
+    private OnClickListener undoSime() {
+        final AccountBookShowActivity activity = this;
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String title = "月末締め処理の解除（TEST）";
+                String contents = "月末締め処理を解除します。";
+                Util.createAlertDialogWithOKButton(activity, title, contents, R.drawable.icon, null);
+            }
+        };
+    }
+
+    private OnClickListener updateMokuhyouKikan(final AccountBook ab) {
+        final AccountBookShowActivity activity = this;
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String title = "目標期間の延長（TEST）";
+                String contents = "目標期間の延長を行います。"
+                        + "\n※目標期間の短縮はできません。"
+                        + "\n"
+                        + "\n目標期間を延長しますか？";
+                Util.createAlertDialogWithOKButton(activity, title, contents, R.drawable.icon, null);
+            }
+        };
     }
 
     private void inputDialogMokuhyouKingaku(final AccountBookDetail a) {
@@ -185,7 +264,6 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
     // 最終目標金額を更新するためのイベント
     private OnClickListener updateMokuhyouKingaku(final AccountBook ab) {
-        // TODO 自動生成されたメソッド・スタブ
         return new OnClickListener() {
 
             @Override

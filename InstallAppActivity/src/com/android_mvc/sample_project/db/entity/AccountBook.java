@@ -80,19 +80,22 @@ public class AccountBook extends LogicalEntity<AccountBook> {
                 ;
 
         MTextView tv1 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .text("最終目標")
-                .backgroundDrawable(R.drawable.header_design);
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .textsize(18);
 
         MTextView tv2 = new MTextView(context)
                 .text("期間")
-                .gravity(Gravity.CENTER_VERTICAL)
-                .backgroundDrawable(R.drawable.header_design);
+                .gravity(Gravity.CENTER)
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .textsize(18);
 
         MTextView tv3 = new MTextView(context)
                 .text("基準日")
-                .gravity(Gravity.CENTER_VERTICAL)
-                .backgroundDrawable(R.drawable.header_design);
+                .gravity(Gravity.CENTER)
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .textsize(18);
 
         ret.add(tv1, tv2, tv3);
 
@@ -111,18 +114,18 @@ public class AccountBook extends LogicalEntity<AccountBook> {
                 ;
 
         MTextView tv1 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .text(getMokuhyouKingaku() + "円")
                 .backgroundDrawable(R.drawable.record_design);
 
         MTextView tv2 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .text(getMokuhyouKikan() + "ヶ月")
                 .backgroundDrawable(R.drawable.record_design);
 
         MTextView tv3 = new MTextView(context)
                 .text(getStartDate().get(Calendar.DAY_OF_MONTH) + "日")
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .backgroundDrawable(R.drawable.record_design);
 
         ret.add(tv1, tv2, tv3);

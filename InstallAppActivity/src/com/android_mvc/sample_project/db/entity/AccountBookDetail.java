@@ -76,17 +76,20 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
                 .heightWrapContent();
 
         MTextView tv1 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .text("月別目標")
-                .backgroundDrawable(R.drawable.header_design);
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .textsize(18);
         MTextView tv2 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .text("目標金額")
-                .backgroundDrawable(R.drawable.header_design);
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .textsize(18);
         MTextView tv3 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .text("自動入力")
-                .backgroundDrawable(R.drawable.header_design);
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .textsize(18);
 
         ret.add(tv1, tv2, tv3);
 
@@ -110,7 +113,7 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
         nextMonth.add(Calendar.DAY_OF_MONTH, -1);
 
         MTextView tv1 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL | Gravity.TOP)
+                .gravity(Gravity.CENTER)
                 .text(getMokuhyouMonth().get(Calendar.YEAR) + "/"
                         + (getMokuhyouMonth().get(Calendar.MONTH) + 1) + "/"
                         + getMokuhyouMonth().get(Calendar.DAY_OF_MONTH)
@@ -121,13 +124,13 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
                 .backgroundDrawable(R.drawable.record_design);
 
         MTextView tv2 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .text(getMokuhyouMonthKingaku() + "円"
                         + "\n")
                 .backgroundDrawable(R.drawable.record_design);
 
         MTextView bt3 = new MTextView(context)
-                .gravity(Gravity.CENTER_VERTICAL)
+                .gravity(Gravity.CENTER)
                 .click(l);
 
         // 自動入力フラグがtrueならON、falseならOFF
