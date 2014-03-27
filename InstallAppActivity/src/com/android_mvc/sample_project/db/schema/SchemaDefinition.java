@@ -201,5 +201,8 @@ public class SchemaDefinition extends AbstractSchemaDefinition
                 + AccountBookDetailCol.SIME_FLAG
                 + " = 0");
 
+        db.execSQL("insert into "
+                + new CategoryType().tableName()
+                + " (id, category_type_name, parent_category_type) values (15, '繰り越し','9' );");
     }
 }

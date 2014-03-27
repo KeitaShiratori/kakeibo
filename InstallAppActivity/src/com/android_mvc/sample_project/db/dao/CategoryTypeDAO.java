@@ -7,6 +7,7 @@ import android.content.Context;
 import com.android_mvc.framework.db.DBHelper;
 import com.android_mvc.framework.db.dao.BaseDAO;
 import com.android_mvc.framework.db.dao.Finder;
+import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.db.entity.CategoryType;
 
 /**
@@ -49,8 +50,7 @@ public class CategoryTypeDAO extends BaseDAO<CategoryType>
         return new Finder<CategoryType>(helper)
                 .where("id > 0")
                 .orderBy("id ASC")
-                .findAll(CategoryType.class)
-            ;
+                .findAll(CategoryType.class);
     }
 
     /**
@@ -59,6 +59,57 @@ public class CategoryTypeDAO extends BaseDAO<CategoryType>
     public CategoryType findById(Long category_type_id)
     {
         return findById(helper, CategoryType.class, category_type_id);
+    }
+
+    /**
+     * 任意のKeyで降順にソートした結果を返す。KeyにはCategoryTypeColクラスのメンバを指定する。
+     * 
+     * @param orderKey
+     * @return
+     */
+    public List<CategoryType> findOrderByKeyDesc(String orderKey) {
+
+        return new Finder<CategoryType>(helper)
+                .where("id > 0")
+                .orderBy(orderKey + " DESC")
+                .findAll(CategoryType.class);
+    }
+
+    /**
+     * 任意のKeyで昇順にソートした結果を返す。KeyにはCategoryTypeColクラスのメンバを指定する。
+     * 
+     * @param orderKey
+     * @return
+     */
+    public List<CategoryType> findOrderByKeyAsc(String orderKey) {
+
+        return new Finder<CategoryType>(helper)
+                .where("id > 0")
+                .orderBy(orderKey + " ASC")
+                .findAll(CategoryType.class);
+    }
+
+    /**
+     * 任意のKeyで、where条件を設定して検索した結果を返す。 KeyにはCategoryTypeColクラスのメンバを指定する。
+     * 
+     * @param key
+     * @param values
+     * @return
+     */
+    public List<CategoryType> findWhere(String key, Object value) {
+
+        // where句を設定
+        StringBuilder where = new StringBuilder();
+
+        where.append(key + " = '");
+        where.append(value.toString());
+        where.append("'");
+
+        Util.d("where句: " + where.toString());
+
+        return new Finder<CategoryType>(helper)
+                .where(where.toString())
+                .findAll(CategoryType.class);
     }
 
     // NOTE: 細かい条件で検索したい場合は，Finderを利用すること。

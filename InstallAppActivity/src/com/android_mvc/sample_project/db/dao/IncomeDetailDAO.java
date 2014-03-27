@@ -8,6 +8,7 @@ import android.content.Context;
 import com.android_mvc.framework.db.DBHelper;
 import com.android_mvc.framework.db.dao.BaseDAO;
 import com.android_mvc.framework.db.dao.Finder;
+import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.db.entity.IncomeDetail;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.IncomeDetailCol;
 
@@ -62,8 +63,30 @@ public class IncomeDetailDAO extends BaseDAO<IncomeDetail>
         return new Finder<IncomeDetail>(helper)
                 .where("id > 0")
                 .orderBy(IncomeDetailCol.BUDGET_YMD + " DESC")
-                .findAll(IncomeDetail.class)
-            ;
+                .findAll(IncomeDetail.class);
+    }
+
+    /**
+     * 任意のKeyで、where条件を設定して検索した結果を返す。 KeyにはIncomeDetailColクラスのメンバを指定する。
+     * 
+     * @param key
+     * @param values
+     * @return
+     */
+    public List<IncomeDetail> findWhere(String key, Object value) {
+
+        // where句を設定
+        StringBuilder where = new StringBuilder();
+
+        where.append(key + " = '");
+        where.append(value.toString());
+        where.append("'");
+
+        Util.d("where句: " + where.toString());
+
+        return new Finder<IncomeDetail>(helper)
+                .where(where.toString())
+                .findAll(IncomeDetail.class);
     }
 
     /**

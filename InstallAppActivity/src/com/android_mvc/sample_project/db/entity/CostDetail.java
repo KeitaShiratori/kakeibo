@@ -108,6 +108,15 @@ public class CostDetail extends LogicalEntity<CostDetail> {
 
     // カスタムG&S
 
+    /**
+     * 繰り越し判定用
+     * 
+     * @return
+     */
+    private boolean isKurikosi() {
+        return (getCategoryType() != null && getCategoryType() == 15);
+    }
+
     // 有効日付を返す
     public Calendar getEffectiveYMD() {
         Calendar ret = null;
@@ -176,9 +185,9 @@ public class CostDetail extends LogicalEntity<CostDetail> {
                                         ,
                                         new MTextView(activity)
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                .text("変更")
-                                                .backgroundDrawable(R.drawable.button_design_1)
-                                                .click(l1)
+                                                .text(isKurikosi() ? "変更不可" : "変更")
+                                                .backgroundDrawable(isKurikosi() ? R.drawable.record_design : R.drawable.button_design_1)
+                                                .click(isKurikosi() ? null : l1)
                                 )
                         ,
 
@@ -201,10 +210,10 @@ public class CostDetail extends LogicalEntity<CostDetail> {
                                                 .widthWrapContent()
                                         ,
                                         new MTextView(activity)
-                                                .text("削除")
-                                                .backgroundDrawable(R.drawable.button_design_1)
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                .click(l2)
+                                                .text(isKurikosi() ? "削除不可" : "削除")
+                                                .backgroundDrawable(isKurikosi() ? R.drawable.record_design : R.drawable.button_design_1)
+                                                .click(isKurikosi() ? null : l2)
 
                                 )
                 );

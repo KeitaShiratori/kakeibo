@@ -100,6 +100,29 @@ public class CostDetailDAO extends BaseDAO<CostDetail>
     }
 
     /**
+     * 任意のKeyで、where条件を設定して検索した結果を返す。 KeyにはCostDetailColクラスのメンバを指定する。
+     * 
+     * @param key
+     * @param values
+     * @return
+     */
+    public List<CostDetail> findWhere(String key, Object value) {
+
+        // where句を設定
+        StringBuilder where = new StringBuilder();
+
+        where.append(key + " = '");
+        where.append(value.toString());
+        where.append("'");
+
+        Util.d("where句: " + where.toString());
+
+        return new Finder<CostDetail>(helper)
+                .where(where.toString())
+                .findAll(CostDetail.class);
+    }
+
+    /**
      * 特定のIDの友達を１人返す。
      */
     public CostDetail findById(Long cost_detail_id)

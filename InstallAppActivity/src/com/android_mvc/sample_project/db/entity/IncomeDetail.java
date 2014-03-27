@@ -127,6 +127,15 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     }
 
     /**
+     * 繰り越し判定用
+     * 
+     * @return
+     */
+    private boolean isKurikosi() {
+        return (getCategoryType() != null && getCategoryType() == 15);
+    }
+
+    /**
      * 変動費明細のレコードを表示する
      */
     public MLinearLayout getDescription(Activity activity, Context context, OnClickListener l1, OnClickListener l2) {
@@ -150,7 +159,7 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                 .add(
                                         new MTextView(activity)
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                // .text(categoryType)
+                                                .text(isKurikosi() ? "繰り越し" : "")
                                                 .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
                                         ,
@@ -162,9 +171,9 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                         ,
                                         new MTextView(activity)
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                .text("変更")
-                                                .backgroundDrawable(R.drawable.button_design_1)
-                                                .click(l1)
+                                                .text(isKurikosi() ? "変更不可" : "変更")
+                                                .backgroundDrawable(isKurikosi() ? R.drawable.record_design : R.drawable.button_design_1)
+                                                .click(isKurikosi() ? null : l1)
                                 )
                         ,
 
@@ -187,10 +196,10 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                                 .widthWrapContent()
                                         ,
                                         new MTextView(activity)
-                                                .text("削除")
                                                 .gravity(Gravity.CENTER_VERTICAL)
-                                                .backgroundDrawable(R.drawable.button_design_1)
-                                                .click(l2)
+                                                .text(isKurikosi() ? "削除不可" : "削除")
+                                                .backgroundDrawable(isKurikosi() ? R.drawable.record_design : R.drawable.button_design_1)
+                                                .click(isKurikosi() ? null : l2)
 
                                 )
                 );
@@ -206,7 +215,7 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     public IncomeDetail logicalFromPhysical(Cursor c)
     {
         setId(c.getLong(0));
-        // setCategoryType(c.getInt(1));
+        setCategoryType(c.getInt(1));
         // setPayType(c.getInt(2));
         setBudgetYmd(LPUtil.decodeTextToCalendar(c.getString(3)));
         setBudgetIncome(c.getInt(4));
@@ -234,7 +243,12 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
             values.put("id", getId());
         }
 
-        values.put("category_type", 0);
+        if (getCategoryType() != null) {
+            values.put("category_type", getCategoryType());
+        }
+        else {
+            values.put("category_type", 0);
+        }
 
         values.put("pay_type", 0);
 

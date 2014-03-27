@@ -61,7 +61,7 @@ public class CategoryType extends LogicalEntity<CategoryType> {
     public Spinner getSpinner(Context context) {
         Spinner ret = new Spinner(context);
         ret.setBackgroundResource(R.drawable.button_design_h40_w230);
-        List<CategoryType> categoryList = new CategoryTypeDAO(context).findAll();
+        List<CategoryType> categoryList = new CategoryTypeDAO(context).findWhere(CategoryTypeCol.PARENT_CATEGORY_TYPE, 0);
         List<CharSequence> list = new ArrayList<CharSequence>();
         for (CategoryType c : categoryList) {
             list.add(c.getCategoryTypeName());

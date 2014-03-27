@@ -1,5 +1,6 @@
 package com.android_mvc.sample_project.activities.accountbook;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -28,10 +29,16 @@ import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.AccountBookShowController;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
 import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
+import com.android_mvc.sample_project.db.dao.CostDetailDAO;
+import com.android_mvc.sample_project.db.dao.IncomeDetailDAO;
 import com.android_mvc.sample_project.db.entity.AccountBook;
 import com.android_mvc.sample_project.db.entity.AccountBookDetail;
+import com.android_mvc.sample_project.db.entity.CostDetail;
+import com.android_mvc.sample_project.db.entity.IncomeDetail;
 import com.android_mvc.sample_project.db.entity.lib.LPUtil;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.AccountBookDetailCol;
 import com.android_mvc.sample_project.db.schema.ColumnDefinition.CostDetailCol;
+import com.android_mvc.sample_project.db.schema.ColumnDefinition.IncomeDetailCol;
 
 /**
  * サンプルのDB参照アクティビティ。
@@ -62,20 +69,26 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
         //
         Util.d("UI構築前に実行される処理です。");
 
-        // DBからロード
-        try {
-            accountBook = new AccountBookDAO(this).findAll().get(0);
-            accountBookDetails = new AccountBookDetailDAO(this).findAll();
-        } catch (Exception e) {
-            AccountBookShowController.submit(this, "InstallCompletedActivity");
-        }
     }
 
     @Override
     public void defineContentView() {
         final AccountBookShowActivity activity = this;
 
-        // まず親レイアウトを定義
+        // DBからロード
+        try {
+            accountBook = new AccountBookDAO(this).findAll().get(0);
+            accountBookDetails = new AccountBookDetailDAO(this).findAll();
+            if (accountBook == null || accountBookDetails == null || accountBookDetails.isEmpty()) {
+                AccountBookShowController.submit(this, "InstallCompletedActivity");
+                return;
+            }
+        } catch (Exception e) {
+            AccountBookShowController.submit(this, "InstallCompletedActivity");
+            return;
+        }
+
+        // 親レイアウトを定義
         UIBuilder uiBuildar = new UIBuilder(context)
                 .setDisplayHeaderText("目標金額照会")
                 .add(
@@ -317,8 +330,10 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                     String buttonTitle1 = "月別目標調整";
                     String buttonTitle2 = "翌月繰り越し";
                     String buttonTitle3 = "キャンセル";
-                    android.content.DialogInterface.OnClickListener click3_1 = doSime4_1(target, settleRecordData.getDisposablencome(), targetMonth, nextMonth);
-                    android.content.DialogInterface.OnClickListener click3_2 = doSime4_2(target, settleRecordData.getDisposablencome());
+                    android.content.DialogInterface.OnClickListener click3_1 =
+                            doSime4_1(target, settleRecordData.getDisposablencome(), targetMonth, nextMonth);
+                    android.content.DialogInterface.OnClickListener click3_2 =
+                            doSime4_2(target, settleRecordData.getDisposablencome(), targetMonth, nextMonth);
 
                     Util.createAlertDialogWith3Buttons(AccountBookShowActivity.this,
                             title3, contents3, R.drawable.icon,
@@ -376,83 +391,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
                 // 締め対象月の変動費明細で、実績が未入力の場合は0に更新する。
                 // UIスレッドとは非同期で実行する。
-                class Param {
-                }
-                Param param = new Param();
-
-                class Result {
-                }
-
-                AsyncTask<Param, Void, Result> task = new AsyncTask<Param, Void, Result>() {
-                    @Override
-                    protected Result doInBackground(Param... params) {
-
-                        // 処理をしてonPostExecute()に渡すResult型オブジェクトに格納
-                        Result result = new Result();
-
-                        // IN句の設定
-                        String in = new String();
-                        Calendar tmp = (Calendar) targetMonth.clone();
-
-                        while (tmp.compareTo(nextMonth) < 0) {
-                            in += "'" + LPUtil.encodeCalendarToText(tmp) + "',";
-                            tmp.add(Calendar.DAY_OF_MONTH, 1);
-                        }
-                        in += "'" + LPUtil.encodeCalendarToText(nextMonth) + "'";
-                        Util.d("IN句の内容：" + in);
-
-                        DBHelper helper = new DBHelper(context);
-                        SQLiteDatabase db = helper.getWritableDatabase();
-//                        Cursor c = db.rawQuery("select * from cost_detail "
-//                                + "WHERE "
-//                                 + CostDetailCol.SETTLE_COST
-//                                 + " = '' AND "
-//                                + CostDetailCol.BUDGET_YMD
-//                                + " IN ("
-//                                + in
-//                                + ")", null);
-//                        c.moveToFirst();
-//                        CharSequence[][] list = new CharSequence[c.getCount()][7];
-//                        Util.d("Select結果:" + list.length + "件");
-//                        for (int i = 0; i < list.length; i++) {
-//                            list[i][0] = c.getString(0);
-//                            list[i][1] = c.getString(1);
-//                            list[i][2] = c.getString(2);
-//                            list[i][3] = c.getString(3);
-//                            list[i][4] = c.getString(4);
-//                            list[i][5] = c.getString(5);
-//                            list[i][6] = c.getString(6);
-//                            c.moveToNext();
-//                            Util.d(i + "番目："
-//                                    + list[i][0] + ", "
-//                                    + list[i][1] + ", "
-//                                    + list[i][2] + ", "
-//                                    + list[i][3] + ", "
-//                                    + list[i][4] + ", "
-//                                    + list[i][5] + ", "
-//                                    + list[i][6] + ", "
-//                                    );
-//                        }
-//                        c.close();
-
-                        db.execSQL("update cost_detail set "
-                                + CostDetailCol.SETTLE_COST
-                                + " = '0' WHERE "
-                                + CostDetailCol.SETTLE_COST
-                                + " = '' AND "
-                                + CostDetailCol.BUDGET_YMD
-                                + " IN ("
-                                + in
-                                + ")");
-
-                        return result; // ここでreturnしたオブジェクトがonPostExecute()に渡される
-                    }
-
-                    @Override
-                    protected void onPostExecute(Result result) {
-                    }
-                };
-                task.execute(param); // パラメータを渡す }
+                updateSettleKingaku(targetMonth, nextMonth);
             }
         };
     }
@@ -464,14 +403,101 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
      * 
      * @return
      */
-    private android.content.DialogInterface.OnClickListener doSime4_2(AccountBookDetail target, final Integer disposableIncome) {
+    private android.content.DialogInterface.OnClickListener doSime4_2(final AccountBookDetail target, final Integer disposableIncome, final Calendar targetMonth, final Calendar nextMonth) {
         return new android.content.DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
+                // 繰り越し登録用の日付
+                Calendar temp = (Calendar) nextMonth.clone();
+                temp.set(Calendar.HOUR_OF_DAY, 0);
+                temp.set(Calendar.MINUTE, 0);
+                temp.set(Calendar.SECOND, 0);
+                temp.set(Calendar.MILLISECOND, 0);
+
+                // 当月の最終日に繰り越し分の変動費明細を登録
+                CostDetail autoInputCostDetail = new CostDetail();
+                autoInputCostDetail.setBudgetYmd(temp);
+                autoInputCostDetail.setBudgetCost(0);
+                autoInputCostDetail.setCategoryType(15);
+                autoInputCostDetail.setPayType(1);
+                autoInputCostDetail.setSettleCost(disposableIncome);
+                new CostDetailDAO(context).create(autoInputCostDetail);
+
+                // 翌月の初日に繰り越し分の収入明細を登録
+                temp.add(Calendar.DAY_OF_MONTH, 1);
+                IncomeDetail autoInputIncomeDetail = new IncomeDetail();
+                autoInputIncomeDetail.setBudgetYmd(temp);
+                autoInputIncomeDetail.setBudgetIncome(0);
+                autoInputIncomeDetail.setCategoryType(15);
+                autoInputIncomeDetail.setPayType(1);
+                autoInputIncomeDetail.setSettleIncome(disposableIncome);
+                new IncomeDetailDAO(context).create(autoInputIncomeDetail);
+
+                // AccountBookDetailの設定値を修正して登録
+                target.setAutoInputFlag(false);
+                target.setSimeFlag(true);
+
+                AccountBookShowController.submit(AccountBookShowActivity.this, target);
+
+                // 締め対象月の変動費明細で、実績が未入力の場合は0に更新する。
+                // UIスレッドとは非同期で実行する。
+                updateSettleKingaku(targetMonth, nextMonth);
+            }
+
+        };
+    }
+
+    private void updateSettleKingaku(final Calendar targetMonth, final Calendar nextMonth) {
+        // 締め対象月の変動費明細で、実績が未入力の場合は0に更新する。
+        // UIスレッドとは非同期で実行する。
+        class Param {
+        }
+        Param param = new Param();
+
+        class Result {
+        }
+
+        AsyncTask<Param, Void, Result> task = new AsyncTask<Param, Void, Result>() {
+            @Override
+            protected Result doInBackground(Param... params) {
+
+                // 処理をしてonPostExecute()に渡すResult型オブジェクトに格納
+                Result result = new Result();
+
+                // IN句の設定
+                String in = new String();
+                Calendar tmp = (Calendar) targetMonth.clone();
+
+                while (tmp.compareTo(nextMonth) < 0) {
+                    in += "'" + LPUtil.encodeCalendarToText(tmp) + "',";
+                    tmp.add(Calendar.DAY_OF_MONTH, 1);
+                }
+                in += "'" + LPUtil.encodeCalendarToText(nextMonth) + "'";
+                Util.d("IN句の内容：" + in);
+
+                DBHelper helper = new DBHelper(context);
+                SQLiteDatabase db = helper.getWritableDatabase();
+                db.execSQL("update cost_detail set "
+                        + CostDetailCol.SETTLE_COST
+                        + " = '0' WHERE "
+                        + CostDetailCol.SETTLE_COST
+                        + " = '' AND "
+                        + CostDetailCol.BUDGET_YMD
+                        + " IN ("
+                        + in
+                        + ")");
+
+                return result; // ここでreturnしたオブジェクトがonPostExecute()に渡される
+            }
+
+            @Override
+            protected void onPostExecute(Result result) {
             }
         };
+        task.execute(param); // パラメータを渡す }
+
     }
 
     /**
@@ -546,13 +572,42 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                     fromYMD.add(Calendar.MONTH, -1);
                 }
 
+                // 繰り越した変動費明細・収入明細が存在すれば取得する。
+                CostDetailDAO costDetailDAO = new CostDetailDAO(context);
+                List<CostDetail> selectKurikosiCostDetails = costDetailDAO.findWhere(CostDetailCol.CATEGORY_TYPE, 15);
+                List<CostDetail> deleteTargetCostDetails = new ArrayList<CostDetail>();
+                for (CostDetail c : selectKurikosiCostDetails) {
+                    if (c.getBudgetYmd().compareTo(toYMD) == 0) {
+                        deleteTargetCostDetails.add(c);
+                    }
+                }
+
+                IncomeDetailDAO incomeDetailDAO = new IncomeDetailDAO(context);
+                List<IncomeDetail> selectKurikosiIncomeDetails = incomeDetailDAO.findWhere(IncomeDetailCol.CATEGORY_TYPE, 15);
+                List<IncomeDetail> deleteTargetIncomeDetails = new ArrayList<IncomeDetail>();
+                Calendar compareYMD = (Calendar) toYMD.clone();
+                compareYMD.add(Calendar.DAY_OF_MONTH, 1);
+                compareYMD = LPUtil.decodeTextToCalendarYMD(LPUtil.encodeCalendarToTextYMD(compareYMD));
+                Util.d("比較対象日付compareYMD： " + compareYMD.getTime());
+                for (IncomeDetail i : selectKurikosiIncomeDetails) {
+                    Util.d("収入明細の日付：" + i.getBudgetYmd().getTime());
+                    if (i.getBudgetYmd().compareTo(compareYMD) == 0) {
+                        Util.d("マッチング成功");
+                        deleteTargetIncomeDetails.add(i);
+                    }
+                    Util.d("マッチング失敗");
+                }
+
                 String title2 = "月末締め処理の解除";
                 String contents2 = LPUtil.encodeCalendarToTextYMD(fromYMD)
                         + "～" + LPUtil.encodeCalendarToTextYMD(toYMD)
                         + "を対象に、月末締めを解除します。"
                         + "\n"
                         + "\n締め解除処理を実行してもよろしいですか？";
-                android.content.DialogInterface.OnClickListener click2 = undoSime3(target);
+                if (!deleteTargetCostDetails.isEmpty() || !deleteTargetIncomeDetails.isEmpty()) {
+                    contents2 += "\n※締め処理で繰り越した変動費明細と収入明細は削除されます。";
+                }
+                android.content.DialogInterface.OnClickListener click2 = undoSime3(target, deleteTargetCostDetails, deleteTargetIncomeDetails);
 
                 Util.createAlertDialogWithOKandCancelButtons(AccountBookShowActivity.this,
                         title2, contents2, R.drawable.icon,
@@ -562,11 +617,23 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
         };
     }
 
-    private android.content.DialogInterface.OnClickListener undoSime3(final AccountBookDetail target) {
+    private android.content.DialogInterface.OnClickListener undoSime3(final AccountBookDetail target, final List<CostDetail> deleteTargetCostDetails, final List<IncomeDetail> deleteTargetIncomeDetails) {
         return new android.content.DialogInterface.OnClickListener() {
-            
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                // 締め取り消し処理対象月で、繰り越した変動費明細と収入明細を削除する。
+                CostDetailDAO costDetailDAO = new CostDetailDAO(context);
+                IncomeDetailDAO incomeDetailDAO = new IncomeDetailDAO(context);
+
+                for (CostDetail c : deleteTargetCostDetails) {
+                    costDetailDAO.deleteById(c.getId());
+                }
+
+                for (IncomeDetail i : deleteTargetIncomeDetails) {
+                    incomeDetailDAO.deleteById(i.getId());
+                }
+
                 target.setSimeFlag(false);
                 AccountBookShowController.submit(AccountBookShowActivity.this, target);
 
@@ -681,6 +748,8 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                 new AlertDialog.Builder(AccountBookShowActivity.this)
                         .setIcon(android.R.drawable.ic_dialog_info)
                         .setTitle("最終目標金額の更新")
+                        .setMessage("基準日を変更すると、月末締め処理がすべて解除されます。"
+                                + "\n※月末締め処理の繰り越し金がある場合、すべて削除されます。")
                         .setView(np1)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
@@ -690,7 +759,57 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                                     AccountBookShowController.submit(AccountBookShowActivity.this, "UPDATE_ACCOUNT_BOOK", ab);
                                 } catch (NumberFormatException e) {
                                     UIUtil.longToast(context, "数値を入力してください");
+                                    return;
                                 }
+
+                                // AccountBookDetailの締めフラグをすべてOFFにする。
+                                // UIスレッドとは非同期で実行する。
+                                class Param {
+                                }
+                                Param param = new Param();
+
+                                class Result {
+                                }
+
+                                AsyncTask<Param, Void, Result> task = new AsyncTask<Param, Void, Result>() {
+                                    @Override
+                                    protected Result doInBackground(Param... params) {
+
+                                        // 処理をしてonPostExecute()に渡すResult型オブジェクトに格納
+                                        Result result = new Result();
+
+                                        // 締めフラグを解除する。
+                                        DBHelper helper = new DBHelper(context);
+                                        SQLiteDatabase db = helper.getWritableDatabase();
+                                        db.execSQL("update "
+                                                + new AccountBookDetail().tableName()
+                                                + " set "
+                                                + AccountBookDetailCol.SIME_FLAG
+                                                + " = '0'"
+                                                );
+
+                                        // 繰り越した変動費明細・収入明細をすべて削除する。
+                                        CostDetailDAO costDetailDAO = new CostDetailDAO(context);
+                                        List<CostDetail> selectKurikosiCostDetails = costDetailDAO.findWhere(CostDetailCol.CATEGORY_TYPE, 15);
+                                        for (CostDetail c : selectKurikosiCostDetails) {
+                                            costDetailDAO.deleteById(c.getId());
+                                        }
+
+                                        IncomeDetailDAO incomeDetailDAO = new IncomeDetailDAO(context);
+                                        List<IncomeDetail> selectKurikosiIncomeDetails = incomeDetailDAO.findWhere(IncomeDetailCol.CATEGORY_TYPE, 15);
+                                        for (IncomeDetail i : selectKurikosiIncomeDetails) {
+                                            incomeDetailDAO.deleteById(i.getId());
+                                        }
+
+                                        return result; // ここでreturnしたオブジェクトがonPostExecute()に渡される
+                                    }
+
+                                    @Override
+                                    protected void onPostExecute(Result result) {
+                                    }
+                                };
+                                task.execute(param); // パラメータを渡す }
+
                             }
 
                         })
