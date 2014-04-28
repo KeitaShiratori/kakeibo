@@ -6,18 +6,21 @@ import java.util.List;
 
 import net.simonvt.numberpicker.NumberPicker;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.TextView;
 
 import com.android_mvc.framework.db.DBHelper;
 import com.android_mvc.framework.ui.UIBuilder;
 import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.view.MButton;
-import com.android_mvc.framework.ui.view.MEditText;
+import com.android_mvc.framework.ui.view.MCalculatorView;
+import com.android_mvc.framework.ui.view.MGridLayout;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
@@ -49,7 +52,7 @@ import com.android_mvc.sample_project.db.schema.ColumnDefinition.IncomeDetailCol
 public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
     MLinearLayout layout1;
-    MLinearLayout layout2;
+    MGridLayout layout2;
     HooterMenu hooterMenu;
     MTextView tv1;
     MTextView tv2;
@@ -100,53 +103,74 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
                 );
 
         // コンテンツエリアの情報を表示するためのレイアウト
+        MLinearLayout abHeader = accountBook.getHeader(context);
+        MLinearLayout abRecord = accountBook.getDescription(context);
+
+        MButton bt1 = new MButton(context)
+                .text("最終目標変更")
+                .backgroundDrawable(R.drawable.button_design_h30_w115);
+        bt1.click(updateMokuhyouKingaku(accountBook, abRecord));
+
+        MButton bt2 = new MButton(context)
+                .text("期間延長")
+                .backgroundDrawable(R.drawable.button_design_h30_w115);
+        bt2.click(updateMokuhyouKikan(accountBook));
+
+        MButton bt3 = new MButton(context)
+                .text("基準日変更")
+                .backgroundDrawable(R.drawable.button_design_h30_w115);
+        bt3.click(updateStartDate(accountBook));
+
         layout1.add(
                 // 最終目標
-                accountBook.getHeader(context),
-                accountBook.getDescription(context),
+                abHeader,
+                abRecord,
                 new MLinearLayout(activity)
                         .orientationHorizontal()
                         .widthFillParent()
                         .heightWrapContent()
                         .add(
-                                new MButton(context)
-                                        .text("最終目標変更")
-                                        .backgroundDrawable(R.drawable.button_design_h30_w115)
-                                        .click(updateMokuhyouKingaku(accountBook))
-                                ,
-                                new MButton(context)
-                                        .text("期間延長")
-                                        .backgroundDrawable(R.drawable.button_design_h30_w115)
-                                        .click(updateMokuhyouKikan(accountBook))
-                                ,
-                                new MButton(context)
-                                        .text("基準日変更")
-                                        .backgroundDrawable(R.drawable.button_design_h30_w115)
-                                        .click(updateStartDate(accountBook))
+                                bt1,
+                                bt2,
+                                bt3
                         )
                 ,
                 // 空行
                 new MTextView(context)
                         .paddingPx(5)
                         .textsize(1)
-                ,
-                // 月別目標のヘッダ
+                );
+
+        // 月別目標のヘッダ
+        layout1.add(
                 accountBookDetails.get(0).getHeader(context)
                 );
+
+        // 月別目標のレイアウトを作成
+        layout2 = new MGridLayout(activity)
+                .columnCount(3)
+                .rowCount(accountBookDetails.size());
+        layout1.add(layout2);
+
+        // 月別目標のレイアウトの初期化
 
         boolean isAllManualInput = true;
         long sum = 0;
 
         for (int i = accountBookDetails.size() - 1; i >= 0; i--) {
+
+            // final MLinearLayout record = new MLinearLayout(context)
+            // .orientationHorizontal()
+            // .heightWrapContent();
+
             final AccountBookDetail a = accountBookDetails.get(i);
-            layout1.add(
-                    a.getDescription(context, new OnClickListener() {
-                        public void onClick(View v) {
-                            // クリック処理
-                            inputDialogMokuhyouKingaku(a);
-                        }
-                    })
-                    );
+
+            final MTextView mokuhyouKikan = a.getMokuhyouKikanView(activity);
+            final MTextView mokuhyouKingaku = a.getMokuhyouKingakuView(activity);
+
+            layout2.add(mokuhyouKikan);
+            layout2.add(mokuhyouKingaku);
+            layout2.add(a.getAutoInputView(context, inputDialogMokuhyouKingaku(a, mokuhyouKingaku)));
 
             isAllManualInput = isAllManualInput && !a.getAutoInputFlag();
             sum += a.getMokuhyouMonthKingaku();
@@ -653,7 +677,7 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
 
             @Override
             public void onClick(View v) {
-                String title1 = "目標期間の延長（TEST）";
+                String title1 = "目標期間の延長";
                 String contents1 = "目標期間の延長を行います。"
                         + "\n※目標期間の短縮はできません。"
                         + "\n"
@@ -709,72 +733,148 @@ public class AccountBookShowActivity extends AccountBookAppUserBaseActivity {
         };
     }
 
-    private void inputDialogMokuhyouKingaku(final AccountBookDetail a) {
-
-        Calendar c = a.getMokuhyouMonth();
-        final MEditText et = new MEditText(context);
-        new AlertDialog.Builder(AccountBookShowActivity.this)
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .setTitle(c.get(Calendar.YEAR) + "年" + (c.get(Calendar.MONTH) + 1) + "月の目標金額")
-                .setView(et)
-                .setPositiveButton("決定", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        try {
-                            Integer mokuhyouKingaku = Integer.parseInt(et.getText().toString());
-                            a.setMokuhyouMonthKingaku(mokuhyouKingaku);
-                            a.setAutoInputFlag(false);
-                            AccountBookShowController.submit(AccountBookShowActivity.this, a);
-                        } catch (NumberFormatException e) {
-                            UIUtil.longToast(context, "数値を入力してください");
-                        }
-                    }
-
-                })
-                .setNegativeButton("自動入力をON",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                a.setAutoInputFlag(true);
-                                AccountBookShowController.submit(AccountBookShowActivity.this, a);
-                            }
-                        }).show();
-    }
-
-    // 最終目標金額を更新するためのイベント
-    private OnClickListener updateMokuhyouKingaku(final AccountBook ab) {
+    // 月別目標金額を更新するためのイベント
+    private OnClickListener inputDialogMokuhyouKingaku(final AccountBookDetail abd, final MTextView target) {
         return new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                // 最終目標金額入力用EditText
-                final MEditText et = new MEditText(context)
-                        .hint("最終目標金額");
+                // 最終目標金額入力用View
+                Integer initVal = 0;
+                if (target != null && target.text() != null && !target.text().isEmpty()) {
+                    try {
+                        String tmp = target.text().replace("円", "");
+                        String kaigyo = System.getProperty("line.separator");
+                        tmp = tmp.replaceAll(kaigyo, "");
+                        initVal = Integer.parseInt(tmp);
+                    } catch (NumberFormatException e) {
+                        UIUtil.longToast(context, "数値を入力してください#749");
+                        return;
+                    }
+                }
 
-                // ダイアログを表示する。OKを押すと最終目標金額を更新する。
-                new AlertDialog.Builder(AccountBookShowActivity.this)
-                        .setIcon(android.R.drawable.ic_dialog_info)
-                        .setTitle("最終目標金額の更新")
-                        .setView(et)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                try {
-                                    Integer mokuhyouKingaku = Integer.parseInt(et.getText().toString());
-                                    ab.setMokuhyouKingaku(mokuhyouKingaku);
-                                    AccountBookShowController.submit(AccountBookShowActivity.this, "UPDATE_ACCOUNT_BOOK", ab);
-                                } catch (NumberFormatException e) {
-                                    UIUtil.longToast(context, "数値を入力してください");
-                                }
-                            }
-
-                        })
-                        .setNegativeButton("キャンセル",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                        // 何もしない
-                                    }
-                                }).show();
-
+                createCalculaterDialogWith2Button(AccountBookShowActivity.this, null, null, 0,
+                        target, initVal, "円\n", abd);
             }
         };
+    }
+
+    /**
+     * 2つのボタンを持つ電卓ダイアログを表示する。 各ボタンを押した時のイベントはclickに渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createCalculaterDialogWith2Button(final AccountBookShowActivity activity, String title, String content, int icon,
+            final TextView v, Integer initVal, final String valUnit, final AccountBookDetail abd) {
+
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        final MCalculatorView calc = new MCalculatorView(activity, null, initVal);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+        ret.setView(calc);
+
+        ret.setPositiveButton("決定", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                try {
+                    Integer mokuhyouKingaku = Integer.parseInt((String) calc.getValue());
+                    abd.setMokuhyouMonthKingaku(mokuhyouKingaku);
+                    abd.setAutoInputFlag(false);
+                    AccountBookShowController.submit(activity, abd);
+                } catch (NumberFormatException e) {
+                    UIUtil.longToast(activity, "数値を入力してください#791");
+                }
+            }
+
+        });
+        ret.setNegativeButton("自動入力をON",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        abd.setAutoInputFlag(true);
+                        AccountBookShowController.submit(activity, abd);
+                    }
+                });
+
+        calc.inflateInside();
+        ret.create();
+        ret.show();
+
+        return ret;
+    }
+
+    // 最終目標金額を更新するためのイベント
+    private OnClickListener updateMokuhyouKingaku(final AccountBook ab, final MLinearLayout targetParent) {
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // 最終目標金額入力用View
+                final MTextView target = (MTextView) targetParent.getChildAt(0);
+                Integer initVal = 0;
+                if (target != null && target.text() != null && !target.text().isEmpty()) {
+                    try {
+                        String tmp = target.text().replace("円", "");
+                        initVal = Integer.parseInt(tmp);
+                    } catch (NumberFormatException e) {
+                        UIUtil.longToast(context, "数値を入力してください");
+                        return;
+                    }
+                }
+
+                createCalculaterDialogWith2Button(AccountBookShowActivity.this, null, null, 0,
+                        target, initVal, "円", ab);
+            }
+        };
+    }
+
+    /**
+     * 2つのボタンを持つ電卓ダイアログを表示する。 各ボタンを押した時のイベントはclickに渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createCalculaterDialogWith2Button(final AccountBookShowActivity activity, String title, String content, int icon,
+            final TextView v, Integer initVal, final String valUnit, final AccountBook ab) {
+
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        final MCalculatorView calc = new MCalculatorView(activity, null, initVal);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+        ret.setView(calc);
+
+        ret.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                v.setText(calc.getValue() + valUnit);
+                ab.setMokuhyouKingaku(Integer.parseInt((String) calc.getValue()));
+                AccountBookShowController.submit(activity, "UPDATE_ACCOUNT_BOOK", ab);
+            }
+        });
+
+        ret.setNegativeButton("キャンセル", null);
+
+        calc.inflateInside();
+        ret.create();
+        ret.show();
+
+        return ret;
     }
 
     /**

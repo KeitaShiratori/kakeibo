@@ -142,9 +142,9 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
                 String title = "本日の残り金額";
                 String contents = "本日の残り金額は" + result + "円です。"
                         + "\n\n内訳"
-                        + "\n使用予定金額合計: " + budgetCostSum + "円"
-                        + "\n使用済み金額合計: " + settleCostSum + "円"
-                        + "\n残り金額（日割り）: " + kasyobun + "円";
+                        + "\n＋使用予定金額合計: " + budgetCostSum + "円"
+                        + "\n－使用済み金額合計: " + settleCostSum + "円"
+                        + "\n＋残り金額（日割り）: " + kasyobun + "円";
                 Util.createAlertDialogWithOKButton(getParent(), title, contents, R.drawable.icon, null);
             }
         };

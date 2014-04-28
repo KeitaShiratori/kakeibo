@@ -4,25 +4,32 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android_mvc.framework.ui.UIBuilder;
 import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.view.MButton;
+import com.android_mvc.framework.ui.view.MCalculatorView;
 import com.android_mvc.framework.ui.view.MEditText;
+import com.android_mvc.framework.ui.view.MGridLayout;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
+import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.CostDetailController;
 import com.android_mvc.sample_project.db.dao.AccountBookDAO;
+import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.dao.CreditCardSettingDAO;
+import com.android_mvc.sample_project.db.entity.AccountBookDetail;
 import com.android_mvc.sample_project.db.entity.CostDetail;
 import com.android_mvc.sample_project.db.entity.CreditCardSetting;
 import com.android_mvc.sample_project.db.entity.lib.LPUtil;
@@ -53,10 +60,12 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
     private CostDetailDAO costDetailDAO;
     private CreditCardSettingDAO creditCardSettingDAO;
     private AccountBookDAO accountBookDAO;
+    private AccountBookDetailDAO accountBookDetailDAO;
 
     // 制御用変数
     private boolean isCreditSiharai;
     private CreditCardSetting creditCardSetting;
+    private Calendar simeLastDay;
 
     // モード定義
     public static String NEW_RECORD_MODE = "NEW_RECORD_MODE";
@@ -92,10 +101,23 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         costDetailDAO = new CostDetailDAO(this);
         creditCardSettingDAO = new CreditCardSettingDAO(this);
         accountBookDAO = new AccountBookDAO(this);
+        accountBookDetailDAO = new AccountBookDetailDAO(this);
 
         creditCardSetting = creditCardSettingDAO.findNewestOne();
-
         isCreditSiharai = false;
+
+        List<AccountBookDetail> accountBookDetails = accountBookDetailDAO.findAll();
+
+        for (int i = accountBookDetails.size() -1 ; i >= 0; i--) {
+            if (accountBookDetails.get(i).getSimeFlag()) {
+                simeLastDay = accountBookDetails.get(i).getMokuhyouMonth();
+            }
+            break;
+        }
+        if (simeLastDay != null) {
+            simeLastDay.add(Calendar.MONTH, 1);
+            simeLastDay.set(Calendar.DAY_OF_MONTH, accountBookDAO.findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH));
+        }
 
         layout1 = new MLinearLayout(context)
                 .orientationVertical()
@@ -286,8 +308,70 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                 LabelYMD = c.getBudgetYmd();
             }
 
+            MGridLayout record = new MGridLayout(activity)
+                    .columnCount(3)
+                    .rowCount(3)
+                    .heightWrapContent()
+                    .backgroundDrawable(R.drawable.border);
+            MTextView categoryTypeView = c.getCategoryTypeView(this);
+            MTextView payTypeVeiw = c.getPayTypeView(this);
+            MTextView budgetCostView = c.getBudgetCostView(this);
+            MTextView settleCostView = c.getSettleCostView(this);
+
+            MTextView updateButton = new MTextView(activity)
+                    .gravity(Gravity.CENTER_VERTICAL)
+                    .text(c.isKurikosi() || isSime(c.getBudgetYmd()) ? "変更不可" : "変更")
+                    .backgroundDrawable(c.isKurikosi() || isSime(c.getBudgetYmd()) ? R.drawable.record_design : R.drawable.button_design_1)
+                    .click(c.isKurikosi() || isSime(c.getBudgetYmd()) ? null : inputDialogUpdateSettleCost(c, settleCostView));
+
+            MTextView deleteButton = new MTextView(activity)
+                    .gravity(Gravity.CENTER_VERTICAL)
+                    .text(c.isKurikosi() || isSime(c.getBudgetYmd()) ? "削除不可" : "削除")
+                    .backgroundDrawable(c.isKurikosi() || isSime(c.getBudgetYmd()) ? R.drawable.record_design : R.drawable.button_design_1)
+                    .click(c.isKurikosi() || isSime(c.getBudgetYmd()) ? null : delete(this, c));
+
+            record.add(
+                    categoryTypeView,
+                    budgetCostView,
+                    updateButton,
+                    payTypeVeiw,
+                    settleCostView,
+                    deleteButton
+                    );
+
+            // クレジットカードの分割回数行の作成処理
+            if (isCreditSiharai && c.getDivideNum() != null) {
+                String divideNum = (c.getDivideNum() == null) ? "" : " " + c.getDivideNum() + "回払い";
+                String payTerm = c.getPayTerm(creditCardSetting);
+
+                // クレジット支払いフラグが立っていて、変動費明細に分割数が設定されている場合、Viewを作成する。
+                MTextView divideNumView = new MTextView(activity)
+                        .gravity(Gravity.CENTER_VERTICAL)
+                        .text(divideNum)
+                        .backgroundDrawable(drawable.record_design)
+                        .widthWrapContent();
+
+                MTextView divideKingakuView = new MTextView(activity)
+                        .text("支払額: " + (c.getEffectiveCost() / c.getDivideNum()) + "円")
+                        .gravity(Gravity.CENTER_VERTICAL)
+                        .backgroundDrawable(drawable.record_design)
+                        .widthWrapContent();
+
+                MTextView payTermView = new MTextView(activity)
+                        .text("引落月: " + payTerm)
+                        .gravity(Gravity.CENTER_VERTICAL)
+                        .backgroundDrawable(drawable.record_design)
+                        .widthWrapContent();
+
+                record.add(
+                        divideNumView,
+                        divideKingakuView,
+                        payTermView
+                        );
+            }
+
             layout1.add(
-                    c.getDescription(activity, context, update(this, c), delete(this, c))
+                    record
                     );
 
         }
@@ -297,6 +381,13 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         if (mode.equals(s(R.string.NEW_RECORD_MODE))) {
             mode = s(R.string.DAY_MODE);
         }
+    }
+
+    private boolean isSime(Calendar target) {
+        if (simeLastDay != null) {
+            return simeLastDay.after(target);
+        }
+        return false;
     }
 
     private MLinearLayout creditLabel(CostDetail credit) {
@@ -673,4 +764,77 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
             }
         };
     }
+
+    // 月別目標金額を更新するためのイベント
+    private OnClickListener inputDialogUpdateSettleCost(final CostDetail c, final MTextView target) {
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String title = "実際の金額を入力してください。";
+                // 最終目標金額入力用View
+                Integer initVal = 0;
+                if (target != null && target.text() != null && !target.text().isEmpty()) {
+                    try {
+                        String tmp = target.text().replace("円", "");
+                        tmp = tmp.replace("実績: ", "");
+                        tmp = tmp.replace("未入力", "");
+                        if (!tmp.isEmpty()) {
+                            initVal = Integer.parseInt(tmp);
+                        }
+                    } catch (NumberFormatException e) {
+                        UIUtil.longToast(context, "数値を入力してください");
+                        return;
+                    }
+                }
+
+                createCalculaterDialogWith2Button(CostDetailShowActivity.this, title, null, 0,
+                        target, initVal, "円", c);
+            }
+        };
+    }
+
+    /**
+     * 2つのボタンを持つ電卓ダイアログを表示する。 各ボタンを押した時のイベントはclickに渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createCalculaterDialogWith2Button(final CostDetailShowActivity activity, String title, String content, int icon,
+            final TextView v, Integer initVal, final String valUnit, final CostDetail c) {
+
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        final MCalculatorView calc = new MCalculatorView(activity, null, initVal);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+        ret.setView(calc);
+
+        ret.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                v.setText("実績： " + calc.getValue() + valUnit);
+                c.setSettleCost(Integer.parseInt((String) calc.getValue()));
+                // DB更新へ
+                CostDetailController.submit(activity, "UPDATE_COST_DETAIL", c);
+            }
+        });
+
+        ret.setNegativeButton("キャンセル", null);
+
+        calc.inflateInside();
+        ret.create();
+        ret.show();
+
+        return ret;
+    }
+
 }

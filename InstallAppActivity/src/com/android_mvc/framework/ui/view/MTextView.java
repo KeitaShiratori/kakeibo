@@ -2,6 +2,7 @@ package com.android_mvc.framework.ui.view;
 
 import java.util.HashMap;
 
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
@@ -145,6 +146,11 @@ public class MTextView extends TextView implements IFWView
     public MTextView drawableLeft(int resource) {
         setCompoundDrawablesWithIntrinsicBounds(resource, 0, 0, 0);
         return this;
+    }
+
+    public MTextView click(Builder createCalculaterDialogWithOKButton) {
+        // TODO 自動生成されたメソッド・スタブ
+        return null;
     }
 
 }

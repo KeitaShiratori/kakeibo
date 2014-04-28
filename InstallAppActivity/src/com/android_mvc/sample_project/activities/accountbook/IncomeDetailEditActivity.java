@@ -123,94 +123,63 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
                         bYMD.click(Util.createDatePickerDialog(context, bYMD, calendar))
                 );
 
+        tv2 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                .text("予定金額")
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .widthWrapContent();
+
+        et2 = new MTextView(context)
+                .gravity(Gravity.CENTER)
+                .hint("必須入力")
+                .hintTextColor(android.graphics.Color.argb(128, 255, 0, 0))
+                .backgroundDrawable(R.drawable.button_design_h40_w230);
+        et2.click(calculaterDialog(et2));
+
         layout2 = new MLinearLayout(context)
                 .orientationHorizontal()
                 .widthFillParent()
                 .add(
-                        tv2 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .text("予定金額")
-                                .backgroundDrawable(R.drawable.header_design_h40_w115)
-                                .widthWrapContent()
-                        ,
-                        et2 = new MTextView(context)
-                                .gravity(Gravity.CENTER)
-                                .hint("必須入力")
-                                .hintTextColor(android.graphics.Color.argb(128, 255, 0, 0))
-                                .backgroundDrawable(R.drawable.button_design_h40_w230)
-                                .click(new OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        final MEditText temp = new MEditText(context)
-                                                .text(et2.text())
-                                        ;
-                                        new AlertDialog.Builder(IncomeDetailEditActivity.this)
-                                                .setIcon(android.R.drawable.ic_dialog_info)
-                                                .setTitle("予定金額を入力してください")
-                                                .setView(temp)
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                                        try {
-                                                            Integer NumberFormatExceptionCatcher = Integer.parseInt(temp.getText().toString());
-                                                            et2.text(temp.text());
-                                                        } catch (NumberFormatException e) {
-                                                            UIUtil.longToast(context, "数値を入力してください");
-                                                        }
-                                                    }
-                                                })
-                                                .setNegativeButton("キャンセル",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int whichButton) {
-                                                                // 何もしない
-                                                            }
-                                                        }).show();
-                                    }
-                                })
+                        tv2,
+                        et2
                 );
+
+        tv5 = new MTextView(context)
+                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
+                .text("実績金額")
+                .backgroundDrawable(R.drawable.header_design_h40_w115)
+                .widthWrapContent();
+
+        et5 = new MTextView(context)
+                .gravity(Gravity.CENTER)
+                .hint("未入力")
+                .backgroundDrawable(R.drawable.button_design_h40_w230);
+        et5.click(calculaterDialog(et5));
 
         layout5 = new MLinearLayout(context)
                 .orientationHorizontal()
                 .widthFillParent()
                 .add(
-                        tv5 = new MTextView(context)
-                                .gravity(Gravity.CENTER_VERTICAL | Gravity.RIGHT)
-                                .text("実績金額")
-                                .backgroundDrawable(R.drawable.header_design_h40_w115)
-                                .widthWrapContent()
-                        ,
-                        et5 = new MTextView(context)
-                                .gravity(Gravity.CENTER)
-                                .hint("未入力")
-                                .backgroundDrawable(R.drawable.button_design_h40_w230)
-                                .click(new OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        final MEditText temp = new MEditText(context)
-                                                .text(et5.text());
-                                        ;
-                                        new AlertDialog.Builder(IncomeDetailEditActivity.this)
-                                                .setIcon(android.R.drawable.ic_dialog_info)
-                                                .setTitle("実績金額を入力してください")
-                                                .setView(temp)
-                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog, int whichButton) {
-                                                        try {
-                                                            Integer NumberFormatExceptionCatcher = Integer.parseInt(temp.getText().toString());
-                                                            et5.text(temp.text());
-                                                        } catch (NumberFormatException e) {
-                                                            UIUtil.longToast(context, "数値を入力してください");
-                                                        }
-                                                    }
-                                                })
-                                                .setNegativeButton("キャンセル",
-                                                        new DialogInterface.OnClickListener() {
-                                                            public void onClick(DialogInterface dialog, int whichButton) {
-                                                                // 何もしない
-                                                            }
-                                                        }).show();
-                                    }
-                                })
+                        tv5,
+                        et5
                 );
+    }
+
+    /**
+     * 金額入力用ダイアログを返す。
+     * 
+     * @param target
+     * @return
+     */
+    private OnClickListener calculaterDialog(final MTextView target) {
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Integer initVal = target.text().isEmpty() ? 0 : Integer.parseInt(target.text());
+                Util.createCalculaterDialogWithOKButton(IncomeDetailEditActivity.this, null, null, 0, target, initVal);
+            }
+        };
     }
 
     @Override

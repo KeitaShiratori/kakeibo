@@ -17,9 +17,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android_mvc.framework.common.BaseUtil;
 import com.android_mvc.framework.ui.UIUtil;
+import com.android_mvc.framework.ui.view.MCalculatorView;
 import com.android_mvc.framework.ui.view.MEditText;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
@@ -414,7 +416,7 @@ public class Util extends BaseUtil
     }
 
     /**
-     * OKボタンとキャンセルボタンを持つダイアログを表示する。 
+     * OKボタンとキャンセルボタンを持つダイアログを表示する。
      * 
      * @param activity
      * @param title
@@ -516,6 +518,113 @@ public class Util extends BaseUtil
         }
 
         String ret = payTypes.get(id).getPayTypeName();
+
+        return ret;
+    }
+
+    /**
+     * OKボタンのみを持つダイアログを表示する。 OKボタンを押した時のイベントはclickに渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createCalculaterDialogWithOKButton(Activity activity, String title, String content, int icon,
+            final DialogInterface.OnClickListener click, final TextView v, Integer initVal, final String valUnit) {
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        final MCalculatorView calc = new MCalculatorView(activity, null, initVal);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+        ret.setView(calc);
+
+        // ret.setView(new
+        // MTextView(activity).text("testest").textColor(android.graphics.Color.WHITE));
+
+        if (click == null) {
+            ret.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    v.setText(calc.getValue() + valUnit);
+                }
+            });
+        }
+        else {
+            ret.setPositiveButton("OK", click);
+        }
+
+        calc.inflateInside();
+        ret.create();
+        ret.show();
+
+        return ret;
+    }
+
+    public static Builder createCalculaterDialogWithOKButton(Activity activity, String title, String content, int icon, final TextView v, Integer initVal, final String valUnit) {
+        return createCalculaterDialogWithOKButton(activity, title, content, icon, null, v, initVal, valUnit);
+    }
+
+    public static Builder createCalculaterDialogWithOKButton(Activity activity, String title, String content, int icon, final TextView v, Integer initVal) {
+        return createCalculaterDialogWithOKButton(activity, title, content, icon, v, initVal, "");
+    }
+
+    /**
+     * 2つのボタンを持つ電卓ダイアログを表示する。 各ボタンを押した時のイベントはclickに渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createCalculaterDialogWith2Button(Activity activity, String title, String content, int icon,
+            final DialogInterface.OnClickListener click1, final DialogInterface.OnClickListener click2,
+            final TextView v, Integer initVal, final String valUnit) {
+
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        final MCalculatorView calc = new MCalculatorView(activity, null, initVal);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+        ret.setView(calc);
+
+        // ret.setView(new
+        // MTextView(activity).text("testest").textColor(android.graphics.Color.WHITE));
+
+        if (click1 == null) {
+            ret.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    v.setText(calc.getValue() + valUnit);
+                }
+            });
+        }
+        else {
+            ret.setPositiveButton("OK", click1);
+        }
+
+        if(click2 == null){
+            ret.setNegativeButton("キャンセル", null);
+        }
+        else{
+            ret.setNegativeButton("キャンセル", click2);
+        }
+
+        calc.inflateInside();
+        ret.create();
+        ret.show();
 
         return ret;
     }

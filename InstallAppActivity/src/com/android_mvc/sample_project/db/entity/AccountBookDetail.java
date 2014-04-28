@@ -112,12 +112,11 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
      * 家計簿のレコードを表示する
      */
     public MLinearLayout getDescription(Context context, OnClickListener l) {
-        int baseDate = new AccountBookDAO(context).findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH);
-
         MLinearLayout ret = new MLinearLayout(context)
                 .orientationHorizontal()
                 .heightWrapContent();
 
+        int baseDate = new AccountBookDAO(context).findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH);
         getMokuhyouMonth().set(Calendar.DAY_OF_MONTH, baseDate);
 
         Calendar nextMonth = (Calendar) getMokuhyouMonth().clone();
@@ -165,6 +164,62 @@ public class AccountBookDetail extends LogicalEntity<AccountBookDetail> {
 
         ret.add(tv1, tv2, bt3);
         return ret;
+    }
+
+    public MTextView getMokuhyouKikanView(Context context) {
+        int baseDate = new AccountBookDAO(context).findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH);
+        getMokuhyouMonth().set(Calendar.DAY_OF_MONTH, baseDate);
+
+        Calendar nextMonth = (Calendar) getMokuhyouMonth().clone();
+        nextMonth.add(Calendar.MONTH, 1);
+        nextMonth.add(Calendar.DAY_OF_MONTH, -1);
+
+        return new MTextView(context)
+                .gravity(Gravity.CENTER)
+                .text(getMokuhyouMonth().get(Calendar.YEAR) + "/"
+                        + (getMokuhyouMonth().get(Calendar.MONTH) + 1) + "/"
+                        + getMokuhyouMonth().get(Calendar.DAY_OF_MONTH)
+                        + "\n～"
+                        + nextMonth.get(Calendar.YEAR) + "/"
+                        + (nextMonth.get(Calendar.MONTH) + 1) + "/"
+                        + nextMonth.get(Calendar.DAY_OF_MONTH))
+                .backgroundDrawable(R.drawable.record_design);
+
+    }
+
+    public MTextView getMokuhyouKingakuView(Context context) {
+        return new MTextView(context)
+                .gravity(Gravity.CENTER)
+                .text(getMokuhyouMonthKingaku() + "円"
+                        + "\n")
+                .backgroundDrawable(R.drawable.record_design);
+    }
+
+    public MTextView getAutoInputView(Context context, OnClickListener l) {
+        MTextView ret = new MTextView(context)
+                .gravity(Gravity.CENTER)
+                .click(getSimeFlag() ? null : l);
+
+        // 自動入力フラグがtrueならON、falseならOFF
+        if (getAutoInputFlag()) {
+            ret.text("ON"
+                    + "\n")
+                    .backgroundDrawable(R.drawable.button_design_1);
+        } else {
+            if (getSimeFlag()) {
+                ret.text("締め"
+                        + "\n")
+                        .backgroundDrawable(R.drawable.record_design);
+            }
+            else {
+                ret.text("OFF"
+                        + "\n")
+                        .backgroundDrawable(R.drawable.button_design_2);
+            }
+        }
+
+        return ret;
+
     }
 
     // ----- LP変換(Logical <-> Physical) -----

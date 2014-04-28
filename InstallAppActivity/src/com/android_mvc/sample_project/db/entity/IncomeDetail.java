@@ -131,7 +131,7 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
      * 
      * @return
      */
-    private boolean isKurikosi() {
+    public boolean isKurikosi() {
         return (getCategoryType() != null && getCategoryType() == 15);
     }
 
@@ -141,10 +141,6 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
     public MLinearLayout getDescription(Activity activity, Context context, OnClickListener l1, OnClickListener l2) {
         String budgetIncome = (getBudgetIncome() == null) ? "未入力" : getBudgetIncome() + "円";
         String settleIncome = (getSettleIncome() == null) ? "未入力" : getSettleIncome() + "円";
-        // String categoryType = (getCategoryType() == null) ? "未入力" : new
-        // CategoryTypeDAO(activity).findById(Long.parseLong(getCategoryType().toString())).getCategoryTypeName();
-        // String payType = (getPayType() == null) ? "未入力" : new
-        // PayTypeDAO(activity).findById(Long.parseLong(getPayType().toString())).getPayTypeName();
 
         return new MLinearLayout(activity)
                 .orientationVertical()
@@ -184,7 +180,6 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                 .add(
 
                                         new MTextView(activity)
-                                                // .text(payType)
                                                 .gravity(Gravity.CENTER_VERTICAL)
                                                 .backgroundDrawable(drawable.record_design)
                                                 .widthWrapContent()
@@ -204,6 +199,39 @@ public class IncomeDetail extends LogicalEntity<IncomeDetail> {
                                 )
                 );
 
+    }
+
+    public MTextView getCategoryTypeView(Activity activity) {
+        return new MTextView(activity)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text(isKurikosi() ? "繰り越し" : "")
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MTextView getPayTypeView(Activity activity) {
+        return new MTextView(activity)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MTextView getBudgetIncomeView(Activity activity) {
+        String budgetIncome = (getBudgetIncome() == null) ? "未入力" : getBudgetIncome() + "円";
+        return new MTextView(activity)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("予定: " + budgetIncome)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MTextView getSettleIncomeView(Activity activity) {
+        String settleIncome = (getSettleIncome() == null) ? "未入力" : getSettleIncome() + "円";
+        return new MTextView(activity)
+                .text("実績: " + settleIncome)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
     }
 
     // ----- LP変換(Logical <-> Physical) -----

@@ -66,6 +66,13 @@ public class IncomeDetailDAO extends BaseDAO<IncomeDetail>
                 .findAll(IncomeDetail.class);
     }
 
+    public List<IncomeDetail> findOrderByAscBudgetYmd() {
+        return new Finder<IncomeDetail>(helper)
+                .where("id > 0")
+                .orderBy(IncomeDetailCol.BUDGET_YMD + " ASC")
+                .findAll(IncomeDetail.class);
+    }
+
     /**
      * 任意のKeyで、where条件を設定して検索した結果を返す。 KeyにはIncomeDetailColクラスのメンバを指定する。
      * 

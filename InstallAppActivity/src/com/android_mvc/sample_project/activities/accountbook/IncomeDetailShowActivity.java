@@ -4,25 +4,31 @@ import java.util.Calendar;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android_mvc.framework.ui.UIBuilder;
 import com.android_mvc.framework.ui.UIUtil;
+import com.android_mvc.framework.ui.view.MCalculatorView;
 import com.android_mvc.framework.ui.view.MEditText;
+import com.android_mvc.framework.ui.view.MGridLayout;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
-import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.common.Util;
+import com.android_mvc.sample_project.controller.CostDetailController;
 import com.android_mvc.sample_project.controller.IncomeDetailController;
+import com.android_mvc.sample_project.db.dao.AccountBookDAO;
+import com.android_mvc.sample_project.db.dao.AccountBookDetailDAO;
 import com.android_mvc.sample_project.db.dao.IncomeDetailDAO;
+import com.android_mvc.sample_project.db.entity.AccountBookDetail;
+import com.android_mvc.sample_project.db.entity.CostDetail;
 import com.android_mvc.sample_project.db.entity.IncomeDetail;
 
 /**
@@ -36,6 +42,14 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
     MLinearLayout layout1;
     MTextView tv1;
     private Calendar LabelYMD;
+
+    // DAO
+    private IncomeDetailDAO incomeDetailDAO;
+    private AccountBookDAO accountBookDAO;
+    private AccountBookDetailDAO accountBookDetailDAO;
+
+    // 制御用変数
+    private Calendar simeLastDay;
 
     // 全収入明細のリスト
     List<IncomeDetail> IncomeDetails;
@@ -51,24 +65,44 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
     public void procAsyncBeforeUI() {
         //
         Util.d("UI構築前に実行される処理です。");
-
-        // 全IncomeDetailをDBからロード
-        IncomeDetails = new IncomeDetailDAO(this).findOrderByBudgetYmd();
     }
 
     @Override
     public void defineContentView() {
         final IncomeDetailShowActivity activity = this;
 
+        // 全IncomeDetailをDBからロード
+        incomeDetailDAO = new IncomeDetailDAO(this);
+        IncomeDetails = incomeDetailDAO.findOrderByAscBudgetYmd();
+
+        // 締め処理済みの期間の最終日を取得する。
+        accountBookDAO = new AccountBookDAO(this);
+        accountBookDetailDAO = new AccountBookDetailDAO(this);
+
+        List<AccountBookDetail> accountBookDetails = accountBookDetailDAO.findAll();
+
+        for (int i = accountBookDetails.size() - 1; i >= 0; i--) {
+            if (accountBookDetails.get(i).getSimeFlag()) {
+                simeLastDay = accountBookDetails.get(i).getMokuhyouMonth();
+            }
+            break;
+        }
+        if (simeLastDay != null) {
+            simeLastDay.add(Calendar.MONTH, 1);
+            simeLastDay.set(Calendar.DAY_OF_MONTH, accountBookDAO.findAll().get(0).getStartDate().get(Calendar.DAY_OF_MONTH));
+        }
+
+        layout1 = new MLinearLayout(context)
+                .orientationVertical()
+                .widthMatchParent()
+                .paddingLeftPx(10)
+                .heightWrapContent();
+
         // まず親レイアウトを定義
         new UIBuilder(context)
                 .setDisplayHeaderText("収入明細照会")
                 .add(
-                        layout1 = new MLinearLayout(context)
-                                .orientationVertical()
-                                .widthMatchParent()
-                                .paddingPx(10)
-                                .heightWrapContent()
+                        layout1
                 )
                 .display();
 
@@ -91,15 +125,47 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
             if (!LabelYMD.equals(i.getBudgetYmd())) {
                 layout1.add(
                         new MTextView(context)
-                                .paddingPx(5)
-                                .textsize(1)
+                                .paddingPx(1)
+                                .textsize(5)
                         ,
-                        getLabelYMD(i.getBudgetYmd(), IncomeDetails));
+                        getLabelYMD(i.getBudgetYmd(), IncomeDetails)
+                        );
                 LabelYMD = i.getBudgetYmd();
             }
 
+            MGridLayout record = new MGridLayout(activity)
+                    .columnCount(3)
+                    .rowCount(2)
+                    .heightWrapContent()
+                    .backgroundDrawable(R.drawable.border);
+            MTextView categoryTypeView = i.getCategoryTypeView(this);
+            MTextView payTypeVeiw = i.getPayTypeView(this);
+            MTextView budgetCostView = i.getBudgetIncomeView(this);
+            MTextView settleCostView = i.getSettleIncomeView(this);
+
+            MTextView updateButton = new MTextView(activity)
+                    .gravity(Gravity.CENTER_VERTICAL)
+                    .text(i.isKurikosi() || isSime(i.getBudgetYmd()) ? "変更不可" : "変更")
+                    .backgroundDrawable(i.isKurikosi() || isSime(i.getBudgetYmd()) ? R.drawable.record_design : R.drawable.button_design_1)
+                    .click(i.isKurikosi() || isSime(i.getBudgetYmd()) ? null : inputDialogUpdateSettleIncome(i, settleCostView));
+
+            MTextView deleteButton = new MTextView(activity)
+                    .gravity(Gravity.CENTER_VERTICAL)
+                    .text(i.isKurikosi() || isSime(i.getBudgetYmd()) ? "削除不可" : "削除")
+                    .backgroundDrawable(i.isKurikosi() || isSime(i.getBudgetYmd()) ? R.drawable.record_design : R.drawable.button_design_1)
+                    .click(i.isKurikosi() || isSime(i.getBudgetYmd()) ? null : delete(this, i));
+
+            record.add(
+                    categoryTypeView,
+                    budgetCostView,
+                    updateButton,
+                    payTypeVeiw,
+                    settleCostView,
+                    deleteButton
+                    );
+
             layout1.add(
-                    i.getDescription(activity, context, update(this, i), delete(this, i))
+                    record
                     );
 
         }
@@ -107,20 +173,13 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
         // 描画
         layout1.inflateInside();
 
-        // 友達登録操作の直後の場合
-        if ($.hasActionResult())
-        {
-            showRegisteredNewIncomeDetail();
-        }
     }
 
-    // 新規登録されたばかりの新しい友達情報を表示
-    private void showRegisteredNewIncomeDetail() {
-        if ($.actionResultHasKey("new_income_detail"))
-        {
-            // Intentから情報を取得
-            IncomeDetail v = (IncomeDetail) ($.getActionResult().get("new_income_detail"));
+    private boolean isSime(Calendar target) {
+        if (simeLastDay != null) {
+            return simeLastDay.after(target);
         }
+        return false;
     }
 
     public LinearLayout getLabelYMD(Calendar budgetYmd, List<IncomeDetail> incomeDetails) {
@@ -232,6 +291,78 @@ public class IncomeDetailShowActivity extends AccountBookAppUserBaseActivity {
 
             }
         };
+    }
+
+    // 月別目標金額を更新するためのイベント
+    private OnClickListener inputDialogUpdateSettleIncome(final IncomeDetail i, final MTextView target) {
+        return new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                String title = "実際の金額を入力してください。";
+                // 最終目標金額入力用View
+                Integer initVal = 0;
+                if (target != null && target.text() != null && !target.text().isEmpty()) {
+                    try {
+                        String tmp = target.text().replace("円", "");
+                        tmp = tmp.replace("実績: ", "");
+                        tmp = tmp.replace("未入力", "");
+                        if (!tmp.isEmpty()) {
+                            initVal = Integer.parseInt(tmp);
+                        }
+                    } catch (NumberFormatException e) {
+                        UIUtil.longToast(context, "数値を入力してください");
+                        return;
+                    }
+                }
+
+                createCalculaterDialogWith2Button(IncomeDetailShowActivity.this, title, null, 0,
+                        target, initVal, "円", i);
+            }
+        };
+    }
+
+    /**
+     * 2つのボタンを持つ電卓ダイアログを表示する。 各ボタンを押した時のイベントはclickに渡す。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createCalculaterDialogWith2Button(final IncomeDetailShowActivity activity, String title, String content, int icon,
+            final TextView v, Integer initVal, final String valUnit, final IncomeDetail i) {
+
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        final MCalculatorView calc = new MCalculatorView(activity, null, initVal);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+        ret.setView(calc);
+
+        ret.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                v.setText("実績： " + calc.getValue() + valUnit);
+                i.setSettleIncome(Integer.parseInt((String) calc.getValue()));
+                // DB更新へ
+                IncomeDetailController.submit(activity, "UPDATE_INCOME_DETAIL", i);
+            }
+        });
+
+        ret.setNegativeButton("キャンセル", null);
+
+        calc.inflateInside();
+        ret.create();
+        ret.show();
+
+        return ret;
     }
 
 }

@@ -8,7 +8,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.view.Gravity;
-import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.android_mvc.framework.ui.view.MLinearLayout;
@@ -113,7 +112,7 @@ public class CostDetail extends LogicalEntity<CostDetail> {
      * 
      * @return
      */
-    private boolean isKurikosi() {
+    public boolean isKurikosi() {
         return (getCategoryType() != null && getCategoryType() == 15);
     }
 
@@ -272,6 +271,130 @@ public class CostDetail extends LogicalEntity<CostDetail> {
         }
 
         return ret;
+    }
+
+    public String getPayTerm(CreditCardSetting ccs){
+        Calendar tmp = ccs.getSiharaiYmd();
+        tmp.set(Calendar.MONTH, getBudgetYmd().get(Calendar.MONTH));
+
+        // 予定日付が締日より前なら、支払日を翌月にする。そうでなければ、翌々月にする。
+        if (getBudgetYmd().get(Calendar.DAY_OF_MONTH) <= ccs.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
+            tmp.add(Calendar.MONTH, 1);
+        }
+        else {
+            tmp.add(Calendar.MONTH, 2);
+        }
+
+        payTerm = (tmp.get(Calendar.MONTH) + 1) + "月";
+        // 支払回数が複数回の場合
+        if (getDivideNum() > 1) {
+            tmp.add(Calendar.MONTH, getDivideNum() - 1);
+            payTerm += "~" + (tmp.get(Calendar.MONTH) + 1) + "月";
+        }
+
+        return payTerm;
+    }
+    public MTextView getCategoryTypeView(Activity activity) {
+        String categoryType = (getCategoryType() == null) ? "未入力" : Util.getCategoryTypeName(activity, getCategoryType() - 1);
+        return new MTextView(activity)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text(categoryType)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MTextView getPayTypeView(Activity activity) {
+        String payType = (getPayType() == null) ? "未入力" : Util.getPayTypeName(activity, getPayType() - 1);
+        return new MTextView(activity)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text(payType)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MTextView getBudgetCostView(Activity activity) {
+        String budgetCost = (getBudgetCost() == null) ? "未入力" : getBudgetCost() + "円";
+        return new MTextView(activity)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("予算: " + budgetCost)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MTextView getSettleCostView(Activity activity) {
+        String settleCost = (getSettleCost() == null) ? "未入力" : getSettleCost() + "円";
+        return new MTextView(activity)
+                .text("実績: " + settleCost)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MLinearLayout getDivideNumView(Activity activity) {
+        MLinearLayout ret = new MLinearLayout(activity)
+                .orientationHorizontal()
+                .widthFillParent()
+                .heightWrapContent();
+
+        return addDivideNumView(activity, ret);
+
+    }
+
+    public MLinearLayout addDivideNumView(Activity activity, MLinearLayout base) {
+        String divideNum = (getDivideNum() == null) ? "" : " " + getDivideNum() + "回払い";
+
+        if (getDivideNum() != null) {
+            CreditCardSetting ccs = new CreditCardSettingDAO(activity).findNewestOne();
+            if (ccs != null) {
+                if (payTerm == null) {
+                    Calendar tmp = ccs.getSiharaiYmd();
+                    tmp.set(Calendar.MONTH, getBudgetYmd().get(Calendar.MONTH));
+
+                    // 予定日付が締日より前なら、支払日を翌月にする。そうでなければ、翌々月にする。
+                    if (getBudgetYmd().get(Calendar.DAY_OF_MONTH) <= ccs.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
+                        tmp.add(Calendar.MONTH, 1);
+                    }
+                    else {
+                        tmp.add(Calendar.MONTH, 2);
+                    }
+
+                    payTerm = (tmp.get(Calendar.MONTH) + 1) + "月";
+                    // 支払回数が複数回の場合
+                    if (getDivideNum() > 1) {
+                        tmp.add(Calendar.MONTH, getDivideNum() - 1);
+                        payTerm += "~" + (tmp.get(Calendar.MONTH) + 1) + "月";
+                    }
+                }
+
+                base.add(
+                        new MLinearLayout(activity)
+                                .orientationHorizontal()
+                                .widthFillParent()
+                                .heightWrapContent()
+                                .add(
+                                        new MTextView(activity)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .text(divideNum)
+                                                .backgroundDrawable(drawable.record_design)
+                                                .widthWrapContent()
+                                        ,
+                                        new MTextView(activity)
+                                                .text("支払額: " + (getEffectiveCost() / getDivideNum()) + "円")
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(drawable.record_design)
+                                                .widthWrapContent()
+                                        ,
+                                        new MTextView(activity)
+                                                .text("引落月: " + payTerm)
+                                                .gravity(Gravity.CENTER_VERTICAL)
+                                                .backgroundDrawable(drawable.record_design)
+                                                .widthWrapContent()
+                                )
+                        );
+            }
+        }
+
+        return base;
     }
 
     // ----- LP変換(Logical <-> Physical) -----
