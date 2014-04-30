@@ -73,6 +73,7 @@
     <string name="MSG_00001">本日の財布の中身を入力してください。</string>
     <string name="MSG_00002">財布の中身を入力してください。</string>
     <string name="MSG_00003">入力してください。</string>
+    <string name="MSG_00004">預金引出を入力してください。</string>
     
     <!-- ■■アプリで使用する文字列リソース ここまで■■ -->
 

@@ -267,8 +267,12 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
 
             @Override
             public void onClick(View v) {
-                Integer initVal = target.text().isEmpty() ? 0 : Integer.parseInt(target.text());
-                Util.createCalculaterDialogWithOKButton(CostDetailEditActivity.this, null, null, 0, target, initVal);
+                Integer initVal = target.text().isEmpty() ? 0 : Integer.parseInt(target.text().replaceAll("円", ""));
+                Util.createCalculaterDialogWith3Button(CostDetailEditActivity.this, null, null, 0,
+                        null, null,
+                        null, null,
+                        null, null,
+                        target, initVal, "円");
             }
         };
     }

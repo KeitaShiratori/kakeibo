@@ -553,7 +553,7 @@ public class MyWalletShowActivity extends AccountBookAppUserBaseActivity {
 
                 new AlertDialog.Builder(activity)
                         .setIcon(android.R.drawable.ic_dialog_info)
-                        .setTitle(s(R.string.MSG_00002))
+                        .setTitle(s(R.string.MSG_00004))
                         .setView(ll1)
                         .setPositiveButton(s(R.string.KOUSIN), new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {

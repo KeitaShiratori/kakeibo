@@ -615,11 +615,84 @@ public class Util extends BaseUtil
             ret.setPositiveButton("OK", click1);
         }
 
-        if(click2 == null){
+        if (click2 == null) {
             ret.setNegativeButton("キャンセル", null);
         }
-        else{
+        else {
             ret.setNegativeButton("キャンセル", click2);
+        }
+
+        calc.inflateInside();
+        ret.create();
+        ret.show();
+
+        return ret;
+    }
+
+    /**
+     * 3つのボタンを持つ電卓ダイアログを表示する。 各ボタンを押した時のイベントはclickに渡す。
+     * デフォルトでは、OKボタン、クリアボタン、キャンセルボタンを配置する。
+     * 
+     * @param activity
+     * @param title
+     * @param content
+     * @param icon
+     * @param click
+     * @return
+     */
+    public static Builder createCalculaterDialogWith3Button(Activity activity, String title, String content, int icon,
+            String btnName1, final DialogInterface.OnClickListener click1,
+            String btnName2, final DialogInterface.OnClickListener click2,
+            String btnName3, final DialogInterface.OnClickListener click3,
+            final TextView v, Integer initVal, final String valUnit) {
+
+        AlertDialog.Builder ret = new AlertDialog.Builder(activity);
+
+        final MCalculatorView calc = new MCalculatorView(activity, null, initVal);
+
+        // ダイアログの設定
+        ret.setTitle(title); // タイトル
+        ret.setMessage(content); // 内容
+        ret.setIcon(icon); // アイコン設定
+        ret.setView(calc);
+
+        if (click1 == null) {
+            ret.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    v.setText(calc.getValue() + valUnit);
+                }
+            });
+        }
+        else {
+            ret.setPositiveButton(btnName1, click1);
+        }
+
+        if (click2 == null) {
+            ret.setNegativeButton("クリア", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    v.setText("");
+                }
+            });
+        }
+        else {
+            ret.setNegativeButton(btnName2, click2);
+        }
+
+        if (click3 == null) {
+            ret.setNeutralButton("キャンセル", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // 何もしない
+                }
+            });
+        }
+        else {
+            ret.setNeutralButton(btnName3, click3);
         }
 
         calc.inflateInside();
