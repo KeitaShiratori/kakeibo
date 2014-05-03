@@ -2,9 +2,7 @@ package com.android_mvc.sample_project.activities.accountbook;
 
 import com.android_mvc.framework.ui.UIBuilder;
 import com.android_mvc.framework.ui.view.MLinearLayout;
-import com.android_mvc.framework.ui.view.MTextView;
-import com.android_mvc.sample_project.activities.accountbook.data.SettleRecordData;
-import com.android_mvc.sample_project.activities.accountbook.data.SettleShowActivityData;
+import com.android_mvc.sample_project.activities.accountbook.data.SamaryShowActivityData;
 import com.android_mvc.sample_project.activities.accountbook.lib.AccountBookAppUserBaseActivity;
 import com.android_mvc.sample_project.common.Util;
 
@@ -14,15 +12,13 @@ import com.android_mvc.sample_project.common.Util;
  * @author id:language_and_engineering
  * 
  */
-public class SettleShowActivity extends AccountBookAppUserBaseActivity {
+public class SamaryShowActivity extends AccountBookAppUserBaseActivity {
 
     // View定義
     MLinearLayout layout1;
-    MTextView tv1;
-    MTextView tv2;
 
     // メンバ変数
-    SettleShowActivityData settleShowActivityData;
+    SamaryShowActivityData samaryShowActivityData;
 
     @Override
     public boolean requireProcBeforeUI() {
@@ -41,15 +37,11 @@ public class SettleShowActivity extends AccountBookAppUserBaseActivity {
 
     @Override
     public void defineContentView() {
-        // データの初期化
-        settleShowActivityData = new SettleShowActivityData();
-        settleShowActivityData.init(this);
-
-        final SettleShowActivity activity = this;
+        final SamaryShowActivity activity = this;
 
         // まず親レイアウトを定義
         new UIBuilder(context)
-                .setDisplayHeaderText("実績照会")
+                .setDisplayHeaderText("統計分析")
                 .add(layout1 = new MLinearLayout(activity)
                         .orientationVertical()
                         .widthFillParent()
@@ -57,14 +49,15 @@ public class SettleShowActivity extends AccountBookAppUserBaseActivity {
                         .heightWrapContent())
                 .display();
 
-        for (SettleRecordData s : settleShowActivityData.getSettleRecordData()) {
-            layout1.add(
-                    s.getDescription(context)
-                    );
-        }
+        // データクラスの取得
+        samaryShowActivityData = SamaryShowActivityData.getInstance(this);
+
+        // 画面レイアウトの生成
+        layout1.add(
+                samaryShowActivityData.getLayout()
+                );
 
         // 描画
         layout1.inflateInside();
     }
-
 }

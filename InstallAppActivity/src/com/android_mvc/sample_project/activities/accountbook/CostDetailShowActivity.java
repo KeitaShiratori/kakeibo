@@ -166,7 +166,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
         }
         // 全件モード
         else if (mode.equals(ALL_MODE)) {
-            CostDetails = costDetailDAO.findOrderBy(CostDetailCol.BUDGET_YMD);
+            CostDetails = costDetailDAO.findOrderByDesc(CostDetailCol.BUDGET_YMD);
         }
         // 日、週、月のいずれかのモード
         else if (mode.equals(DAY_MODE) || mode.equals(WEEK_MODE) || mode.equals(MONTH_MODE)) {

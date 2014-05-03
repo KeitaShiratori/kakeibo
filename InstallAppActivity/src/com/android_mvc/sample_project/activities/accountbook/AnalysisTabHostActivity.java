@@ -18,10 +18,10 @@ public class AnalysisTabHostActivity extends BaseTabHostActivity
     public void defineContentView() {
 
         // 初期表示タブ判定
-        String firstTab = new String(); 
+        String firstTab = new String();
 
         if ($.extras() != null && !$.extras().isEmpty()) {
-           firstTab = $.extras().getString("FIRST_TAB");
+            firstTab = $.extras().getString("FIRST_TAB");
         }
 
         // タブの定義を記述する。
@@ -36,9 +36,13 @@ public class AnalysisTabHostActivity extends BaseTabHostActivity
                         new TabDescription("SHOW_SETTLE_SHOW")
                                 .text("実績")
                                 .icon(android.R.drawable.ic_menu_agenda)
-                )
-                .display(firstTab);
+                        ,
 
+                        new TabDescription("SHOW_SAMARY_SHOW")
+                                .text("統計")
+                                .icon(android.R.drawable.ic_menu_compass)
+                )
+         .display(firstTab);
     }
 
 }

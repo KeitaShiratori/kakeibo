@@ -45,6 +45,7 @@ public class TopActivity extends BaseNormalActivity
     private MTextView tv40;
     private MButton button41;
     private MButton button42;
+    private MButton button43;
 
     private TopActivity activity;
 
@@ -137,14 +138,19 @@ public class TopActivity extends BaseNormalActivity
         button41 = new MButton(activity)
                 .text("予定分析")
                 .gravity(Gravity.CENTER_VERTICAL)
-                .backgroundResource(R.drawable.button_design_h60_w173);
+                .backgroundResource(R.drawable.button_design_h60_w115);
         button42 = new MButton(activity)
                 .text("実績分析")
                 .gravity(Gravity.CENTER_VERTICAL)
-                .backgroundResource(R.drawable.button_design_h60_w172);
+                .backgroundResource(R.drawable.button_design_h60_w115);
+        button43 = new MButton(activity)
+                .text("統計分析")
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundResource(R.drawable.button_design_h60_w115);
         button41.click(submit("SHOW_BUDGET_SHOW"));
         button42.click(submit("SHOW_SETTLE_SHOW"));
-        ll4.add(button41, button42);
+        button43.click(submit("SHOW_SAMARY_SHOW"));
+        ll4.add(button41, button42, button43);
 
         layout0 = new MLinearLayout(context)
                 .orientationVertical()
@@ -170,7 +176,7 @@ public class TopActivity extends BaseNormalActivity
                 tv40,
                 ll4
                 );
-        
+
         layout0.inflateInside();
     }
 

@@ -12,6 +12,7 @@ import com.android_mvc.sample_project.activities.accountbook.EditTabHostActivity
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailEditActivity;
 import com.android_mvc.sample_project.activities.accountbook.IncomeDetailShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.MyWalletShowActivity;
+import com.android_mvc.sample_project.activities.accountbook.SamaryShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.SettleShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.ShowTabHostActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
@@ -88,7 +89,8 @@ public class FuncDBController extends BaseController
         // タブのタグ文字列に対応するアクティビティを指定する。
         return new TabContentMapping()
                 .add("SHOW_BUDGET_SHOW", BudgetShowActivity.class)
-                .add("SHOW_SETTLE_SHOW", SettleShowActivity.class);
+                .add("SHOW_SETTLE_SHOW", SettleShowActivity.class)
+                .add("SHOW_SAMARY_SHOW", SamaryShowActivity.class);
     }
 
 }

@@ -321,8 +321,26 @@ public class CostDetail extends LogicalEntity<CostDetail> {
                 .widthWrapContent();
     }
 
+    public MTextView getBudgetCostView(Activity activity, Integer input) {
+        String budgetCost = (input == null) ? "未入力" : input + "円";
+        return new MTextView(activity)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .text("予算: " + budgetCost)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
     public MTextView getSettleCostView(Activity activity) {
         String settleCost = (getSettleCost() == null) ? "未入力" : getSettleCost() + "円";
+        return new MTextView(activity)
+                .text("実績: " + settleCost)
+                .gravity(Gravity.CENTER_VERTICAL)
+                .backgroundDrawable(drawable.record_design)
+                .widthWrapContent();
+    }
+
+    public MTextView getSettleCostView(Activity activity, Integer input) {
+        String settleCost = (input == null) ? "未入力" : input + "円";
         return new MTextView(activity)
                 .text("実績: " + settleCost)
                 .gravity(Gravity.CENTER_VERTICAL)

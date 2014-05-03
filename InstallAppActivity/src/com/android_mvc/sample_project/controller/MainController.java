@@ -122,7 +122,8 @@ public class MainController extends BaseController
         }
         // 分析画面へ遷移
         else if (button_type.equals("SHOW_BUDGET_SHOW")
-                || button_type.equals("SHOW_SETTLE_SHOW")) {
+                || button_type.equals("SHOW_SETTLE_SHOW")
+                || button_type.equals("SHOW_SAMARY_SHOW")) {
             Router.goWithData(activity, AnalysisTabHostActivity.class, "分析画面へ",
                     new Intent().putExtra("FIRST_TAB", button_type)
                     );

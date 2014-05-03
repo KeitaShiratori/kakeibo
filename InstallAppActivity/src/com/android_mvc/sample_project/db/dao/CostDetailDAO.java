@@ -72,11 +72,61 @@ public class CostDetailDAO extends BaseDAO<CostDetail>
                 .findAll(CostDetail.class);
     }
 
-    public List<CostDetail> findOrderBy(String orderKey) {
+    public List<CostDetail> findOrderByDesc(String orderKey) {
 
         return new Finder<CostDetail>(helper)
                 .where("id > 0")
                 .orderBy(orderKey + " DESC")
+                .findAll(CostDetail.class);
+    }
+
+    public List<CostDetail> findOrderByDesc(String... orderKey) {
+
+        String orderBy = new String();
+        for (String key : orderKey) {
+            orderBy += key;
+            orderBy += " DESC,";
+        }
+
+        // 最後の","を除去
+        Util.d("orderBy: " + orderBy.toString());
+        Util.d("orderBy.length: " + orderBy.length());
+        orderBy.substring(0, orderBy.length() - 1);
+        Util.d("substringed orderBy: " + orderBy.toString());
+        Util.d("substringed orderBy.length: " + orderBy.length());
+
+        return new Finder<CostDetail>(helper)
+                .where("id > 0")
+                .orderBy(orderBy)
+                .findAll(CostDetail.class);
+    }
+
+    public List<CostDetail> findOrderByAsc(String orderKey) {
+
+        return new Finder<CostDetail>(helper)
+                .where("id > 0")
+                .orderBy(orderKey + " ASC")
+                .findAll(CostDetail.class);
+    }
+
+    public List<CostDetail> findOrderByAsc(String... orderKey) {
+
+        String orderBy = new String();
+        for (String key : orderKey) {
+            orderBy += key;
+            orderBy += " ASC,";
+        }
+
+        // 最後の","を除去
+        Util.d("orderBy: " + orderBy.toString());
+        Util.d("orderBy.length: " + orderBy.length());
+        orderBy = orderBy.substring(0, orderBy.length() - 1);
+        Util.d("substringed orderBy: " + orderBy.toString());
+        Util.d("substringed orderBy.length: " + orderBy.length());
+
+        return new Finder<CostDetail>(helper)
+                .where("id > 0")
+                .orderBy(orderBy)
                 .findAll(CostDetail.class);
     }
 

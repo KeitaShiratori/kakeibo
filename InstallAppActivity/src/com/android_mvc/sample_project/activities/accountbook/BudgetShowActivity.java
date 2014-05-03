@@ -48,15 +48,15 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
         //
         Util.d("UI構築前に実行される処理です。");
 
-        // データの初期化
-        budgetShowActivityData = new BudgetShowActivityData();
-        budgetShowActivityData.init(this);
-
     }
 
     @Override
     public void defineContentView() {
         final BudgetShowActivity activity = this;
+
+        // データの初期化
+        budgetShowActivityData = new BudgetShowActivityData();
+        budgetShowActivityData.init(this);
 
         // まず親レイアウトを定義
         new UIBuilder(context)
@@ -100,7 +100,7 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
             @Override
             public void onClick(View v) {
                 // 全CostDetailをDBからロード
-                List<CostDetail> costDetails = new CostDetailDAO(context).findOrderBy(CostDetailCol.BUDGET_YMD);
+                List<CostDetail> costDetails = new CostDetailDAO(context).findOrderByDesc(CostDetailCol.BUDGET_YMD);
 
                 Integer budgetCostSum = 0;
                 Integer settleCostSum = 0;
