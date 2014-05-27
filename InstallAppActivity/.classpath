@@ -15,5 +15,10 @@
 		</accessrules>
 	</classpathentry>
 	<classpathentry exported="true" kind="lib" path="/android-support-v7-gridlayout/libs/android-support-v7-gridlayout.jar"/>
+	<classpathentry exported="true" kind="lib" path="C:/development/adt-bundle-windows-x86_64-20130522/sdk/extras/google/google_play_services/libproject/google-play-services_lib/libs/google-play-services.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="file:/C:/development/adt-bundle-windows-x86_64-20130522/sdk/extras/google/google_play_services/libproject/google-play-services_lib/libs/../../../docs/reference/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -2,6 +2,7 @@ package com.android_mvc.sample_project.controller;
 
 import android.content.Intent;
 
+import com.android_mvc.framework.activities.base.BaseNormalActivity;
 import com.android_mvc.framework.controller.BaseController;
 import com.android_mvc.framework.controller.ControlFlowDetail;
 import com.android_mvc.framework.controller.action.ActionResult;
@@ -16,6 +17,8 @@ import com.android_mvc.sample_project.activities.accountbook.AnalysisTabHostActi
 import com.android_mvc.sample_project.activities.accountbook.CreditCardActivity;
 import com.android_mvc.sample_project.activities.accountbook.EditTabHostActivity;
 import com.android_mvc.sample_project.activities.accountbook.ShowTabHostActivity;
+import com.android_mvc.sample_project.activities.accountbook_html.UserGuideActivity;
+import com.android_mvc.sample_project.activities.accountbook_html.FAQActivity;
 import com.android_mvc.sample_project.activities.accountsheet.AccountSheetActivity;
 import com.android_mvc.sample_project.activities.installation.InstallAppActivity;
 import com.android_mvc.sample_project.activities.installation.InstallCompletedActivity;
@@ -142,6 +145,17 @@ public class MainController extends BaseController
                     // "財布の中身へ")
                     );
         }
+    }
+
+    /**
+     * BaseNormalActivityからの遷移時
+     */
+    public static void submit(BaseNormalActivity activity, String option_type) {
+        Router.goByRoutingTable(activity, option_type,
+                new RoutingTable()
+                        .map("GUIDE", UserGuideActivity.class, "簡単使い方ガイド画面へ")
+                        .map("FAQ", FAQActivity.class, "FAQ画面へ")
+                );
     }
 
 }

@@ -79,7 +79,7 @@ public final class SamaryShowActivityData {
         if (creditCardSetting != null) {
             setCreditCardSetting(true);
         }
-        costDetails = costDetailDAO.findOrderByAsc("substr(" + CostDetailCol.BUDGET_YMD + ",1,7)", CostDetailCol.CATEGORY_TYPE);
+        costDetails = costDetailDAO.findOrderByAsc("substr(" + CostDetailCol.BUDGET_YMD + ",1,7)", CostDetailCol.PAY_TYPE, CostDetailCol.CATEGORY_TYPE);
 
         Util.d("CostDetailのYMD" + LPUtil.encodeCalendarToText(costDetails.get(0).getBudgetYmd()));
 
@@ -141,15 +141,18 @@ public final class SamaryShowActivityData {
         Iterator<CostDetail> costDetailsIterator = costDetails.iterator();
 
         // Integer[3] = {年、月、カテゴリ分類コード}
-        Integer[] newKey = new Integer[3];
-        Integer[] oldKey = new Integer[3];
+        Integer[] newKey = new Integer[4];
+        Integer[] oldKey = new Integer[4];
 
         CostDetail c = costDetailsIterator.next();
         setKey(newKey, c);
 
+        Integer budgetSamary = 0;
+        Integer settleSamary = 0;
+
         while (costDetailsIterator.hasNext()) {
             // ヘッダを出力する必要がある場合、ヘッダを出力する。
-            if (oldKey[0] == null || newKey[0] - oldKey[0] != 0 || newKey[1] - oldKey[1] != 0) {
+            if (oldKey[0] == null || newKey[0] - oldKey[0] != 0 || newKey[1] - oldKey[1] != 0 || newKey[2] - oldKey[2] != 0) {
                 makeHeader(categoryBetuCostLayout, c);
             }
 
@@ -181,6 +184,15 @@ public final class SamaryShowActivityData {
                     c.getBudgetCostView(activity, budgetSum),
                     c.getSettleCostView(activity, settleSum)
                     );
+
+            budgetSamary += budgetSum;
+            settleSamary += settleSum;
+
+            if (oldKey[0] == null || newKey[0] - oldKey[0] != 0 || newKey[1] - oldKey[1] != 0 || newKey[2] - oldKey[2] != 0) {
+                makeSamaryRecord(categoryBetuCostLayout, c, budgetSamary, settleSamary);
+                budgetSamary = 0;
+                settleSamary = 0;
+            }
         }
 
         return categoryBetuCostLayout;
@@ -190,14 +202,29 @@ public final class SamaryShowActivityData {
 
         key[0] = c.getBudgetYmd().get(Calendar.YEAR);
         key[1] = c.getBudgetYmd().get(Calendar.MONTH);
-        key[2] = c.getCategoryType();
+        key[2] = c.getPayType();
+        key[3] = c.getCategoryType();
     }
 
     private boolean chkKey(Integer[] oldKey, Integer[] newKey) {
-        return oldKey[0] - newKey[0] == 0 && oldKey[1] - newKey[1] == 0 && oldKey[2] - newKey[2] == 0;
+        return oldKey[0] - newKey[0] == 0
+                && oldKey[1] - newKey[1] == 0
+                && oldKey[2] - newKey[2] == 0
+                && oldKey[3] - newKey[3] == 0;
     }
 
     private void makeHeader(MGridLayout categoryBetuCostLayout, CostDetail c) {
+        categoryBetuCostLayout.add(
+                new MTextView(activity)
+                        .textsize(5)
+                ,
+                new MTextView(activity)
+                        .textsize(5)
+                ,
+                new MTextView(activity)
+                        .textsize(5)
+                );
+
         String from = c.getBudgetYmd().get(Calendar.YEAR) + "/"
                 + (c.getBudgetYmd().get(Calendar.MONTH) + 1) + "/"
                 + accountBook.getStartDate().get(Calendar.DAY_OF_MONTH);
@@ -222,9 +249,23 @@ public final class SamaryShowActivityData {
                         .text("～" + to)
                         .backgroundDrawable(R.drawable.header_design)
                 ,
-                new MTextView(activity)
-                        .gravity(Gravity.CENTER_VERTICAL)
+                c.getPayTypeView(activity)
                         .backgroundDrawable(R.drawable.header_design)
                 );
     }
+
+    private void makeSamaryRecord(MGridLayout categoryBetuCostLayout, CostDetail c, Integer budgetSum, Integer settleSum) {
+        categoryBetuCostLayout.add(
+                new MTextView(activity)
+                        .gravity(Gravity.CENTER_VERTICAL)
+                        .text("合計")
+                        .backgroundDrawable(R.drawable.record_design)
+                ,
+                c.getBudgetCostView(activity, budgetSum)
+                ,
+                c.getSettleCostView(activity, settleSum)
+                );
+
+    }
+
 }

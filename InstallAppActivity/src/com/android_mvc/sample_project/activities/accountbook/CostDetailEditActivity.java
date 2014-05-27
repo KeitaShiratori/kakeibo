@@ -355,11 +355,15 @@ public class CostDetailEditActivity extends AccountBookAppUserBaseActivity {
             divideNum = Integer.parseInt(tv62.text());
         }
 
+        // 予定費用・実績費用の円を除去する
+        String bCost = et2.text().replaceAll("円", "");
+        String sCost = et5.text().replaceAll("円", "");
+        
         return new ActivityParams()
                 .add("予定年月日", CostDetailCol.BUDGET_YMD, Util.toCalendar(bYMD.text()))
-                .add("予算費用", CostDetailCol.BUDGET_COST, et2.text())
+                .add("予算費用", CostDetailCol.BUDGET_COST, bCost)
                 .add("カテゴリ名", CostDetailCol.CATEGORY_TYPE, (sp3.getSelectedItemPosition() + 1))
-                .add("実績費用", CostDetailCol.SETTLE_COST, et5.text())
+                .add("実績費用", CostDetailCol.SETTLE_COST, sCost)
                 .add("支払方法", CostDetailCol.PAY_TYPE, (sp6.getSelectedItemPosition()) + 1)
                 .add("繰り返し区分", "repeat_dvn", sp7.getSelectedItem())
                 .add("支払回数", CostDetailCol.DIVIDE_NUM, divideNum);

@@ -16,9 +16,11 @@ import com.android_mvc.framework.controller.action.ActionResult;
 import com.android_mvc.framework.controller.validation.ActivityParams;
 import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.menu.OptionMenuBuilder;
+import com.android_mvc.framework.ui.menu.OptionMenuDescription;
 import com.android_mvc.sample_project.bat.AlarmReceiver;
 import com.android_mvc.sample_project.bat.KakeiboNotification;
 import com.android_mvc.sample_project.bat.PeriodicService;
+import com.android_mvc.sample_project.controller.MainController;
 import com.android_mvc.sample_project.db.dao.CostDetailDAO;
 import com.android_mvc.sample_project.db.dao.PrefDAO;
 import com.android_mvc.sample_project.db.entity.CostDetail;
@@ -154,7 +156,37 @@ public abstract class BaseNormalActivity extends Activity implements IBaseActivi
     @Override
     public OptionMenuBuilder defineMenu()
     {
-        return null;
+        final BaseNormalActivity activity = this;
+
+        // オプションメニューを構築
+        return new OptionMenuBuilder(context)
+            .add(
+                new OptionMenuDescription()
+                {
+                    @Override
+                    protected String displayText() {return "簡単使い方ガイド";}
+
+                    @Override
+                    protected void onSelected() {
+                        // 画面遷移
+                        MainController.submit(activity, "GUIDE");
+                    }
+                }
+            )
+            .add(
+                new OptionMenuDescription()
+                {
+                    @Override
+                    protected String displayText() {return "FAQ";}
+
+                    @Override
+                    protected void onSelected() {
+                        // 画面遷移
+                        MainController.submit(activity, "FAQ");
+                    }
+                }
+            )
+        ;
     }
 
     @Override

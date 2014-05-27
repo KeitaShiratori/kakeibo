@@ -94,11 +94,23 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
     private OnClickListener showTodayYoteiKingaku(final BudgetShowActivityData budgetShowActivityData) {
         return new OnClickListener() {
 
+            // システム日時
             final Calendar today = Calendar.getInstance();
+
+            // 基準日
             final Calendar baseYMD = budgetShowActivityData.getAccountBookStartDate();
+
+            // 画面表示用当月（基準日ベースで考えた時の当月。システム日付の"日"が基準日より小さい場合、先月の基準日にする。）
+            final Calendar displayTodayMonth = Calendar.getInstance();
 
             @Override
             public void onClick(View v) {
+                // 画面表示用当月の設定
+                if(displayTodayMonth.get(Calendar.DAY_OF_MONTH) < baseYMD.get(Calendar.DAY_OF_MONTH)){
+                    displayTodayMonth.add(Calendar.MONTH, -1);
+                }
+                displayTodayMonth.set(Calendar.DAY_OF_MONTH, baseYMD.get(Calendar.DAY_OF_MONTH));
+
                 // 全CostDetailをDBからロード
                 List<CostDetail> costDetails = new CostDetailDAO(context).findOrderByDesc(CostDetailCol.BUDGET_YMD);
 
@@ -129,8 +141,8 @@ public class BudgetShowActivity extends AccountBookAppUserBaseActivity {
 
                 for (BudgetRecordData b : budgetShowActivityData.getBudgetRecordData()) {
                     // 当月の可処分所得を使って計算する
-                    if (b.getYoteiYYYYMM().get(Calendar.YEAR) == today.get(Calendar.YEAR)
-                            && b.getYoteiYYYYMM().get(Calendar.MONTH) == today.get(Calendar.MONTH)) {
+                    if (b.getYoteiYYYYMM().get(Calendar.YEAR) == displayTodayMonth.get(Calendar.YEAR)
+                            && b.getYoteiYYYYMM().get(Calendar.MONTH) == displayTodayMonth.get(Calendar.MONTH)) {
                         // 可処分所得を計算し、当月の残り日数で日割りする。
                         kasyobun = (b.getIncomeSum() - b.getMokuhyouKingaku() - b.getCostSum());
                         kasyobun = kasyobun / diffDays;

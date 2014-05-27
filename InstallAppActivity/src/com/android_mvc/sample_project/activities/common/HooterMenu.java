@@ -19,16 +19,27 @@ import com.android_mvc.sample_project.activities.accountbook.IncomeDetailShowAct
 import com.android_mvc.sample_project.activities.accountbook.MyWalletShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.SettleShowActivity;
 import com.android_mvc.sample_project.activities.main.TopActivity;
+import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.common.CommonController;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 public class HooterMenu extends MLinearLayout {
 
     private HooterMenu hooterMenu;
+
+    private MLinearLayout buttons;
     private MButton button1;
     private MButton button2;
     private MButton button3;
     private MButton button4;
     private MButton button5;
+
+    // Google広告
+    private MLinearLayout ads;
+    private AdView adView;
+    private static final String MY_AD_UNIT_ID = "ca-app-pub-7207474321253495/8391513167";
 
     public HooterMenu(Context context) {
         super(context);
@@ -43,9 +54,16 @@ public class HooterMenu extends MLinearLayout {
     }
 
     public HooterMenu getHooterMenu(Context context, final Activity activity) {
-        if (hooterMenu == null) {
-            hooterMenu = new HooterMenu(context);
+
+        // すでに初期化されていれば、それを返す。
+        if (hooterMenu != null) {
+            return hooterMenu;
         }
+
+        // 初期化処理
+        hooterMenu = new HooterMenu(context);
+        buttons = new MLinearLayout(context);
+        ads = new MLinearLayout(context);
 
         button1 = new MButton(context)
                 .backgroundDrawable(drawable.button_design)
@@ -75,61 +93,94 @@ public class HooterMenu extends MLinearLayout {
 
         currentView(activity);
 
-        hooterMenu
-                .orientationHorizontal()
+        hooterMenu.orientationVertical()
                 .widthWrapContent()
                 .heightWrapContent()
-                .paddingPx(10)
-                .add(
-                        button5.click(new OnClickListener() {
+                .paddingPx(10);
 
-                            @Override
-                            public void onClick(View v) {
-                                // TODO 自動生成されたメソッド・スタブ
-                                CommonController.submit(activity, "TOP");
-                            }
-                        })
-                        ,
-                        button1.click(new OnClickListener() {
+        buttons.orientationHorizontal()
+                .widthWrapContent()
+                .heightWrapContent();
 
-                            @Override
-                            public void onClick(View v) {
-                                CommonController.submit(activity, "SHOW_ACCOUNT_BOOK");
-                            }
+        ads.orientationHorizontal()
+                .widthWrapContent()
+                .heightWrapContent();
 
-                        })
+        // ボタンメニューの作成
+        buttons.add(
+                button5.click(new OnClickListener() {
 
-                        ,
-                        button2.click(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        CommonController.submit(activity, "TOP");
+                    }
+                })
+                ,
+                button1.click(new OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
-                                CommonController.submit(activity, "EDIT_TAB_HOST");
-                            }
+                    @Override
+                    public void onClick(View v) {
+                        CommonController.submit(activity, "SHOW_ACCOUNT_BOOK");
+                    }
 
-                        })
+                })
 
-                        ,
-                        button3.click(new OnClickListener() {
+                ,
+                button2.click(new OnClickListener() {
 
-                            @Override
-                            public void onClick(View v) {
-                                // TODO 自動生成されたメソッド・スタブ
-                                CommonController.submit(activity, "SHOW_TAB_HOST");
+                    @Override
+                    public void onClick(View v) {
+                        CommonController.submit(activity, "EDIT_TAB_HOST");
+                    }
 
-                            }
-                        })
-                        ,
-                        button4.click(new OnClickListener() {
+                })
 
-                            @Override
-                            public void onClick(View v) {
-                                CommonController.submit(activity, "ANALYSIS_TAB_HOST");
-                            }
+                ,
+                button3.click(new OnClickListener() {
 
-                        })
+                    @Override
+                    public void onClick(View v) {
+                        CommonController.submit(activity, "SHOW_TAB_HOST");
+
+                    }
+                })
+                ,
+                button4.click(new OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        CommonController.submit(activity, "ANALYSIS_TAB_HOST");
+                    }
+
+                })
 
                 );
+
+        // 広告エリアの作成
+        // adView を作成する
+        adView = new AdView(context);
+        adView.setAdUnitId(MY_AD_UNIT_ID);
+        adView.setAdSize(AdSize.BANNER);
+
+        // adView を追加する
+        ads.addView(adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        if (!Util.isDebuggingMode()) {
+            // デバッグモードでない場合
+        }
+        else {
+            // デバッグモードの場合
+            adRequest = new AdRequest.Builder()
+                    .addTestDevice(AdRequest.DEVICE_ID_EMULATOR) // エミュレータ
+                    .addTestDevice("682F11B8A78BAF31861CE822DD8DB215")
+                    .build();
+        }
+        // 広告リクエストを行って adView を読み込む
+        adView.loadAd(adRequest);
+
+        // フッターメニューにボタンエリアと広告エリアを追加
+        hooterMenu.add(buttons, ads);
 
         return this.hooterMenu;
     }

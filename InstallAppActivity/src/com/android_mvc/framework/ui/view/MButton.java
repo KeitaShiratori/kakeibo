@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.Button;
 
@@ -44,6 +45,8 @@ public class MButton extends Button implements IFWView {
     }
 
     public MButton click(OnClickListener l) {
+        // クリックできる（＝ボタン）の場合、中央ぞろえにする。
+        setGravity(Gravity.CENTER);
         setOnClickListener(l);
         return this;
     }

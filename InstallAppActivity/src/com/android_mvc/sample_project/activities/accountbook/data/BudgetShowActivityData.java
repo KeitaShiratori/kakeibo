@@ -377,6 +377,7 @@ public class BudgetShowActivityData {
         // 比較対象の日付を数値化
         long comp = comparedYMD.get(Calendar.YEAR) * 10000 + comparedYMD.get(Calendar.MONTH) * 100 + comparedYMD.get(Calendar.DAY_OF_MONTH);
 
+        
         if (base > comp) {
             return -1;
         } else if (base <= comp && comp < baseNextMonth) {

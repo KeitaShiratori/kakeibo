@@ -771,7 +771,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
 
             @Override
             public void onClick(View v) {
-                String title = "実際の金額を入力してください。";
+                String title = "実績金額を入力してください。";
                 // 最終目標金額入力用View
                 Integer initVal = 0;
                 if (target != null && target.text() != null && !target.text().isEmpty()) {

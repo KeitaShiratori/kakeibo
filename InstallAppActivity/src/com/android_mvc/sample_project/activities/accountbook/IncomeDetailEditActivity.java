@@ -184,11 +184,15 @@ public class IncomeDetailEditActivity extends AccountBookAppUserBaseActivity {
 
     @Override
     public ActivityParams toParams() {
+        // 予定費用・実績費用の円を除去する
+        String bIncome = et2.text().replaceAll("円", "");
+        String sIncome = et5.text().replaceAll("円", "");
+
         // 入力された値をすべて回収
         return new ActivityParams()
                 .add("予定年月日", IncomeDetailCol.BUDGET_YMD, Util.toCalendar(bYMD.getText().toString()))
-                .add("予算費用", IncomeDetailCol.BUDGET_INCOME, et2.text())
-                .add("実績費用", IncomeDetailCol.SETTLE_INCOME, et5.text());
+                .add("予算費用", IncomeDetailCol.BUDGET_INCOME, bIncome)
+                .add("実績費用", IncomeDetailCol.SETTLE_INCOME, sIncome);
     }
 
 }

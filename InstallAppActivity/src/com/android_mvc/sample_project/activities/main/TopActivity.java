@@ -10,7 +10,10 @@ import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.framework.ui.view.MTextView;
 import com.android_mvc.sample_project.R;
+import com.android_mvc.sample_project.common.Util;
 import com.android_mvc.sample_project.controller.MainController;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.*;
 
 /**
  * サンプルのトップ画面。

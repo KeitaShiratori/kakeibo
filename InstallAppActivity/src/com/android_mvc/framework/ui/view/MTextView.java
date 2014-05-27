@@ -121,6 +121,8 @@ public class MTextView extends TextView implements IFWView
     }
 
     public MTextView click(OnClickListener l) {
+        // クリックできる（＝ボタン）の場合、中央ぞろえにする。
+        setGravity(Gravity.CENTER);
         setOnClickListener(l);
         return this;
     }

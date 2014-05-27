@@ -170,6 +170,9 @@ public class Calculater {
                     doCalculation(mOperator);
                     mInputNumber = new String();
                 }
+                else{
+                    mResult = Integer.parseInt(mAnswer);
+                }
                 mOperator = key;
 
                 mResultText[0] = Integer.toString(mResult);
