@@ -236,21 +236,21 @@ public class SettleShowActivityData {
                 if (cChkYMDResult == 0) {
                     // 支払方法がクレジットかつ、クレジットカード設定が登録済みの場合、creditSumに支払金額を計上する。
                     if (this.costDetails.get(cPos).getPayType() == 2 && creditCardSetting != null) {
-                        // CostDetailの予定日付とクレカの締日を比較して、締日以降であればinitをインクリメントする。
                         int offset = 0;
+                        // CostDetailの予定日付とクレカの締日を比較して、締日以降であればoffsetをインクリメントする。
                         if (costDetails.get(cPos).getBudgetYmd().get(Calendar.DAY_OF_MONTH)
                         > creditCardSetting.getSimeYmd().get(Calendar.DAY_OF_MONTH)) {
                             offset++;
                         }
+                        // クレカの支払日と家計簿の基準日を比較して、クレカの支払日が小さければoffsetをデクリメントする
                         if (creditCardSetting.getSiharaiYmd().get(Calendar.DAY_OF_MONTH)
-                        < accountBook.getStartDate().get(Calendar.DAY_OF_MONTH)) {
+                        <= accountBook.getStartDate().get(Calendar.DAY_OF_MONTH)) {
                             offset--;
                         }
                         for (int divide = 0; divide < this.costDetails.get(cPos).getDivideNum(); divide++) {
                             if (bPos + 1 + divide + offset < this.accountBookDetails.size()
                                     && bPos + 1 + divide + offset >= 0) {
-                                creditSum[bPos + 1 + divide + offset] 
-                                        += costDetails.get(cPos).getEffectiveCost()
+                                creditSum[bPos + 1 + divide + offset] += costDetails.get(cPos).getEffectiveCost()
                                         / costDetails.get(cPos).getDivideNum();
                             }
                         }

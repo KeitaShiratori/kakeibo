@@ -9,7 +9,6 @@ import com.android_mvc.framework.ui.UIUtil;
 import com.android_mvc.framework.ui.view.MButton;
 import com.android_mvc.framework.ui.view.MLinearLayout;
 import com.android_mvc.sample_project.R;
-import com.android_mvc.sample_project.R.drawable;
 import com.android_mvc.sample_project.activities.accountbook.AccountBookShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.BudgetShowActivity;
 import com.android_mvc.sample_project.activities.accountbook.CostDetailEditActivity;
@@ -66,28 +65,28 @@ public class HooterMenu extends MLinearLayout {
         ads = new MLinearLayout(context);
 
         button1 = new MButton(context)
-                .backgroundDrawable(drawable.button_design)
+                .backgroundDrawable(R.drawable.button_design)
                 .text("目標")
                 .longClick(setCaption(activity, "目標貯金額の設定"));
 
         button2 = new MButton(context)
-                .backgroundDrawable(drawable.button_design)
+                .backgroundDrawable(R.drawable.button_design)
                 .text("登録")
                 .longClick(setCaption(activity, "支出・収入の登録"));
         ;
 
         button3 = new MButton(context)
-                .backgroundDrawable(drawable.button_design)
+                .backgroundDrawable(R.drawable.button_design)
                 .text("照会")
                 .longClick(setCaption(activity, "支出・収入の照会"));
 
         button4 = new MButton(context)
-                .backgroundDrawable(drawable.button_design)
+                .backgroundDrawable(R.drawable.button_design)
                 .text("分析")
                 .longClick(setCaption(activity, "予定・実績の表示"));
 
         button5 = new MButton(context)
-                .backgroundDrawable(drawable.button_design)
+                .backgroundDrawable(R.drawable.button_design)
                 .text("TOP")
                 .longClick(setCaption(activity, "TOP画面の表示"));
 
@@ -102,9 +101,9 @@ public class HooterMenu extends MLinearLayout {
                 .widthWrapContent()
                 .heightWrapContent();
 
-        ads.orientationHorizontal()
-                .widthWrapContent()
-                .heightWrapContent();
+//        ads.orientationHorizontal()
+//                .widthWrapContent()
+//                .heightWrapContent();
 
         // ボタンメニューの作成
         buttons.add(
@@ -180,7 +179,7 @@ public class HooterMenu extends MLinearLayout {
         adView.loadAd(adRequest);
 
         // フッターメニューにボタンエリアと広告エリアを追加
-        hooterMenu.add(buttons, ads);
+        hooterMenu.add(ads, buttons);
 
         return this.hooterMenu;
     }

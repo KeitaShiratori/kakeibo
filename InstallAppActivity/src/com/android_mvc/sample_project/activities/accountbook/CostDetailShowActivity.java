@@ -340,7 +340,7 @@ public class CostDetailShowActivity extends AccountBookAppUserBaseActivity {
                     );
 
             // クレジットカードの分割回数行の作成処理
-            if (isCreditSiharai && c.getDivideNum() != null) {
+            if (c.getDivideNum() != null) {
                 String divideNum = (c.getDivideNum() == null) ? "" : " " + c.getDivideNum() + "回払い";
                 String payTerm = c.getPayTerm(creditCardSetting);
 

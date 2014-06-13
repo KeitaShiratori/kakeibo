@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, Android-MVC !</string>
     <string name="app_name">家計簿</string>
     <string name="pandingIntent_name">今日の収支を入力しましたか？</string>
     <string name="activity_animation_duration">300</string>
@@ -74,6 +73,7 @@
     <string name="MSG_00002">財布の中身を入力してください。</string>
     <string name="MSG_00003">入力してください。</string>
     <string name="MSG_00004">預金引出を入力してください。</string>
+    
     
     <!-- ■■アプリで使用する文字列リソース ここまで■■ -->
 
